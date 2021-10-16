@@ -1,12 +1,38 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-int sum(int, int);
+#include "source/core/core.h"
 
-int main()
+
+
+
+#ifdef __linux__
+    #include <SDL2/SDL.h>
+    #include <SDL2/SDL_image.h>
+#elif _WIN32
+    #include <SDL.h>
+#endif
+
+
+int main(int argc, char *argv[])
 {
-    printf("Test!\n");
-    printf("Hello world!\n");
-    printf("%d\n", sum(10, 15));
+    InitCore();
+
+    SDL_Event windowEvent;
+
+    while ( 1 )
+    {
+        if ( SDL_PollEvent( &windowEvent ) )
+        {
+            if ( SDL_QUIT == windowEvent.type )
+            {
+                break;
+            }
+        }
+    }
+
+
+
+    return EXIT_SUCCESS;
     return 0;
 }
