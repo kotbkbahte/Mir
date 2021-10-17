@@ -12,7 +12,7 @@ void InitCore()
 {
     Core = malloc(sizeof(TCore));
 
-
+    InitGraphics();
 
     InitKeyboard();
 }

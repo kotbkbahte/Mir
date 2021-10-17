@@ -2,6 +2,9 @@
 
 extern TCore *Core;
 
+TPoint3_f bg_color;
+
+
 void InitGraphics()
 {
     InitSDL2();
@@ -44,12 +47,20 @@ void InitSDL2()
 
 void InitOpenGL()
 {
+    if (!gladLoadGLLoader((GLADloadproc)SDL_GL_GetProcAddress))
+    {
+        h_error_msg("Failed to load glad.\n", OPENGL_ERROR);
+    }
+
+    bg_color.r = (float)rand() / (float)RAND_MAX;
+    bg_color.g = (float)rand() / (float)RAND_MAX;
+    bg_color.b = (float)rand() / (float)RAND_MAX;
 
 }
 
 void RenderFrame()
 {
-    glClearColor(0.0f, 0.01f, 0.05f, 1.0f );
+    glClearColor(bg_color.r, bg_color.g, bg_color.b, 1.0f );
     glClear(GL_COLOR_BUFFER_BIT);
 
     //glEnable(GL_MULTISAMPLE);

@@ -42,6 +42,12 @@
 		</Unit>
 		<Unit filename="source/core/core.h" />
 		<Unit filename="source/core/game_types.h" />
+		<Unit filename="source/extern/glad.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="source/extern/glad.h" />
+		<Unit filename="source/extern/gltext.h" />
+		<Unit filename="source/extern/stb_image.h" />
 		<Unit filename="source/graphics/graphics.c">
 			<Option compilerVar="CC" />
 		</Unit>
