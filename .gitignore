@@ -2,6 +2,6 @@
 *.exe
 bin/
 obj/
-.depend
-.layout
-.cbp
+*.depend
+*.layout
+*.cbp
