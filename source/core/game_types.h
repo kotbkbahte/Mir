@@ -7,6 +7,7 @@
     #include <SDL2/SDL_image.h>
 #elif _WIN32
     #include <SDL.h>
+    #include "../extern/glad.h"
 #endif
 
 #include <stdio.h>
