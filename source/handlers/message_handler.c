@@ -4,7 +4,7 @@
 
 #include "message_handler.h"
 
-const char* error_msgs= {"Init Error [%d]: %s\n",
+const char* error_msgs[] = {"Init Error [%d]: %s\n",
                "Error [%d]: %s\n",
                "Quit Error [%d]: %s\n",
                "SDL2 Error [%d]: %s\n",

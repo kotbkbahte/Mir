@@ -1,5 +1,6 @@
 #include "../handlers/event_handler.h"
 #include "../handlers/message_handler.h"
+#include "../handlers/keyboard_handler.h"
 
 #include "game_types.h"
 
@@ -40,6 +41,9 @@ void InitCore()
     {
         h_error_msg("Failed to create gl context", SDL_ERROR);
     }
+
+
+    InitKeyboard();
 }
 
 void CloseCore()
@@ -51,18 +55,8 @@ void CloseCore()
     free((void*)Core);
 }
 
-
-void RenderFrame()
-{
-
-}
-
 void UpdateState()
 {
 
-}
-
-void HandleEvents()
-{
 
 }

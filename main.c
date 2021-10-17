@@ -1,35 +1,21 @@
-#include <stdio.h>
-#include <stdlib.h>
+
 
 #include "source/core/core.h"
 
-
-
-
-#ifdef __linux__
-    #include <SDL2/SDL.h>
-    #include <SDL2/SDL_image.h>
-#elif _WIN32
-    #include <SDL.h>
-#endif
-
+int Running;
 
 int main(int argc, char *argv[])
 {
     InitCore();
+    Running = True;
 
-    SDL_Event windowEvent;
-
-    while ( 1 )
+    while (Running)
     {
-        if ( SDL_PollEvent( &windowEvent ) )
-        {
-            if ( SDL_QUIT == windowEvent.type )
-            {
-                break;
-            }
-        }
+        HandleEvents();
+        UpdateState();
+        RenderFrame();
     }
+
 
 
 

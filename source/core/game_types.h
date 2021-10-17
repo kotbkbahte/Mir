@@ -9,6 +9,12 @@
     #include <SDL.h>
 #endif
 
+#include <stdio.h>
+#include <stdlib.h>
+
+#define True 1
+#define False 0
+
 typedef union
 {
     struct {
@@ -52,7 +58,13 @@ typedef struct
     int a;
 } TTile;
 
+typedef const Uint8* TKeyboard;
 
+/*
+typedef struct
+{
+    const Uint8*;
 
-
+} TKeyboard;
+*/
 #endif // TYPES_H_INCLUDED
