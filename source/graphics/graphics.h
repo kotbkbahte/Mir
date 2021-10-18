@@ -16,6 +16,7 @@ void InitOpenGL();
 
 void RenderFrame();
 
+void UpdateCamProjection(float scale);
 
 int LoadProgram(GLuint* ID, char* frag, char* vert);
 

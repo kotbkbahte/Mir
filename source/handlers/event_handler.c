@@ -3,6 +3,7 @@
 extern int Running;
 extern TKeyboard m_Keyboard;
 
+
 void HandleEvents()
 {
     SDL_Event event;
@@ -18,7 +19,11 @@ void HandleEvents()
 
             case SDL_MOUSEWHEEL:
                 {
-                    // pass
+                    static float scale = 1.0f;
+                    int i = (float)( -(event.wheel.y > 0) + (event.wheel.y < 0));
+                    scale += 0.15f * (scale * i);
+                    printf("%f\n", scale);
+                    UpdateCamProjection(scale);
                 }
                 break;
 
