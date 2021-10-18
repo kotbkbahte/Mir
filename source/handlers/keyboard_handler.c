@@ -2,7 +2,7 @@
 
 
 extern TState State;
-extern Uint8* m_Keyboard;
+extern const Uint8* m_Keyboard;
 extern int Running;
 
 int kb_GetKeyDown(SDL_Scancode key)

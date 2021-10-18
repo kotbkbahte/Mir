@@ -10,11 +10,8 @@ TCore *Core;
 TState State;
 TOpenGLProgram_base m_GlProgram;
 GLuint m_Textures[10];
-Uint8* m_Keyboard;
-
-
-const int WIDTH = 800, HEIGHT = 600;
-
+const Uint8* m_Keyboard;
+float m_ProjectionMatrix[16];
 
 void InitCore()
 {

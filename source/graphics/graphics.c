@@ -3,6 +3,8 @@
 extern TCore *Core;
 extern TState State;
 extern TOpenGLProgram_base m_GlProgram;
+extern float m_ProjectionMatrix[16];
+extern GLuint m_Textures[10];
 
 
 void InitGraphics()
@@ -10,6 +12,10 @@ void InitGraphics()
     InitSDL2();
 
     InitOpenGL();
+
+    LoadTextures();
+
+    InitCamera();
 }
 
 void InitSDL2()
@@ -59,7 +65,16 @@ void InitOpenGL()
     if(LoadProgram(&m_GlProgram.ID, "source/shaders/main_frag.glsl", "source/shaders/main_vert.glsl" )  < 0)
     {
         h_log_msg("Failed load program: source/shaders/main_frag.glsl");
-    }
+    } InitProgram(&m_GlProgram);
+}
+
+
+void InitCamera()
+{
+    float k = 1280.0f / 720.0f;
+    loadIdentity(m_ProjectionMatrix);
+    matrixOrtho(m_ProjectionMatrix, -1, 1, -k, k, -50.0f, 50.0f);
+
 }
 
 void RenderFrame()
@@ -71,8 +86,63 @@ void RenderFrame()
     //glEnable(GL_STENCIL_TEST);
     //glEnable(GL_DEPTH_TEST);
 
+    DrawSquare();
+
+
     glFinish();
     SDL_GL_SwapWindow(Core->m_Window);
+}
+
+const GLfloat textureCoordinates[] =
+{
+    1.0f, 1.0f,
+    0, 1.0f,
+    0, 0,
+    1.0f, 0,
+    -1, -1,
+    -1,  1,
+     1,  1,
+     1, -1,
+};
+const GLfloat squareVertices[] = {
+    1.0f, 1.0f, 2.0f,
+    -1.0f, 1.0f, 2.0f,
+    -1.0f, -1.0f, 2.0f,
+    1.0f, -1.0f, 2.0f,
+};
+
+
+void DrawSquare()
+{
+    glBindTexture(GL_TEXTURE_2D, m_Textures[1]);
+
+    glUseProgram(m_GlProgram.ID);
+    float m[16];
+    loadIdentity(m);
+
+    glUniformMatrix4fv(m_GlProgram.projectionLocation, 1, GL_FALSE, m_ProjectionMatrix);
+    glUniformMatrix4fv(m_GlProgram.viewLocation, 1, GL_FALSE, m);
+    glUniformMatrix4fv(m_GlProgram.modelLocation, 1, GL_FALSE, m);
+
+
+    glVertexAttribPointer(m_GlProgram.vertexLocation, 3, GL_FLOAT, GL_FALSE, 0 , squareVertices);
+    glEnableVertexAttribArray(m_GlProgram.vertexLocation);
+
+    glVertexAttribPointer(m_GlProgram.textureCoordsLocation, 2, GL_FLOAT, GL_FALSE, 0, textureCoordinates);
+    glEnableVertexAttribArray(m_GlProgram.textureCoordsLocation);
+
+
+    //glLineWidth(10.0f);
+    //glPointSize(7.0f);
+    //glDrawArrays(GL_POINTS, 0, 1);
+    glDrawArrays(GL_TRIANGLE_FAN, 0, 4);
+
+
+    glBindTexture(GL_TEXTURE_2D, 0);
+
+    //printMatrix(m);
+    //printMatrix(m_ProjectionMatrix);
+    //exit(0);
 }
 
 
@@ -165,7 +235,7 @@ int LoadProgram(GLuint* ID, char* frag, char* vert)
 	return 1;
 }
 
-void InitProgram_m(TOpenGLProgram_base* program)
+void InitProgram(TOpenGLProgram_base* program)
 {
     program->projectionLocation = glGetUniformLocation(program->ID, "projection");
     program->viewLocation = glGetUniformLocation(program->ID, "view");

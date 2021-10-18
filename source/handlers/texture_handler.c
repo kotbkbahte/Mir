@@ -5,6 +5,7 @@ extern GLuint m_Textures[10];
 void LoadTextures()
 {
     LoadTexture("texture", m_Textures);
+    LoadTexture("textures/main.png", &m_Textures[1]);
 }
 
 //int LoadTexture(const char* file_name, TScene* scene, int texture_type)

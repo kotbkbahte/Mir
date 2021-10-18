@@ -4,6 +4,7 @@
 #include "../core/game_types.h"
 #include "../handlers/event_handler.h"
 #include "../handlers/message_handler.h"
+#include "../math/matrix.h"
 
 #include <stdlib.h>
 
