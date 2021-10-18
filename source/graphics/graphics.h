@@ -16,6 +16,7 @@ void InitOpenGL();
 void RenderFrame();
 
 
+int LoadProgram(GLuint* ID, char* frag, char* vert);
 
 
 // Prepare all stuff

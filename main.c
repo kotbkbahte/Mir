@@ -1,6 +1,5 @@
-
-
 #include "source/core/core.h"
+
 
 int Running;
 

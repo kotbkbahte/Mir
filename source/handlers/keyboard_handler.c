@@ -1,8 +1,9 @@
 #include "keyboard_handler.h"
 
-Uint8* m_Keyboard;
 
-extern TPoint3_f bg_color;
+extern TState State;
+extern Uint8* m_Keyboard;
+extern int Running;
 
 int kb_GetKeyDown(SDL_Scancode key)
 {
@@ -30,16 +31,17 @@ void kb_KeyDown(SDL_Scancode code)
 {
     m_Keyboard = SDL_GetKeyboardState(NULL);
 
-    bg_color.r = (float)rand() / (float)RAND_MAX;
-    bg_color.g = (float)rand() / (float)RAND_MAX;
-    bg_color.b = (float)rand() / (float)RAND_MAX;
+    State.m_BgColor.r = (float)rand() / (float)RAND_MAX;
+    State.m_BgColor.g = (float)rand() / (float)RAND_MAX;
+    State.m_BgColor.b = (float)rand() / (float)RAND_MAX;
 }
 
 void kb_KeyPressed(SDL_Keycode code)
 {
     switch(code)
     {
-    case SDLK_LCTRL:
+    case SDLK_ESCAPE:
+        Running = 0;
         break;
     default:
         break;

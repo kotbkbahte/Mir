@@ -8,7 +8,8 @@ const char* error_msgs[] = {"Init Error [%d]: %s\n",
                "Error [%d]: %s\n",
                "Quit Error [%d]: %s\n",
                "SDL2 Error [%d]: %s\n",
-               "OpenGL Error [%d]: %s\n"};
+               "OpenGL Error [%d]: %s\n",
+               "Load Error[%d]: %s\n"};
 
 
 void h_error_msg(char* msg, int code)
@@ -24,6 +25,16 @@ void h_log_msg(char* msg)
     static int i = 0;
     i++;
     fprintf(stdout, "Log [%d]: %s", i , msg);
+
+}
+
+void h_log_msg_arg(char* msg, char* arg)
+{
+    static int i = 0;
+    i++;
+    char a[80];
+    sprintf(a, msg, arg);
+    fprintf(stdout, "Log [%d]: %s", i , a);
 
 }
 

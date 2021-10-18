@@ -1,8 +1,8 @@
 #include "graphics.h"
 
 extern TCore *Core;
-
-TPoint3_f bg_color;
+extern TState State;
+extern TOpenGLProgram_base m_GlProgram;
 
 
 void InitGraphics()
@@ -52,15 +52,19 @@ void InitOpenGL()
         h_error_msg("Failed to load glad.\n", OPENGL_ERROR);
     }
 
-    bg_color.r = (float)rand() / (float)RAND_MAX;
-    bg_color.g = (float)rand() / (float)RAND_MAX;
-    bg_color.b = (float)rand() / (float)RAND_MAX;
+    State.m_BgColor.r = (float)rand() / (float)RAND_MAX;
+    State.m_BgColor.g = (float)rand() / (float)RAND_MAX;
+    State.m_BgColor.b = (float)rand() / (float)RAND_MAX;
 
+    if(LoadProgram(&m_GlProgram.ID, "source/shaders/main_frag.glsl", "source/shaders/main_vert.glsl" )  < 0)
+    {
+        h_log_msg("Failed load program: source/shaders/main_frag.glsl");
+    }
 }
 
 void RenderFrame()
 {
-    glClearColor(bg_color.r, bg_color.g, bg_color.b, 1.0f );
+    glClearColor(State.m_BgColor.r, State.m_BgColor.g, State.m_BgColor.b, 1.0f );
     glClear(GL_COLOR_BUFFER_BIT);
 
     //glEnable(GL_MULTISAMPLE);
@@ -70,3 +74,111 @@ void RenderFrame()
     glFinish();
     SDL_GL_SwapWindow(Core->m_Window);
 }
+
+
+
+
+GLuint LoadFile(char* FileName, const GLchar** t)
+{
+    int len = 8000;
+    const GLchar* text = malloc(len);
+    memset((char*)text, 0, len);
+
+    FILE *f;
+    f = fopen(FileName, "rb");
+    if (!f)
+    {
+        h_error_msg(FileName, LOAD_ERROR);
+    }
+    fread( (char*)text, 1, 8000, f);
+    *t = text;
+    fclose(f);
+    return 1;
+
+}
+
+GLuint LoadShader(char *FileName, GLuint type)
+{
+    const GLchar* text = NULL;
+
+    if (LoadFile(FileName, &text) < 0)
+        return -1;
+
+    GLint shader = glCreateShader(type);
+    glShaderSource(shader, 1, &text, NULL);
+    glCompileShader(shader);
+    GLint ok;
+    GLchar log[2000];
+    glGetShaderiv(shader, GL_COMPILE_STATUS, &ok);
+    if (!ok)
+    {
+        glGetShaderInfoLog(shader, 2000, NULL, log);
+        printf("Program log: %s\n", log);
+    }
+
+    free((char*)text);
+    return shader;
+}
+
+
+int LoadProgram(GLuint* ID, char* frag, char* vert)
+{
+    GLuint vertexShader;
+    GLuint fragmentShader;
+    GLint linked;
+
+    // Load the vertex/fragment shaders
+    vertexShader = LoadShader(vert, GL_VERTEX_SHADER);
+    fragmentShader = LoadShader(frag, GL_FRAGMENT_SHADER);
+
+    // Create the program object
+    *ID = glCreateProgram();
+    if(*ID == 0)
+        return -1;
+    glAttachShader(*ID, vertexShader);
+    glAttachShader(*ID, fragmentShader);
+
+    // Link the program
+    glLinkProgram(*ID);
+
+    glDeleteShader(vertexShader);
+    glDeleteShader(fragmentShader);
+
+    // Check the link status
+    glGetProgramiv(*ID, GL_LINK_STATUS, &linked);
+    if(!linked)
+	{
+	    GLint infoLen = 0;
+	    glGetProgramiv(*ID, GL_INFO_LOG_LENGTH, &infoLen);
+	    if(infoLen > 1)
+		{
+		    char* infoLog = malloc(sizeof(char) * infoLen);
+		    glGetProgramInfoLog(*ID, infoLen, NULL, infoLog);
+		    fprintf(stderr, "Error linking program:\n%s\n", infoLog);
+		    free(infoLog);
+		}
+
+	    glDeleteProgram(*ID);
+	    return -1;
+	}
+
+	return 1;
+}
+
+void InitProgram_m(TOpenGLProgram_base* program)
+{
+    program->projectionLocation = glGetUniformLocation(program->ID, "projection");
+    program->viewLocation = glGetUniformLocation(program->ID, "view");
+    program->modelLocation = glGetUniformLocation(program->ID, "model");
+    program->vertexLocation = glGetAttribLocation(program->ID, "vertexPosition");
+
+    program->textureCoordsLocation = glGetAttribLocation(program->ID, "textureCoordinates");
+    program->textureLocation = glGetUniformLocation(program->ID, "texture");
+
+    if(program->projectionLocation < 0 || program->viewLocation < 0 || program->modelLocation < 0 ||
+       program->vertexLocation < 0 || program->textureCoordsLocation < 0 || program->textureLocation < 0)
+    {
+        h_log_msg("Error initialization GL program main.");
+    }
+}
+

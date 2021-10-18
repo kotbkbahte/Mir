@@ -8,6 +8,7 @@
 #elif _WIN32
     #include <SDL.h>
     #include "../extern/glad.h"
+
 #endif
 
 #include <stdio.h>
@@ -46,6 +47,11 @@ typedef struct
 
 typedef struct
 {
+    TPoint3_f m_BgColor;
+} TState;
+
+typedef struct
+{
     int a;
 } TMap;
 
@@ -68,4 +74,19 @@ typedef struct
 
 } TKeyboard;
 */
+
+typedef struct
+{
+    GLuint ID;
+
+    GLuint projectionLocation;
+    GLuint viewLocation;
+    GLuint modelLocation;
+    GLuint vertexLocation;
+    GLuint textureCoordsLocation;
+    GLuint textureLocation;
+} TOpenGLProgram_base;
+
+
+
 #endif // TYPES_H_INCLUDED
