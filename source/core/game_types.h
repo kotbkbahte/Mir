@@ -48,7 +48,18 @@ typedef struct
 typedef struct
 {
     TPoint3_f m_BgColor;
+} TGameState;
+
+enum States {MAIN_MENU, GAME_START_MENU, SETTINGS_MENU, QUIT, TEST_MENU, GAME, GAME_MENU, RESEARCH_TREE, STATES_COUNT};
+
+typedef void (*TDrawState)(void);
+typedef struct
+{
+    int m_StateIndex;
+    TDrawState m_StateDraw;
+
 } TState;
+
 
 typedef struct
 {
@@ -67,13 +78,7 @@ typedef struct
 
 typedef const Uint8* TKeyboard;
 
-/*
-typedef struct
-{
-    const Uint8*;
 
-} TKeyboard;
-*/
 
 typedef struct
 {

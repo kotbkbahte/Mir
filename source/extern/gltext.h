@@ -394,9 +394,11 @@ GLT_API void gltEndDraw()
 #define _gltDrawText() \
 	glUniformMatrix4fv(_gltText2DShaderMVPUniformLocation, 1, GL_FALSE, mvp); \
 	\
+	glEnable(GL_BLEND);\
+    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);\
 	glBindVertexArray(text->_vao); \
-	glDrawArrays(GL_TRIANGLES, 0, text->vertexCount);
-
+	glDrawArrays(GL_TRIANGLES, 0, text->vertexCount);\
+	glDisable(GL_BLEND);
 GLT_API void gltDrawText(GLTtext *text, const GLfloat mvp[16])
 {
 	if (!text)

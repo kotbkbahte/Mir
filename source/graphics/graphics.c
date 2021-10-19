@@ -1,10 +1,11 @@
 #include "graphics.h"
 
 extern TCore *Core;
-extern TState State;
+extern TGameState GameState;
 extern TOpenGLProgram_base m_GlProgram;
-extern float m_ProjectionMatrix[16];
 extern GLuint m_Textures[10];
+extern float m_ProjectionMatrix[16];
+const TDrawState DrawStates[] = {DrawMainMenu};//, DrawStartMenu, DrawSettingsMenu, DrawQuit};//, DrawTextMenu, DrawGame, DrawGameMenu, DrawResearchTree};
 
 
 void InitGraphics()
@@ -16,6 +17,8 @@ void InitGraphics()
     LoadTextures();
 
     InitCamera();
+
+//      InitScene();
 }
 
 void InitSDL2()
@@ -58,9 +61,9 @@ void InitOpenGL()
         h_error_msg("Failed to load glad.\n", OPENGL_ERROR);
     }
 
-    State.m_BgColor.r = (float)rand() / (float)RAND_MAX;
-    State.m_BgColor.g = (float)rand() / (float)RAND_MAX;
-    State.m_BgColor.b = (float)rand() / (float)RAND_MAX;
+    GameState.m_BgColor.r = (float)rand() / (float)RAND_MAX;
+    GameState.m_BgColor.g = (float)rand() / (float)RAND_MAX;
+    GameState.m_BgColor.b = (float)rand() / (float)RAND_MAX;
 
     if(LoadProgram(&m_GlProgram.ID, "source/shaders/main_frag.glsl", "source/shaders/main_vert.glsl" )  < 0)
     {
@@ -69,21 +72,10 @@ void InitOpenGL()
 }
 
 
-void InitCamera()
-{
-    float k = 1280.0f / 720.0f;
-    loadIdentity(m_ProjectionMatrix);
-    matrixOrtho(m_ProjectionMatrix, -1, 1, -k, k, -50.0f, 50.0f);
-}
-void UpdateCamProjection(float scale)
-{
-    float k = 1280.0f / 720.0f;
-    matrixOrtho(m_ProjectionMatrix, -1 * scale, 1 * scale, -k * scale, k * scale, -50.0f, 50.0f);
-}
 
 void RenderFrame()
 {
-    glClearColor(State.m_BgColor.r, State.m_BgColor.g, State.m_BgColor.b, 1.0f );
+    glClearColor(GameState.m_BgColor.r, GameState.m_BgColor.g, GameState.m_BgColor.b, 1.0f );
     glClear(GL_COLOR_BUFFER_BIT);
 
     //glEnable(GL_MULTISAMPLE);
@@ -91,7 +83,7 @@ void RenderFrame()
     //glEnable(GL_DEPTH_TEST);
 
     DrawSquare();
-
+    DrawMainMenu();
 
     glFinish();
     SDL_GL_SwapWindow(Core->m_Window);

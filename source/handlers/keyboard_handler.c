@@ -1,7 +1,7 @@
 #include "keyboard_handler.h"
 
 
-extern TState State;
+extern TGameState GameState;
 extern const Uint8* m_Keyboard;
 extern int Running;
 
@@ -31,9 +31,9 @@ void kb_KeyDown(SDL_Scancode code)
 {
     m_Keyboard = SDL_GetKeyboardState(NULL);
 
-    State.m_BgColor.r = (float)rand() / (float)RAND_MAX;
-    State.m_BgColor.g = (float)rand() / (float)RAND_MAX;
-    State.m_BgColor.b = (float)rand() / (float)RAND_MAX;
+    GameState.m_BgColor.r = (float)rand() / (float)RAND_MAX;
+    GameState.m_BgColor.g = (float)rand() / (float)RAND_MAX;
+    GameState.m_BgColor.b = (float)rand() / (float)RAND_MAX;
 }
 
 void kb_KeyPressed(SDL_Keycode code)

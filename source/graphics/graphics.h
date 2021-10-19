@@ -4,7 +4,9 @@
 #include "../core/game_types.h"
 #include "../handlers/event_handler.h"
 #include "../handlers/message_handler.h"
-#include "../math/matrix.h"
+#include "../handlers/texture_handler.h"
+#include "../gui/main_menu.h"
+#include "camera.h"
 
 #include <stdlib.h>
 
@@ -19,7 +21,7 @@ void RenderFrame();
 void UpdateCamProjection(float scale);
 
 int LoadProgram(GLuint* ID, char* frag, char* vert);
-
+void InitProgram(TOpenGLProgram_base* program);
 
 // Prepare all stuff
 

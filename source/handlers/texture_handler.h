@@ -2,8 +2,6 @@
 #define TEXTURE_HANDLER_H_INCLUDED
 
 
-#define STB_IMAGE_IMPLEMENTATION
-#include "../extern/stb_image.h"
 #include "../core/game_types.h"
 #include "message_handler.h"
 

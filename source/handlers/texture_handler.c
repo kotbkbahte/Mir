@@ -1,5 +1,8 @@
 #include "texture_handler.h"
 
+#define STB_IMAGE_IMPLEMENTATION
+#include "../extern/stb_image.h"
+
 extern GLuint m_Textures[10];
 
 void LoadTextures()

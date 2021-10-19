@@ -22,11 +22,9 @@ void HandleEvents()
             case SDL_MOUSEWHEEL:
                 {
                     static int scale_i = 0.0f;
-
-                    int i = ( -(event.wheel.y > 0) + (event.wheel.y < 0));
-                    scale_i += i;
+                    scale_i += event.wheel.y;
                     if ( (scale_i >= 3) || (scale_i <= -3) )
-                        scale_i -= i;
+                        scale_i -= event.wheel.y;
 
                     UpdateCamProjection( a[scale_i + 3] );
                 }
