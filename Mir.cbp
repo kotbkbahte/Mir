@@ -66,6 +66,18 @@
 			<Option compilerVar="CC" />
 		</Unit>
 		<Unit filename="source/handlers/message_handler.h" />
+		<Unit filename="source/handlers/texture_handler.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="source/handlers/texture_handler.h" />
+		<Unit filename="source/math/matrix.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="source/math/matrix.h" />
+		<Unit filename="source/math/vector.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="source/math/vector.h" />
 		<Extensions />
 	</Project>
 </CodeBlocks_project_file>
