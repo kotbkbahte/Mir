@@ -4,6 +4,8 @@
 extern TGameState GameState;
 extern const Uint8* m_Keyboard;
 extern int Running;
+extern float m_TestMatrix[16];
+    float r_x, r_y, r_z;
 
 int kb_GetKeyDown(SDL_Scancode key)
 {
@@ -43,6 +45,25 @@ void kb_KeyPressed(SDL_Keycode code)
     case SDLK_ESCAPE:
         Running = 0;
         break;
+    case SDLK_1:
+        r_x+=0.5f;
+        break;
+    case SDLK_2:
+        r_x-=0.5f;
+        break;
+    case SDLK_3:
+        r_y+=0.5f;
+        break;
+    case SDLK_4:
+        r_y-=0.5f;
+        break;
+    case SDLK_5:
+        r_z+=0.5f;
+        break;
+    case SDLK_6:
+        r_z-=0.5f;
+        break;
+
     default:
         break;
     }

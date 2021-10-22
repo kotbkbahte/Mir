@@ -15,9 +15,15 @@ TOpenGLProgram_base m_GlProgram;
 GLuint m_Textures[10];
 const Uint8* m_Keyboard;
 float m_ProjectionMatrix[16];
+float m_TestMatrix[16];
+
+
+unsigned int VAO, VBO;
 
     FT_Library ft2_lib;
     FT_Face ft2_face;
+    TCharTexture m_Characters[128];
+
 
 
 void InitCore()

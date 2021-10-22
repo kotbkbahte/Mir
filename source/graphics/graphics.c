@@ -5,9 +5,14 @@ extern TGameState GameState;
 extern TOpenGLProgram_base m_GlProgram;
 extern GLuint m_Textures[10];
 extern float m_ProjectionMatrix[16];
+extern float m_TestMatrix[16];
+    extern float r_x, r_y, r_z;
+
 extern FT_Library ft2_lib;
 extern FT_Face ft2_face;
 
+extern unsigned int VAO, VBO;
+extern TCharTexture m_Characters[128];
 
 const TDrawState DrawStates[] = {DrawMainMenu};//, DrawStartMenu, DrawSettingsMenu, DrawQuit};//, DrawTextMenu, DrawGame, DrawGameMenu, DrawResearchTree};
 
@@ -77,6 +82,9 @@ void InitOpenGL()
     {
         h_log_msg("Failed load program: source/shaders/main_frag.glsl");
     } InitProgram(&m_GlProgram);
+
+
+    InitBuffers();
 }
 
 void InitFreeType2()
@@ -99,7 +107,19 @@ void InitFreeType2()
         h_error_msg("Failed to load Glyph", ERROR);
     }
 
+}
 
+void InitBuffers()
+{
+    glGenVertexArrays(1, &VAO);
+    glGenBuffers(1, &VBO);
+    glBindVertexArray(VAO);
+    glBindBuffer(GL_ARRAY_BUFFER, VBO);
+    glBufferData(GL_ARRAY_BUFFER, sizeof(float) * 6 * 4, NULL, GL_DYNAMIC_DRAW);
+    glEnableVertexAttribArray(0);
+    glVertexAttribPointer(0, 4, GL_FLOAT, GL_FALSE, 4 * sizeof(float), 0);
+    glBindBuffer(GL_ARRAY_BUFFER, 0);
+    glBindVertexArray(0);
 }
 
 void CloseFreeType2()
@@ -119,6 +139,7 @@ void RenderFrame()
     //glEnable(GL_STENCIL_TEST);
     //glEnable(GL_DEPTH_TEST);
 
+    //RenderText("A", 1, 1, 1, 1.0f);
     DrawSquare();
     DrawMainMenu();
 
@@ -147,7 +168,7 @@ const GLfloat squareVertices[] = {
 
 void DrawSquare()
 {
-    glBindTexture(GL_TEXTURE_2D, m_Textures[1]);
+    glBindTexture(GL_TEXTURE_2D, m_Characters[56].m_TextureID);
 
     glUseProgram(m_GlProgram.ID);
     float m[16];
@@ -178,7 +199,63 @@ void DrawSquare()
     //exit(0);
 }
 
+void RenderText(char* text, int len, float x, float y, float scale)
+{
+    // activate corresponding render state
 
+    glUseProgram(m_GlProgram.ID);
+    float m[16];
+    loadIdentity(m);
+    loadIdentity(m_TestMatrix);
+    matrixRotateZ(m_TestMatrix, r_z);
+    matrixRotateY(m_TestMatrix, r_y);
+    matrixRotateX(m_TestMatrix, r_x);
+
+
+    glUniformMatrix4fv(m_GlProgram.projectionLocation, 1, GL_FALSE, m_ProjectionMatrix);
+    glUniformMatrix4fv(m_GlProgram.viewLocation, 1, GL_FALSE, m);
+    glUniformMatrix4fv(m_GlProgram.modelLocation, 1, GL_FALSE, m_TestMatrix);
+
+    glActiveTexture(GL_TEXTURE0);
+    glBindVertexArray(VAO);
+
+    // iterate through all characters
+    for (int i = 0 ; i < len; i++)
+    {
+        TCharTexture ch = m_Characters[(int)*(text + i) ];
+
+        float xpos = x + ch.m_Bearing.x * scale;
+        float ypos = y - (ch.m_Size.y - ch.m_Bearing.y) * scale;
+
+        float w = ch.m_Size.x * scale;
+        float h = ch.m_Size.y * scale;
+        // update VBO for each character
+        float vertices[6][4] = {
+            { xpos,     ypos + h,   0.0f, 0.0f },
+            { xpos,     ypos,       0.0f, 1.0f },
+            { xpos + w, ypos,       1.0f, 1.0f },
+
+            { xpos,     ypos + h,   0.0f, 0.0f },
+            { xpos + w, ypos,       1.0f, 1.0f },
+            { xpos + w, ypos + h,   1.0f, 0.0f }
+        };
+        //printf("%f %f %f %f\n", xpos, ypos, h, w);
+        // render glyph texture over quad
+        glBindTexture(GL_TEXTURE_2D, ch.m_TextureID);
+        //printf("%d\n", ch.m_TextureID);
+        // update content of VBO memory
+        glBindBuffer(GL_ARRAY_BUFFER, VBO);
+        glBufferSubData(GL_ARRAY_BUFFER, 0, sizeof(vertices), vertices);
+        glBindBuffer(GL_ARRAY_BUFFER, 0);
+        // render quad
+        glDrawArrays(GL_TRIANGLES, 0, 6);
+        // now advance cursors for next glyph (note that advance is number of 1/64 pixels)
+        x += (ch.m_Advance >> 6) * scale; // bitshift by 6 to get value in pixels (2^6 = 64)
+    }
+
+    glBindVertexArray(0);
+    glBindTexture(GL_TEXTURE_2D, 0);
+}
 
 
 GLuint LoadFile(char* FileName, const GLchar** t)

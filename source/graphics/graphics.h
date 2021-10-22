@@ -22,6 +22,7 @@ void CloseOpenGL();
 void CloseFreeType2();
 
 void RenderFrame();
+void RenderText(char* text, int len, float x, float y, float scale);
 
 void UpdateCamProjection(float scale);
 

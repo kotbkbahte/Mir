@@ -7,7 +7,7 @@
 extern GLuint m_Textures[10];
 //extern FT_Library ft2_lib;
 extern FT_Face ft2_face;
-
+extern TCharTexture m_Characters[128];
 
 void LoadTextures()
 {
@@ -48,9 +48,9 @@ void LoadCharactersTextures()
     for (unsigned char c = 0; c < 128; c++)
     {
         // load character glyph
-        if (FT_Load_Char(face, c, FT_LOAD_RENDER))
+        if (FT_Load_Char(ft2_face, c, FT_LOAD_RENDER))
         {
-            std::cout << "ERROR::FREETYTPE: Failed to load Glyph" << std::endl;
+            h_log_msg_arg("Failed to load Glyph: %c", c);
             continue;
         }
         // generate texture
@@ -61,26 +61,38 @@ void LoadCharactersTextures()
             GL_TEXTURE_2D,
             0,
             GL_RED,
-            face->glyph->bitmap.width,
-            face->glyph->bitmap.rows,
+            ft2_face->glyph->bitmap.width,
+            ft2_face->glyph->bitmap.rows,
             0,
             GL_RED,
             GL_UNSIGNED_BYTE,
-            face->glyph->bitmap.buffer
+            ft2_face->glyph->bitmap.buffer
         );
         // set texture options
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_BORDER);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_BORDER);
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
         // now store character for later use
-        Character character = {
-            texture,
-            glm::ivec2(face->glyph->bitmap.width, face->glyph->bitmap.rows),
-            glm::ivec2(face->glyph->bitmap_left, face->glyph->bitmap_top),
-            face->glyph->advance.x
+
+
+        m_Characters[c].m_TextureID = texture;
+        m_Characters[c].m_Size.x = ft2_face->glyph->bitmap.width;
+        m_Characters[c].m_Size.y = ft2_face->glyph->bitmap.rows;
+        m_Characters[c].m_Bearing.x = ft2_face->glyph->bitmap_left;
+        m_Characters[c].m_Bearing.y = ft2_face->glyph->bitmap_top;
+        m_Characters[c].m_Advance = ft2_face->glyph->advance.x;
+
+        /*
+        m_Characters[c] = {
+            .m_TextureID = texture,
+            .m_Size = {.width = face->glyph->bitmap.width, .height = face->glyph->bitmap.rows},
+            .m_Advance = face->glyph->advance.x,
         };
-        Characters.insert(std::pair<char, Character>(c, character));
+        */
+
+
+        //Characters.insert(std::pair<char, Character>(c, character));
     }
 
 }
