@@ -92,6 +92,12 @@ typedef struct
     GLuint textureLocation;
 } TOpenGLProgram_base;
 
-
+typedef struct
+{
+    unsigned int m_TextureID;
+    TPoint2_i m_Size;
+    TPoint2_i m_Bearing;
+    unsigned int m_Advance;
+} TCharTexture;
 
 #endif // TYPES_H_INCLUDED

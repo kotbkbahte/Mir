@@ -10,11 +10,16 @@
 
 #include <stdlib.h>
 
+
 void InitGraphics();
 
 void InitSDL2();
 void InitOpenGL();
+void InitFreeType2();
 
+void CloseSDL2();
+void CloseOpenGL();
+void CloseFreeType2();
 
 void RenderFrame();
 

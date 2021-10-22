@@ -4,6 +4,8 @@
 #include "../handlers/keyboard_handler.h"
 #include "../graphics/graphics.h"
 
+#include <ft2build.h>
+#include FT_FREETYPE_H
 
 
 TCore *Core;
@@ -13,6 +15,10 @@ TOpenGLProgram_base m_GlProgram;
 GLuint m_Textures[10];
 const Uint8* m_Keyboard;
 float m_ProjectionMatrix[16];
+
+    FT_Library ft2_lib;
+    FT_Face ft2_face;
+
 
 void InitCore()
 {

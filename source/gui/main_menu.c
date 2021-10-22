@@ -2,6 +2,7 @@
 
 void DrawMainMenu()
 {
+    /*
     gltInit();
 
     // Creating text
@@ -26,6 +27,11 @@ void DrawMainMenu()
 
     // Destroy glText
     gltTerminate();
+    */
+
+
+
+
 
     /*
     glBindTexture(GL_TEXTURE_2D, m_Textures[1]);

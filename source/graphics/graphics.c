@@ -5,6 +5,10 @@ extern TGameState GameState;
 extern TOpenGLProgram_base m_GlProgram;
 extern GLuint m_Textures[10];
 extern float m_ProjectionMatrix[16];
+extern FT_Library ft2_lib;
+extern FT_Face ft2_face;
+
+
 const TDrawState DrawStates[] = {DrawMainMenu};//, DrawStartMenu, DrawSettingsMenu, DrawQuit};//, DrawTextMenu, DrawGame, DrawGameMenu, DrawResearchTree};
 
 
@@ -17,6 +21,10 @@ void InitGraphics()
     LoadTextures();
 
     InitCamera();
+
+    InitFreeType2();
+
+    LoadCharactersTextures();
 
 //      InitScene();
 }
@@ -69,6 +77,35 @@ void InitOpenGL()
     {
         h_log_msg("Failed load program: source/shaders/main_frag.glsl");
     } InitProgram(&m_GlProgram);
+}
+
+void InitFreeType2()
+{
+    if (FT_Init_FreeType(&ft2_lib))
+    {
+        h_error_msg("Could not init FreeType Library", ERROR);
+    }
+
+    if (FT_New_Face(ft2_lib, "fonts/Consolas_Bold.ttf", 0, &ft2_face))
+    {
+        h_error_msg("Failed to load font", ERROR);
+    }
+
+    FT_Set_Pixel_Sizes(ft2_face, 0, 48);
+
+
+    if (FT_Load_Char(ft2_face, 'X', FT_LOAD_RENDER))
+    {
+        h_error_msg("Failed to load Glyph", ERROR);
+    }
+
+
+}
+
+void CloseFreeType2()
+{
+    FT_Done_Face(ft2_face);
+    FT_Done_FreeType(ft2_lib);
 }
 
 
