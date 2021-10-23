@@ -1,11 +1,13 @@
 #include "graphics.h"
 
 extern TCore *Core;
+extern TState State;
 extern TGameState GameState;
     extern TOpenGLProgram_base m_GlProgram;
     extern TOpenGLProgram_text m_GlProgram_text;
 extern GLuint m_Textures[10];
 extern float m_ProjectionMatrix[16];
+extern float m_ModelMatrix[16];
 extern float m_TestMatrix[16];
     extern float r_x, r_y, r_z;
 
@@ -15,7 +17,7 @@ extern FT_Face ft2_face;
 extern unsigned int VAO, VBO;
 extern TCharTexture m_Characters[128];
 
-const TDrawState DrawStates[] = {DrawMainMenu};//, DrawStartMenu, DrawSettingsMenu, DrawQuit};//, DrawTextMenu, DrawGame, DrawGameMenu, DrawResearchTree};
+const TDrawState DrawStates[] = {DrawMainMenu, DrawStartMenu}; // DrawSettingsMenu, DrawQuit};//, DrawTextMenu, DrawGame, DrawGameMenu, DrawResearchTree};
 
 
 void InitGraphics()
@@ -24,13 +26,15 @@ void InitGraphics()
 
     InitOpenGL();
 
+    InitFreeType2();
+
     LoadTextures();
+
+    LoadCharactersTextures();
 
     InitCamera();
 
-    InitFreeType2();
 
-    LoadCharactersTextures();
 
 //      InitScene();
 }
@@ -92,6 +96,8 @@ void InitOpenGL()
 
 
     InitBuffers();
+
+    ToMainMenu();
 }
 
 void InitFreeType2()
@@ -147,8 +153,10 @@ void RenderFrame()
     //glEnable(GL_DEPTH_TEST);
 
     //DrawSquare1();
-    DrawMainMenu();
+    //DrawMainMenu();
 
+    //if (!State.m_StateDraw)
+        State.m_StateDraw();
     glFinish();
     SDL_GL_SwapWindow(Core->m_Window);
 }
@@ -240,6 +248,10 @@ void RenderText(char* text, float x, float y, float scale)
 
     glUniformMatrix4fv(m_GlProgram_text.projectionLocation, 1, GL_FALSE, m_ProjectionMatrix);
 
+    loadIdentity(m_ModelMatrix);
+    matrixScale(m_ModelMatrix, 0.005f ,0.005f, 1.0f);
+    matrixTranslate(m_ModelMatrix, -0.5f, 0.0f, 0.0f);
+    glUniformMatrix4fv(m_GlProgram_text.modelLocation, 1, GL_FALSE, m_ModelMatrix);
 
     glUniform3f(m_GlProgram_text.textColor, 0.0f, 1.0f, 1.0f);
 
@@ -297,9 +309,6 @@ void RenderText(char* text, float x, float y, float scale)
 
         glVertexAttribPointer(m_GlProgram_text.textureCoordsLocation, 2, GL_FLOAT, GL_FALSE, 0, tcoords);
         glEnableVertexAttribArray(m_GlProgram_text.textureCoordsLocation);
-
-
-
 
         /*
         glBindBuffer(GL_ARRAY_BUFFER, VBO);
@@ -431,6 +440,7 @@ void InitProgram(TOpenGLProgram_base* program)
 void InitProgram_text(TOpenGLProgram_text* program)
 {
     program->projectionLocation = glGetUniformLocation(program->ID, "projection");
+    program->modelLocation = glGetUniformLocation(program->ID, "model");
     program->vertexLocation = glGetAttribLocation(program->ID, "vertexPosition");
 
     program->textureCoordsLocation = glGetAttribLocation(program->ID, "textureCoordinates");

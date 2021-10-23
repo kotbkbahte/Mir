@@ -3,10 +3,11 @@
 
 #include "../core/game_types.h"
 #include "../extern/gltext.h"
-
+#include "../graphics/graphics.h"
 
 void DrawMainMenu();
 
+void ToMainMenu();
 
 
 

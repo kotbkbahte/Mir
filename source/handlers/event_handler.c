@@ -46,7 +46,7 @@ void HandleEvents()
                 break;
 
             case SDL_KEYDOWN:
-                kb_KeyDown(event.key.keysym.sym);
+                //kb_KeyDown(event.key.keysym.sym);
                 kb_KeyPressed(event.key.keysym.sym);
                 break;
 

@@ -37,6 +37,12 @@ typedef union
     };
 } TPoint2_i;
 
+typedef union
+{
+    struct {
+        float x,y;
+    };
+} TPoint2_f;
 
 typedef struct
 {
@@ -50,9 +56,11 @@ typedef struct
     TPoint3_f m_BgColor;
 } TGameState;
 
-enum States {MAIN_MENU, GAME_START_MENU, SETTINGS_MENU, QUIT, TEST_MENU, GAME, GAME_MENU, RESEARCH_TREE, STATES_COUNT};
+enum States {MAIN_MENU, START_MENU, SETTINGS_MENU, QUIT, TEST_MENU, GAME, GAME_MENU, RESEARCH_TREE, STATES_COUNT};
 
 typedef void (*TDrawState)(void);
+typedef void (*TButtonFunc)(void);
+
 typedef struct
 {
     int m_StateIndex;
@@ -97,6 +105,8 @@ typedef struct
     GLuint ID;
 
     GLuint projectionLocation;
+    GLuint modelLocation;
+
     GLuint vertexLocation;
     GLuint textureCoordsLocation;
     GLuint textureLocation;
@@ -111,5 +121,16 @@ typedef struct
     TPoint2_i m_Bearing;
     unsigned int m_Advance;
 } TCharTexture;
+
+
+typedef struct
+{
+    TPoint2_f m_Size;
+    TPoint2_f m_Pos;
+    unsigned int m_TextureID;
+    unsigned int m_ID;
+
+
+} TSimpleButton;
 
 #endif // TYPES_H_INCLUDED

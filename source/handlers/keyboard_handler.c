@@ -46,23 +46,15 @@ void kb_KeyPressed(SDL_Keycode code)
         Running = 0;
         break;
     case SDLK_1:
-        r_x+=0.5f;
+        ToMainMenu();
         break;
     case SDLK_2:
-        r_x-=0.5f;
+        ToStartMenu();
         break;
     case SDLK_3:
-        r_y+=0.5f;
+
         break;
-    case SDLK_4:
-        r_y-=0.5f;
-        break;
-    case SDLK_5:
-        r_z+=0.5f;
-        break;
-    case SDLK_6:
-        r_z-=0.5f;
-        break;
+
 
     default:
         break;

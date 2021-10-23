@@ -50,7 +50,7 @@ void LoadCharactersTextures()
         // load character glyph
         if (FT_Load_Char(ft2_face, c, FT_LOAD_RENDER))
         {
-            h_log_msg_arg("Failed to load Glyph: %c", (char*)c);
+            h_log_msg_arg("Failed to load Glyph: %c\n", (char*)c);
             continue;
         }
         // generate texture
