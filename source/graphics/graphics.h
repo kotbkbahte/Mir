@@ -22,12 +22,14 @@ void CloseOpenGL();
 void CloseFreeType2();
 
 void RenderFrame();
-void RenderText(char* text, int len, float x, float y, float scale);
+void RenderText(char* text, float x, float y, float scale);
 
 void UpdateCamProjection(float scale);
 
 int LoadProgram(GLuint* ID, char* frag, char* vert);
+
 void InitProgram(TOpenGLProgram_base* program);
+void InitProgram_text(TOpenGLProgram_text* program);
 
 // Prepare all stuff
 

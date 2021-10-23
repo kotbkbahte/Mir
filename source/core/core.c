@@ -12,6 +12,7 @@ TCore *Core;
 TState State;
 TGameState GameState;
 TOpenGLProgram_base m_GlProgram;
+TOpenGLProgram_text m_GlProgram_text;
 GLuint m_Textures[10];
 const Uint8* m_Keyboard;
 float m_ProjectionMatrix[16];

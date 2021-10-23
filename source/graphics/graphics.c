@@ -2,7 +2,8 @@
 
 extern TCore *Core;
 extern TGameState GameState;
-extern TOpenGLProgram_base m_GlProgram;
+    extern TOpenGLProgram_base m_GlProgram;
+    extern TOpenGLProgram_text m_GlProgram_text;
 extern GLuint m_Textures[10];
 extern float m_ProjectionMatrix[16];
 extern float m_TestMatrix[16];
@@ -84,6 +85,12 @@ void InitOpenGL()
     } InitProgram(&m_GlProgram);
 
 
+    if(LoadProgram(&m_GlProgram_text.ID, "source/shaders/text_frag.glsl", "source/shaders/text_vert.glsl" )  < 0)
+    {
+        h_log_msg("Failed load program: source/shaders/text_frag.glsl");
+    } InitProgram_text(&m_GlProgram_text);
+
+
     InitBuffers();
 }
 
@@ -115,7 +122,7 @@ void InitBuffers()
     glGenBuffers(1, &VBO);
     glBindVertexArray(VAO);
     glBindBuffer(GL_ARRAY_BUFFER, VBO);
-    glBufferData(GL_ARRAY_BUFFER, sizeof(float) * 6 * 4, NULL, GL_DYNAMIC_DRAW);
+    glBufferData(GL_ARRAY_BUFFER, sizeof(float) * 6 * 5, NULL, GL_DYNAMIC_DRAW);
     glEnableVertexAttribArray(0);
     glVertexAttribPointer(0, 4, GL_FLOAT, GL_FALSE, 4 * sizeof(float), 0);
     glBindBuffer(GL_ARRAY_BUFFER, 0);
@@ -139,8 +146,7 @@ void RenderFrame()
     //glEnable(GL_STENCIL_TEST);
     //glEnable(GL_DEPTH_TEST);
 
-    //RenderText("A", 1, 1, 1, 1.0f);
-    DrawSquare();
+    //DrawSquare1();
     DrawMainMenu();
 
     glFinish();
@@ -165,6 +171,32 @@ const GLfloat squareVertices[] = {
     1.0f, -1.0f, 2.0f,
 };
 
+
+void DrawSquare1()
+{
+
+    glEnable(GL_BLEND);
+    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+
+    glBindTexture(GL_TEXTURE_2D, m_Characters[57].m_TextureID);
+
+    glUseProgram(m_GlProgram_text.ID);
+    float m[16];
+    loadIdentity(m);
+
+    glUniformMatrix4fv(m_GlProgram_text.projectionLocation, 1, GL_FALSE, m_ProjectionMatrix);
+
+    glVertexAttribPointer(m_GlProgram_text.vertexLocation, 3, GL_FLOAT, GL_FALSE, 0, squareVertices);
+    glEnableVertexAttribArray(m_GlProgram_text.vertexLocation);
+
+    glVertexAttribPointer(m_GlProgram_text.textureCoordsLocation, 2, GL_FLOAT, GL_FALSE, 0, textureCoordinates);
+    glEnableVertexAttribArray(m_GlProgram_text.textureCoordsLocation);
+
+    glUniform3f(m_GlProgram_text.textColor, 0.0f, 1.0f, 1.0f);
+
+    glDrawArrays(GL_TRIANGLE_FAN, 0, 4);
+    glBindTexture(GL_TEXTURE_2D, 0);
+}
 
 void DrawSquare()
 {
@@ -199,28 +231,24 @@ void DrawSquare()
     //exit(0);
 }
 
-void RenderText(char* text, int len, float x, float y, float scale)
+void RenderText(char* text, float x, float y, float scale)
 {
-    // activate corresponding render state
+    glEnable(GL_BLEND);
+    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
-    glUseProgram(m_GlProgram.ID);
-    float m[16];
-    loadIdentity(m);
-    loadIdentity(m_TestMatrix);
-    matrixRotateZ(m_TestMatrix, r_z);
-    matrixRotateY(m_TestMatrix, r_y);
-    matrixRotateX(m_TestMatrix, r_x);
+    glUseProgram(m_GlProgram_text.ID);
+
+    glUniformMatrix4fv(m_GlProgram_text.projectionLocation, 1, GL_FALSE, m_ProjectionMatrix);
 
 
-    glUniformMatrix4fv(m_GlProgram.projectionLocation, 1, GL_FALSE, m_ProjectionMatrix);
-    glUniformMatrix4fv(m_GlProgram.viewLocation, 1, GL_FALSE, m);
-    glUniformMatrix4fv(m_GlProgram.modelLocation, 1, GL_FALSE, m_TestMatrix);
+    glUniform3f(m_GlProgram_text.textColor, 0.0f, 1.0f, 1.0f);
 
     glActiveTexture(GL_TEXTURE0);
-    glBindVertexArray(VAO);
+
+    //glBindVertexArray(VAO);
 
     // iterate through all characters
-    for (int i = 0 ; i < len; i++)
+    for (int i = 0 ; *(text + i) != '\0' ; i++)
     {
         TCharTexture ch = m_Characters[(int)*(text + i) ];
 
@@ -230,25 +258,63 @@ void RenderText(char* text, int len, float x, float y, float scale)
         float w = ch.m_Size.x * scale;
         float h = ch.m_Size.y * scale;
         // update VBO for each character
-        float vertices[6][4] = {
-            { xpos,     ypos + h,   0.0f, 0.0f },
-            { xpos,     ypos,       0.0f, 1.0f },
-            { xpos + w, ypos,       1.0f, 1.0f },
+        float vertices[6][3] = {
+            { xpos,     ypos + h, 2.0f},
+            { xpos,     ypos,     2.0f},
+            { xpos + w, ypos,     2.0f},
 
-            { xpos,     ypos + h,   0.0f, 0.0f },
-            { xpos + w, ypos,       1.0f, 1.0f },
-            { xpos + w, ypos + h,   1.0f, 0.0f }
+            { xpos,     ypos + h, 2.0f},
+            { xpos + w, ypos,     2.0f},
+            { xpos + w, ypos + h, 2.0f}
         };
-        //printf("%f %f %f %f\n", xpos, ypos, h, w);
+
+        float tcoords[6][2] =
+        {
+            {0.0f, 0.0f },
+            {0.0f, 1.0f },
+            {1.0f, 1.0f },
+
+            {0.0f, 0.0f },
+            {1.0f, 1.0f },
+            {1.0f, 0.0f }
+        };
+        /*
+        float vertices[6][5] = {
+            { xpos,     ypos + h, 0.0f,  0.0f, 0.0f },
+            { xpos,     ypos,     0.0f,  0.0f, 1.0f },
+            { xpos + w, ypos,     0.0f,  1.0f, 1.0f },
+
+            { xpos,     ypos + h, 0.0f,  0.0f, 0.0f },
+            { xpos + w, ypos,     0.0f,  1.0f, 1.0f },
+            { xpos + w, ypos + h, 0.0f,  1.0f, 0.0f }
+        };*/
         // render glyph texture over quad
+
         glBindTexture(GL_TEXTURE_2D, ch.m_TextureID);
-        //printf("%d\n", ch.m_TextureID);
-        // update content of VBO memory
+
+        glVertexAttribPointer(m_GlProgram_text.vertexLocation, 3, GL_FLOAT, GL_FALSE, 0, vertices);
+        glEnableVertexAttribArray(m_GlProgram_text.vertexLocation);
+
+        glVertexAttribPointer(m_GlProgram_text.textureCoordsLocation, 2, GL_FLOAT, GL_FALSE, 0, tcoords);
+        glEnableVertexAttribArray(m_GlProgram_text.textureCoordsLocation);
+
+
+
+
+        /*
         glBindBuffer(GL_ARRAY_BUFFER, VBO);
         glBufferSubData(GL_ARRAY_BUFFER, 0, sizeof(vertices), vertices);
         glBindBuffer(GL_ARRAY_BUFFER, 0);
+        */
         // render quad
+
+        //glPointSize(10.0f);
+        //glDrawArrays(GL_POINTS, 0, 6);
+
         glDrawArrays(GL_TRIANGLES, 0, 6);
+
+        //glDrawArrays(GL_TRIANGLE_FAN, 0, 4);
+
         // now advance cursors for next glyph (note that advance is number of 1/64 pixels)
         x += (ch.m_Advance >> 6) * scale; // bitshift by 6 to get value in pixels (2^6 = 64)
     }
@@ -362,3 +428,16 @@ void InitProgram(TOpenGLProgram_base* program)
     }
 }
 
+void InitProgram_text(TOpenGLProgram_text* program)
+{
+    program->projectionLocation = glGetUniformLocation(program->ID, "projection");
+    program->vertexLocation = glGetAttribLocation(program->ID, "vertexPosition");
+
+    program->textureCoordsLocation = glGetAttribLocation(program->ID, "textureCoordinates");
+    program->textureLocation = glGetUniformLocation(program->ID, "texture");
+    program->textColor = glGetUniformLocation(program->ID, "textColor");
+    if(program->projectionLocation < 0 || program->vertexLocation < 0 || program->textureCoordsLocation < 0 || program->textureLocation < 0 || program->textColor < 0)
+    {
+        h_log_msg("Error initialization GL program main.");
+    }
+}

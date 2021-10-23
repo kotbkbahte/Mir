@@ -94,6 +94,18 @@ typedef struct
 
 typedef struct
 {
+    GLuint ID;
+
+    GLuint projectionLocation;
+    GLuint vertexLocation;
+    GLuint textureCoordsLocation;
+    GLuint textureLocation;
+    GLuint textColor;
+
+} TOpenGLProgram_text;
+
+typedef struct
+{
     unsigned int m_TextureID;
     TPoint2_i m_Size;
     TPoint2_i m_Bearing;

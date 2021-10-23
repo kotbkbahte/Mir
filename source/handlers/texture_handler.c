@@ -50,7 +50,7 @@ void LoadCharactersTextures()
         // load character glyph
         if (FT_Load_Char(ft2_face, c, FT_LOAD_RENDER))
         {
-            h_log_msg_arg("Failed to load Glyph: %c", c);
+            h_log_msg_arg("Failed to load Glyph: %c", (char*)c);
             continue;
         }
         // generate texture
@@ -83,16 +83,7 @@ void LoadCharactersTextures()
         m_Characters[c].m_Bearing.y = ft2_face->glyph->bitmap_top;
         m_Characters[c].m_Advance = ft2_face->glyph->advance.x;
 
-        /*
-        m_Characters[c] = {
-            .m_TextureID = texture,
-            .m_Size = {.width = face->glyph->bitmap.width, .height = face->glyph->bitmap.rows},
-            .m_Advance = face->glyph->advance.x,
-        };
-        */
 
-
-        //Characters.insert(std::pair<char, Character>(c, character));
     }
 
 }
