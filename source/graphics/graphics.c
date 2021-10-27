@@ -343,15 +343,16 @@ void RenderText(char* text, float x, float y, float scale)
 void RenderText_w(char* text, float x, float y, float width)
 {
     glEnable(GL_BLEND);
-    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+    //glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+    //glBindTexture(GL_TEXTURE_2D,  m_Characters[(int)*(text)].m_TextureID);
 
     glUseProgram(m_GlProgram_text.ID);
 
     glUniformMatrix4fv(m_GlProgram_text.projectionLocation, 1, GL_FALSE, m_ProjectionMatrix);
 
     loadIdentity(m_ModelMatrix);
-    matrixScale(m_ModelMatrix, 0.005f ,0.005f, 1.0f);
-    matrixTranslate(m_ModelMatrix, x,  y, 0.0f);
+    //matrixScale(m_ModelMatrix, 0.005f ,0.005f, 1.0f);
+    //matrixTranslate(m_ModelMatrix, x,  y, 0.0f);
     glUniformMatrix4fv(m_GlProgram_text.modelLocation, 1, GL_FALSE, m_ModelMatrix);
 
     glUniform3f(m_GlProgram_text.textColor, 0.0f, 1.0f, 1.0f);
@@ -363,22 +364,61 @@ void RenderText_w(char* text, float x, float y, float width)
     // iterate through all characters
 
     float str_width;
+    TCharTexture ch = m_Characters[(int)*(text) ];
     for (int i =0; *(text + i) != '\0'; i++)
     {
-        TCharTexture ch = m_Characters[(int)*(text + i) ];
         str_width += ch.m_Bearing.x +  (ch.m_Advance >> 6);
     }
     printf("%f\n", str_width);
-    /*
+    float full_width = 2 * str_width / 1280.0f;
+    float full_height = 2 * ch.m_Bearing.y / 1280.0f;
+        printf("%f\n", full_width);
+
+    float tcoord[6][2] =
+    {
+        {0.0f, 0.0f },
+        {0.0f, full_height },
+        {full_width, full_height },
+
+        {0.0f, 0.0f },
+        {full_width, full_height},
+        {full_width, 0.0f }
+    };
+    float tcoords[6][2] =
+    {
+        {0.0f, 0.0f },
+        {0.0f, 1.0f },
+        {1.0f, 1.0f },
+
+        {0.0f, 0.0f },
+        {1.0f, 1.0f },
+        {1.0f, 0.0f }
+    };
+
+
+    glVertexAttribPointer(m_GlProgram_text.vertexLocation, 2, GL_FLOAT, GL_FALSE, 0, tcoord);
+    glEnableVertexAttribArray(m_GlProgram_text.vertexLocation);
+
+    glVertexAttribPointer(m_GlProgram_text.textureCoordsLocation, 2, GL_FLOAT, GL_FALSE, 0, tcoords);
+    glEnableVertexAttribArray(m_GlProgram_text.textureCoordsLocation);
+
+
+    // render quad
+
+    glDrawArrays(GL_TRIANGLES, 0, 6);
+    glBindVertexArray(0);
+    glBindTexture(GL_TEXTURE_2D, 0);
+
+
     for (int i = 0 ; *(text + i) != '\0' ; i++)
     {
         TCharTexture ch = m_Characters[(int)*(text + i) ];
 
-        float xpos = x + ch.m_Bearing.x * scale;
-        float ypos = y - (ch.m_Size.y - ch.m_Bearing.y) * scale;
+        float xpos = x + ch.m_Bearing.x * 1.0f;
+        float ypos = y - (ch.m_Size.y - ch.m_Bearing.y) * 1.0f;
 
-        float w = ch.m_Size.x * scale;
-        float h = ch.m_Size.y * scale;
+        float w = ch.m_Size.x * 1.0f;
+        float h = ch.m_Size.y * 1.0f;
         // update VBO for each character
         float vertices[6][3] = {
             { xpos,     ypos + h, 2.0f},
@@ -422,12 +462,12 @@ void RenderText_w(char* text, float x, float y, float width)
         //glDrawArrays(GL_TRIANGLE_FAN, 0, 4);
 
         // now advance cursors for next glyph (note that advance is number of 1/64 pixels)
-        x += (ch.m_Advance >> 6) * scale; // bitshift by 6 to get value in pixels (2^6 = 64)
+        x += (ch.m_Advance >> 6) * 1.0f; // bitshift by 6 to get value in pixels (2^6 = 64)
     }
 
     glBindVertexArray(0);
     glBindTexture(GL_TEXTURE_2D, 0);
-    */
+
 }
 
 
