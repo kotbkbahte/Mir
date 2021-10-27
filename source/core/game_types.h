@@ -2,6 +2,8 @@
 #define TYPES_H_INCLUDED
 
 
+
+
 #ifdef __linux__
     #include <SDL2/SDL.h>
     #include <SDL2/SDL_image.h>
@@ -11,8 +13,10 @@
 
 #endif
 
+
 #include <stdio.h>
 #include <stdlib.h>
+
 
 #define True 1
 #define False 0
@@ -114,6 +118,20 @@ typedef struct
 
 } TOpenGLProgram_text;
 
+
+typedef struct
+{
+    GLuint ID;
+
+    GLuint projectionLocation;
+    GLuint viewLocation;
+    GLuint modelLocation;
+
+    GLuint vertexLocation;
+    GLuint colorLocation;
+} TOpenGLProgram_color;
+
+
 typedef struct
 {
     unsigned int m_TextureID;
@@ -127,10 +145,12 @@ typedef struct
 {
     TPoint2_f m_Size;
     TPoint2_f m_Pos;
-    unsigned int m_TextureID;
+    TPoint3_f m_Color;
     unsigned int m_ID;
-
+    char m_Text[20];
 
 } TSimpleButton;
+
+
 
 #endif // TYPES_H_INCLUDED

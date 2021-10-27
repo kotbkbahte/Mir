@@ -4,7 +4,12 @@ extern TState State;
 
 void DrawMainMenu()
 {
-    RenderText("Main Menu!", 0.0f, 0.0f, 1.0f);
+    draw_simple_button(0);
+    RenderText_w("!");
+
+    //RenderText("Main Menu!", 0.0f, 0.0f, 1.0f);
+
+
 }
 
 

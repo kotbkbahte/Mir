@@ -2,8 +2,8 @@
 #define MAIN_MENU_H_INCLUDED
 
 #include "../core/game_types.h"
-#include "../extern/gltext.h"
 #include "../graphics/graphics.h"
+#include "simple_button.h"
 
 void DrawMainMenu();
 

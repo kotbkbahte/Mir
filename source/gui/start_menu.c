@@ -3,7 +3,6 @@
 extern TState State;
 void DrawStartMenu()
 {
-    h_log_msg("Draw Start Menu!");
     RenderText("Draw Start Menu!", 0.0f, 0.0f, 1.0f);
 }
 

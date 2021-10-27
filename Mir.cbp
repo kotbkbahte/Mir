@@ -12,6 +12,7 @@
 				<Option type="1" />
 				<Option compiler="gcc" />
 				<Compiler>
+					<Add option="-std=c17" />
 					<Add option="-g" />
 				</Compiler>
 			</Target>
@@ -64,12 +65,24 @@
 			<Option compilerVar="CC" />
 		</Unit>
 		<Unit filename="source/gui/main_menu.h" />
+		<Unit filename="source/gui/simple_button.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="source/gui/simple_button.h" />
+		<Unit filename="source/gui/start_menu.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="source/gui/start_menu.h" />
 		<Unit filename="source/handlers/event_handler.c">
 			<Option compilerVar="CC" />
 		</Unit>
 		<Unit filename="source/handlers/event_handler.h">
 			<Option target="&lt;{~None~}&gt;" />
 		</Unit>
+		<Unit filename="source/handlers/gui_handler.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="source/handlers/gui_handler.h" />
 		<Unit filename="source/handlers/keyboard_handler.c">
 			<Option compilerVar="CC" />
 		</Unit>

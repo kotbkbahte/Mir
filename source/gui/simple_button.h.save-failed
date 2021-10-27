@@ -1,0 +1,14 @@
+#ifndef SIMPLE_BUTTON_H_INCLUDED
+#define SIMPLE_BUTTON_H_INCLUDED
+
+#include "../core/game_types.h"
+
+
+void create_simple_button();
+
+void draw_simple_button();
+
+void handle_simple_button();
+
+
+#endif // SIMPLE_BUTTON_H_INCLUDED

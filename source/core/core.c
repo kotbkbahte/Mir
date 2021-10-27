@@ -13,6 +13,9 @@ TState State;
 TGameState GameState;
 TOpenGLProgram_base m_GlProgram;
 TOpenGLProgram_text m_GlProgram_text;
+TOpenGLProgram_color m_GlProgram_color;
+
+
 GLuint m_Textures[10];
 const Uint8* m_Keyboard;
 float m_ProjectionMatrix[16];

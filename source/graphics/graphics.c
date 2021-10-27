@@ -5,6 +5,7 @@ extern TState State;
 extern TGameState GameState;
     extern TOpenGLProgram_base m_GlProgram;
     extern TOpenGLProgram_text m_GlProgram_text;
+    extern TOpenGLProgram_text m_GlProgram_color;
 extern GLuint m_Textures[10];
 extern float m_ProjectionMatrix[16];
 extern float m_ModelMatrix[16];
@@ -94,8 +95,14 @@ void InitOpenGL()
         h_log_msg("Failed load program: source/shaders/text_frag.glsl");
     } InitProgram_text(&m_GlProgram_text);
 
+   if(LoadProgram(&m_GlProgram_color.ID, "source/shaders/sample_frag.glsl", "source/shaders/sample_vert.glsl" )  < 0)
+    {
+        h_log_msg("Failed load program: source/shaders/sample_frag.glsl");
+    } InitProgram_color(&m_GlProgram_color);
 
     InitBuffers();
+
+    create_simple_button("Hello!" ,0, 0, 0.2f, 0.1f);
 
     ToMainMenu();
 }
@@ -250,7 +257,7 @@ void RenderText(char* text, float x, float y, float scale)
 
     loadIdentity(m_ModelMatrix);
     matrixScale(m_ModelMatrix, 0.005f ,0.005f, 1.0f);
-    matrixTranslate(m_ModelMatrix, -0.5f, 0.0f, 0.0f);
+    matrixTranslate(m_ModelMatrix, x,  y, 0.0f);
     glUniformMatrix4fv(m_GlProgram_text.modelLocation, 1, GL_FALSE, m_ModelMatrix);
 
     glUniform3f(m_GlProgram_text.textColor, 0.0f, 1.0f, 1.0f);
@@ -330,6 +337,97 @@ void RenderText(char* text, float x, float y, float scale)
 
     glBindVertexArray(0);
     glBindTexture(GL_TEXTURE_2D, 0);
+}
+
+
+void RenderText_w(char* text, float x, float y, float width)
+{
+    glEnable(GL_BLEND);
+    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+
+    glUseProgram(m_GlProgram_text.ID);
+
+    glUniformMatrix4fv(m_GlProgram_text.projectionLocation, 1, GL_FALSE, m_ProjectionMatrix);
+
+    loadIdentity(m_ModelMatrix);
+    matrixScale(m_ModelMatrix, 0.005f ,0.005f, 1.0f);
+    matrixTranslate(m_ModelMatrix, x,  y, 0.0f);
+    glUniformMatrix4fv(m_GlProgram_text.modelLocation, 1, GL_FALSE, m_ModelMatrix);
+
+    glUniform3f(m_GlProgram_text.textColor, 0.0f, 1.0f, 1.0f);
+
+    glActiveTexture(GL_TEXTURE0);
+
+    //glBindVertexArray(VAO);
+
+    // iterate through all characters
+
+    float str_width;
+    for (int i =0; *(text + i) != '\0'; i++)
+    {
+        TCharTexture ch = m_Characters[(int)*(text + i) ];
+        str_width += ch.m_Bearing.x +  (ch.m_Advance >> 6);
+    }
+    printf("%f\n", str_width);
+    /*
+    for (int i = 0 ; *(text + i) != '\0' ; i++)
+    {
+        TCharTexture ch = m_Characters[(int)*(text + i) ];
+
+        float xpos = x + ch.m_Bearing.x * scale;
+        float ypos = y - (ch.m_Size.y - ch.m_Bearing.y) * scale;
+
+        float w = ch.m_Size.x * scale;
+        float h = ch.m_Size.y * scale;
+        // update VBO for each character
+        float vertices[6][3] = {
+            { xpos,     ypos + h, 2.0f},
+            { xpos,     ypos,     2.0f},
+            { xpos + w, ypos,     2.0f},
+
+            { xpos,     ypos + h, 2.0f},
+            { xpos + w, ypos,     2.0f},
+            { xpos + w, ypos + h, 2.0f}
+        };
+
+        float tcoords[6][2] =
+        {
+            {0.0f, 0.0f },
+            {0.0f, 1.0f },
+            {1.0f, 1.0f },
+
+            {0.0f, 0.0f },
+            {1.0f, 1.0f },
+            {1.0f, 0.0f }
+        };
+
+        // render glyph texture over quad
+
+        glBindTexture(GL_TEXTURE_2D, ch.m_TextureID);
+
+        glVertexAttribPointer(m_GlProgram_text.vertexLocation, 3, GL_FLOAT, GL_FALSE, 0, vertices);
+        glEnableVertexAttribArray(m_GlProgram_text.vertexLocation);
+
+        glVertexAttribPointer(m_GlProgram_text.textureCoordsLocation, 2, GL_FLOAT, GL_FALSE, 0, tcoords);
+        glEnableVertexAttribArray(m_GlProgram_text.textureCoordsLocation);
+
+
+        // render quad
+
+        //glPointSize(10.0f);
+        //glDrawArrays(GL_POINTS, 0, 6);
+
+        glDrawArrays(GL_TRIANGLES, 0, 6);
+
+        //glDrawArrays(GL_TRIANGLE_FAN, 0, 4);
+
+        // now advance cursors for next glyph (note that advance is number of 1/64 pixels)
+        x += (ch.m_Advance >> 6) * scale; // bitshift by 6 to get value in pixels (2^6 = 64)
+    }
+
+    glBindVertexArray(0);
+    glBindTexture(GL_TEXTURE_2D, 0);
+    */
 }
 
 
@@ -447,6 +545,20 @@ void InitProgram_text(TOpenGLProgram_text* program)
     program->textureLocation = glGetUniformLocation(program->ID, "texture");
     program->textColor = glGetUniformLocation(program->ID, "textColor");
     if(program->projectionLocation < 0 || program->vertexLocation < 0 || program->textureCoordsLocation < 0 || program->textureLocation < 0 || program->textColor < 0)
+    {
+        h_log_msg("Error initialization GL program main.");
+    }
+}
+
+void InitProgram_color(TOpenGLProgram_color* program)
+{
+    program->projectionLocation = glGetUniformLocation(program->ID, "projection");
+    program->modelLocation = glGetUniformLocation(program->ID, "model");
+    program->viewLocation = glGetUniformLocation(program->ID, "view");
+    program->vertexLocation = glGetAttribLocation(program->ID, "vertexPosition");
+
+    program->colorLocation = glGetUniformLocation(program->ID, "color");
+    if(program->projectionLocation < 0 || program->vertexLocation < 0 || program->modelLocation < 0 || program->viewLocation < 0 || program->colorLocation < 0)
     {
         h_log_msg("Error initialization GL program main.");
     }
