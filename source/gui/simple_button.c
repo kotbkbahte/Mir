@@ -18,15 +18,17 @@ int Handle_Buttons[] = {};
 void create_simple_button(char* button_name, float x, float y, float h, float w)
 {
     //h_log_msg("Creating button...\n");
+
+    Simple_Buttons = realloc(Simple_Buttons, (Buttons_Count + 1) * sizeof(TSimpleButton));
+
+    Simple_Buttons[Buttons_Count].m_ID = gui_get_next_id();
+    Simple_Buttons[Buttons_Count].m_Color = (TPoint3_f){ .r = rand(), .g = rand(), .b = rand() };
+    Simple_Buttons[Buttons_Count].m_Pos = (TPoint2_f){.x = x, .y = y};
+    Simple_Buttons[Buttons_Count].m_Size = (TPoint2_f){h, w};
+    Simple_Buttons[Buttons_Count].m_Hovered = True;
+    strcpy( Simple_Buttons[Buttons_Count].m_Text, button_name );
+
     Buttons_Count += 1;
-    Simple_Buttons = realloc(Simple_Buttons, Buttons_Count * sizeof(TSimpleButton));
-
-    Simple_Buttons[Buttons_Count-1].m_ID = gui_get_next_id();
-    Simple_Buttons[Buttons_Count-1].m_Color = (TPoint3_f){ .r = rand(), .g = rand(), .b = rand() };
-    Simple_Buttons[Buttons_Count-1].m_Pos = (TPoint2_f){.x = x, .y = y};
-    Simple_Buttons[Buttons_Count-1].m_Size = (TPoint2_f){h, w};
-    strcpy( Simple_Buttons[Buttons_Count-1].m_Text, button_name );
-
 }
 
 void init_simple_button()

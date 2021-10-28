@@ -118,15 +118,13 @@ void InitFreeType2()
     {
         h_error_msg("Failed to load font", ERROR);
     }
-
-    FT_Set_Pixel_Sizes(ft2_face, 0, 48);
-
-
-    if (FT_Load_Char(ft2_face, 'X', FT_LOAD_RENDER))
-    {
-        h_error_msg("Failed to load Glyph", ERROR);
-    }
-
+    /*
+    FT_Set_Char_Size(ft2_face,
+                    0,
+                    16*64,
+                    1200,
+                    800);
+    */
 }
 
 void InitBuffers()
@@ -342,9 +340,10 @@ void RenderText(char* text, float x, float y, float scale)
 
 void RenderText_w(char* text, float x, float y, float width)
 {
+    float scale =  2 / 1920.0f;
+
     glEnable(GL_BLEND);
-    //glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-    //glBindTexture(GL_TEXTURE_2D,  m_Characters[(int)*(text)].m_TextureID);
+    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
     glUseProgram(m_GlProgram_text.ID);
 
@@ -362,63 +361,16 @@ void RenderText_w(char* text, float x, float y, float width)
     //glBindVertexArray(VAO);
 
     // iterate through all characters
-
-    float str_width;
-    TCharTexture ch = m_Characters[(int)*(text) ];
-    for (int i =0; *(text + i) != '\0'; i++)
-    {
-        str_width += ch.m_Bearing.x +  (ch.m_Advance >> 6);
-    }
-    printf("%f\n", str_width);
-    float full_width = 2 * str_width / 1280.0f;
-    float full_height = 2 * ch.m_Bearing.y / 1280.0f;
-        printf("%f\n", full_width);
-
-    float tcoord[6][2] =
-    {
-        {0.0f, 0.0f },
-        {0.0f, full_height },
-        {full_width, full_height },
-
-        {0.0f, 0.0f },
-        {full_width, full_height},
-        {full_width, 0.0f }
-    };
-    float tcoords[6][2] =
-    {
-        {0.0f, 0.0f },
-        {0.0f, 1.0f },
-        {1.0f, 1.0f },
-
-        {0.0f, 0.0f },
-        {1.0f, 1.0f },
-        {1.0f, 0.0f }
-    };
-
-
-    glVertexAttribPointer(m_GlProgram_text.vertexLocation, 2, GL_FLOAT, GL_FALSE, 0, tcoord);
-    glEnableVertexAttribArray(m_GlProgram_text.vertexLocation);
-
-    glVertexAttribPointer(m_GlProgram_text.textureCoordsLocation, 2, GL_FLOAT, GL_FALSE, 0, tcoords);
-    glEnableVertexAttribArray(m_GlProgram_text.textureCoordsLocation);
-
-
-    // render quad
-
-    glDrawArrays(GL_TRIANGLES, 0, 6);
-    glBindVertexArray(0);
-    glBindTexture(GL_TEXTURE_2D, 0);
-
-
     for (int i = 0 ; *(text + i) != '\0' ; i++)
     {
         TCharTexture ch = m_Characters[(int)*(text + i) ];
 
-        float xpos = x + ch.m_Bearing.x * 1.0f;
-        float ypos = y - (ch.m_Size.y - ch.m_Bearing.y) * 1.0f;
+        float xpos = x + ch.m_Bearing.x * scale;
+        float ypos = y - (ch.m_Size.y - ch.m_Bearing.y) * scale;
 
-        float w = ch.m_Size.x * 1.0f;
-        float h = ch.m_Size.y * 1.0f;
+        float w = ch.m_Size.x * scale;
+        float h = ch.m_Size.y * scale;
+        printf("%f, %f\n", w, h );
         // update VBO for each character
         float vertices[6][3] = {
             { xpos,     ypos + h, 2.0f},
@@ -440,7 +392,16 @@ void RenderText_w(char* text, float x, float y, float width)
             {1.0f, 1.0f },
             {1.0f, 0.0f }
         };
+        /*
+        float vertices[6][5] = {
+            { xpos,     ypos + h, 0.0f,  0.0f, 0.0f },
+            { xpos,     ypos,     0.0f,  0.0f, 1.0f },
+            { xpos + w, ypos,     0.0f,  1.0f, 1.0f },
 
+            { xpos,     ypos + h, 0.0f,  0.0f, 0.0f },
+            { xpos + w, ypos,     0.0f,  1.0f, 1.0f },
+            { xpos + w, ypos + h, 0.0f,  1.0f, 0.0f }
+        };*/
         // render glyph texture over quad
 
         glBindTexture(GL_TEXTURE_2D, ch.m_TextureID);
@@ -451,7 +412,11 @@ void RenderText_w(char* text, float x, float y, float width)
         glVertexAttribPointer(m_GlProgram_text.textureCoordsLocation, 2, GL_FLOAT, GL_FALSE, 0, tcoords);
         glEnableVertexAttribArray(m_GlProgram_text.textureCoordsLocation);
 
-
+        /*
+        glBindBuffer(GL_ARRAY_BUFFER, VBO);
+        glBufferSubData(GL_ARRAY_BUFFER, 0, sizeof(vertices), vertices);
+        glBindBuffer(GL_ARRAY_BUFFER, 0);
+        */
         // render quad
 
         //glPointSize(10.0f);
@@ -462,12 +427,12 @@ void RenderText_w(char* text, float x, float y, float width)
         //glDrawArrays(GL_TRIANGLE_FAN, 0, 4);
 
         // now advance cursors for next glyph (note that advance is number of 1/64 pixels)
-        x += (ch.m_Advance >> 6) * 1.0f; // bitshift by 6 to get value in pixels (2^6 = 64)
+        x += (ch.m_Advance >> 6) * scale; // bitshift by 6 to get value in pixels (2^6 = 64)
+
     }
 
     glBindVertexArray(0);
     glBindTexture(GL_TEXTURE_2D, 0);
-
 }
 
 

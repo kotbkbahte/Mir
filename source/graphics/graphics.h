@@ -24,6 +24,7 @@ void CloseFreeType2();
 
 void RenderFrame();
 void RenderText(char* text, float x, float y, float scale);
+void RenderText_w(char* text, float x, float y, float width);
 
 void UpdateCamProjection(float scale);
 

@@ -147,6 +147,7 @@ typedef struct
     TPoint2_f m_Pos;
     TPoint3_f m_Color;
     unsigned int m_ID;
+    int m_Hovered;
     char m_Text[20];
 
 } TSimpleButton;
