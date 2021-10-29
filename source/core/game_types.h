@@ -61,6 +61,7 @@ typedef struct
 } TGameState;
 
 enum States {MAIN_MENU, START_MENU, SETTINGS_MENU, QUIT, TEST_MENU, GAME, GAME_MENU, RESEARCH_TREE, STATES_COUNT};
+enum Textures {BUTTON_PLAYGAME, BUTTON_SETTINGS, BUTTON_QUIT, TEXTURES_COUNT};
 
 typedef void (*TDrawState)(void);
 typedef void (*TButtonFunc)(void);
@@ -114,7 +115,8 @@ typedef struct
     GLuint vertexLocation;
     GLuint textureCoordsLocation;
     GLuint textureLocation;
-    GLuint textColor;
+    GLuint textColorLocation;
+    GLuint outlineColorLocation;
 
 } TOpenGLProgram_text;
 
@@ -147,7 +149,8 @@ typedef struct
     TPoint2_f m_Pos;
     TPoint3_f m_Color;
     unsigned int m_ID;
-    int m_Hovered;
+    unsigned int m_TextureID;
+    int m_IsHovered;
     char m_Text[20];
 
 } TSimpleButton;

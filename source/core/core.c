@@ -30,7 +30,6 @@ unsigned int VAO, VBO;
     TCharTexture m_Characters[128];
 
 
-
 void InitCore()
 {
     Core = malloc(sizeof(TCore));

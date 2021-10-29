@@ -9,4 +9,5 @@ void main()
 {
     vec4 color = texture2D(texture, vTexCoord);
     FragColor = color;
+   
 }

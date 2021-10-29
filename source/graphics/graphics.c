@@ -3,9 +3,10 @@
 extern TCore *Core;
 extern TState State;
 extern TGameState GameState;
+extern const Uint8* m_Keyboard;
     extern TOpenGLProgram_base m_GlProgram;
     extern TOpenGLProgram_text m_GlProgram_text;
-    extern TOpenGLProgram_text m_GlProgram_color;
+    extern TOpenGLProgram_color m_GlProgram_color;
 extern GLuint m_Textures[10];
 extern float m_ProjectionMatrix[16];
 extern float m_ModelMatrix[16];
@@ -34,6 +35,8 @@ void InitGraphics()
     LoadCharactersTextures();
 
     InitCamera();
+
+    create_simple_buttons();
 
 
 
@@ -102,8 +105,6 @@ void InitOpenGL()
 
     InitBuffers();
 
-    create_simple_button("Hello!" ,0, 0, 0.2f, 0.1f);
-
     ToMainMenu();
 }
 
@@ -118,13 +119,12 @@ void InitFreeType2()
     {
         h_error_msg("Failed to load font", ERROR);
     }
-    /*
-    FT_Set_Char_Size(ft2_face,
-                    0,
-                    16*64,
-                    1200,
-                    800);
-    */
+    //printf("%d\n", 64 << 6);
+
+    //FT_Set_Char_Size(ft2_face, 0, 64*16, 72, 72);
+    FT_Set_Pixel_Sizes(ft2_face, 0, 128);
+
+    //FT_Set_Pixel_Sizes(ft2_face, 0, 64);
 }
 
 void InitBuffers()
@@ -205,7 +205,7 @@ void DrawSquare1()
     glVertexAttribPointer(m_GlProgram_text.textureCoordsLocation, 2, GL_FLOAT, GL_FALSE, 0, textureCoordinates);
     glEnableVertexAttribArray(m_GlProgram_text.textureCoordsLocation);
 
-    glUniform3f(m_GlProgram_text.textColor, 0.0f, 1.0f, 1.0f);
+    glUniform3f(m_GlProgram_text.textColorLocation, 0.0f, 1.0f, 1.0f);
 
     glDrawArrays(GL_TRIANGLE_FAN, 0, 4);
     glBindTexture(GL_TEXTURE_2D, 0);
@@ -258,7 +258,9 @@ void RenderText(char* text, float x, float y, float scale)
     matrixTranslate(m_ModelMatrix, x,  y, 0.0f);
     glUniformMatrix4fv(m_GlProgram_text.modelLocation, 1, GL_FALSE, m_ModelMatrix);
 
-    glUniform3f(m_GlProgram_text.textColor, 0.0f, 1.0f, 1.0f);
+    glUniform4f(m_GlProgram_text.textColorLocation, 0.0f, 1.0f, 1.0f, 1.0f);
+    glUniform4f(m_GlProgram_text.outlineColorLocation, 1.0f, 0.0f, 0.0f, 0.0f);
+
 
     glActiveTexture(GL_TEXTURE0);
 
@@ -340,7 +342,9 @@ void RenderText(char* text, float x, float y, float scale)
 
 void RenderText_w(char* text, float x, float y, float width)
 {
-    float scale =  2 / 1920.0f;
+    static float s = 0;
+    s += m_Keyboard[SDL_SCANCODE_9] - m_Keyboard[SDL_SCANCODE_0];
+    float scale = 1.0f / (200.0f + s);
 
     glEnable(GL_BLEND);
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
@@ -350,11 +354,9 @@ void RenderText_w(char* text, float x, float y, float width)
     glUniformMatrix4fv(m_GlProgram_text.projectionLocation, 1, GL_FALSE, m_ProjectionMatrix);
 
     loadIdentity(m_ModelMatrix);
-    //matrixScale(m_ModelMatrix, 0.005f ,0.005f, 1.0f);
-    //matrixTranslate(m_ModelMatrix, x,  y, 0.0f);
     glUniformMatrix4fv(m_GlProgram_text.modelLocation, 1, GL_FALSE, m_ModelMatrix);
 
-    glUniform3f(m_GlProgram_text.textColor, 0.0f, 1.0f, 1.0f);
+    glUniform3f(m_GlProgram_text.textColorLocation, 0.0f, 1.0f, 1.0f);
 
     glActiveTexture(GL_TEXTURE0);
 
@@ -365,12 +367,12 @@ void RenderText_w(char* text, float x, float y, float width)
     {
         TCharTexture ch = m_Characters[(int)*(text + i) ];
 
-        float xpos = x + ch.m_Bearing.x * scale;
-        float ypos = y - (ch.m_Size.y - ch.m_Bearing.y) * scale;
+        float xpos = x +  scale;
+        float ypos = y - (ch.m_Size.y) * scale;
 
         float w = ch.m_Size.x * scale;
         float h = ch.m_Size.y * scale;
-        printf("%f, %f\n", w, h );
+        //printf("%f, %f \t %u %d %d\n", w, h, ch.m_Advance, ch.m_Size.x + ch.m_Bearing.x, ch.m_Size.y );
         // update VBO for each character
         float vertices[6][3] = {
             { xpos,     ypos + h, 2.0f},
@@ -548,8 +550,10 @@ void InitProgram_text(TOpenGLProgram_text* program)
 
     program->textureCoordsLocation = glGetAttribLocation(program->ID, "textureCoordinates");
     program->textureLocation = glGetUniformLocation(program->ID, "texture");
-    program->textColor = glGetUniformLocation(program->ID, "textColor");
-    if(program->projectionLocation < 0 || program->vertexLocation < 0 || program->textureCoordsLocation < 0 || program->textureLocation < 0 || program->textColor < 0)
+    program->textColorLocation = glGetUniformLocation(program->ID, "textColor");
+    program->outlineColorLocation = glGetUniformLocation(program->ID, "outlineColor");
+
+    if(program->projectionLocation < 0 || program->vertexLocation < 0 || program->textureCoordsLocation < 0 || program->textureLocation < 0 || program->textColorLocation < 0 || program->outlineColorLocation < 0)
     {
         h_log_msg("Error initialization GL program main.");
     }
