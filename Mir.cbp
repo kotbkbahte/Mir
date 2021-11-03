@@ -61,6 +61,10 @@
 			<Option compilerVar="CC" />
 		</Unit>
 		<Unit filename="source/graphics/graphics.h" />
+		<Unit filename="source/gui/gui.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="source/gui/gui.h" />
 		<Unit filename="source/gui/main_menu.c">
 			<Option compilerVar="CC" />
 		</Unit>
@@ -79,10 +83,6 @@
 		<Unit filename="source/handlers/event_handler.h">
 			<Option target="&lt;{~None~}&gt;" />
 		</Unit>
-		<Unit filename="source/handlers/gui_handler.c">
-			<Option compilerVar="CC" />
-		</Unit>
-		<Unit filename="source/handlers/gui_handler.h" />
 		<Unit filename="source/handlers/keyboard_handler.c">
 			<Option compilerVar="CC" />
 		</Unit>
@@ -91,6 +91,10 @@
 			<Option compilerVar="CC" />
 		</Unit>
 		<Unit filename="source/handlers/message_handler.h" />
+		<Unit filename="source/handlers/mouse_handler.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="source/handlers/mouse_handler.h" />
 		<Unit filename="source/handlers/texture_handler.c">
 			<Option compilerVar="CC" />
 		</Unit>
