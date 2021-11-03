@@ -8,6 +8,7 @@
     extern TOpenGLProgram_base m_GlProgram;
     extern TOpenGLProgram_text m_GlProgram_text;
     extern TOpenGLProgram_color m_GlProgram_color;
+    extern TOpenGLProgram_button m_GlProgram_button;
 
 const TButtonFunc ButtonFuncs[] = {ToMainMenu, ToStartMenu};// ToSettingsMenu, ToQuit};//, DrawTextMenu, DrawGame, DrawGameMenu, DrawResearchTree};
 
@@ -40,7 +41,7 @@ void create_simple_button(char* button_name, unsigned int texture_id, float x, f
     Simple_Buttons[Buttons_Count].m_Color = (TPoint3_f){ .r = rand(), .g = rand(), .b = rand() };
     Simple_Buttons[Buttons_Count].m_Pos = (TPoint2_f){.x = x, .y = y};
     Simple_Buttons[Buttons_Count].m_Size = (TPoint2_f){.x = (float)w, .y = (float)h};
-    Simple_Buttons[Buttons_Count].m_IsHovered = False;
+    //Simple_Buttons[Buttons_Count].m_IsHovered = False;
     Simple_Buttons[Buttons_Count].m_TextureID = texture_id;
     strcpy( Simple_Buttons[Buttons_Count].m_Text, button_name );
 
@@ -111,15 +112,15 @@ void draw_simple_button(int id)
 
 void draw_simple_button_t(int id)
 {
-    //
+
     TSimpleButton b = Simple_Buttons[id];
-    //printf("%s\n", b.m_Text);
+
     glBindTexture(GL_TEXTURE_2D, b.m_TextureID);
 
     glEnable(GL_BLEND);
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
-    glUseProgram(m_GlProgram.ID);
+    glUseProgram(m_GlProgram_button.ID);
     float m[16];
     float n[16];
     loadIdentity(m);
@@ -127,37 +128,73 @@ void draw_simple_button_t(int id)
     float k = 720.0f / 1280.0f;
     matrixTranslate(m, b.m_Pos.x, b.m_Pos.y, 1.0f);
     matrixScale(m,  2 * b.m_Size.x / 1280.0f / k, 2 * b.m_Size.y / 720.0f , 1.0f);
-    //printf("%f, %f\n", b.m_Size.x, b.m_Size.y);
+
+    glUniformMatrix4fv(m_GlProgram_button.projectionLocation, 1, GL_FALSE, m_ProjectionMatrix);
+    //glUniformMatrix4fv(m_GlProgram_button.viewLocation, 1, GL_FALSE, m);
+    glUniformMatrix4fv(m_GlProgram_button.modelLocation, 1, GL_FALSE,  m);
+
+    if(b.m_IsHovered)
+        glUniform1f(m_GlProgram_button.colorLightnessLocation, 0.5);
+    else
+        glUniform1f(m_GlProgram_button.colorLightnessLocation, 1.0);
+
+    glVertexAttribPointer(m_GlProgram_button.vertexLocation, 3, GL_FLOAT, GL_FALSE, 0 , squareVertices);
+    glEnableVertexAttribArray(m_GlProgram_button.vertexLocation);
+
+    glVertexAttribPointer(m_GlProgram_button.textureCoordsLocation, 2, GL_FLOAT, GL_FALSE, 0, textureCoordinates_flipped);
+    glEnableVertexAttribArray(m_GlProgram_button.textureCoordsLocation);
 
 
-    glUniformMatrix4fv(m_GlProgram.projectionLocation, 1, GL_FALSE, m_ProjectionMatrix);
-    glUniformMatrix4fv(m_GlProgram.viewLocation, 1, GL_FALSE, m);
-    glUniformMatrix4fv(m_GlProgram.modelLocation, 1, GL_FALSE, n);
-
-
-    glVertexAttribPointer(m_GlProgram.vertexLocation, 3, GL_FLOAT, GL_FALSE, 0 , squareVertices);
-    glEnableVertexAttribArray(m_GlProgram.vertexLocation);
-
-    glVertexAttribPointer(m_GlProgram.textureCoordsLocation, 2, GL_FLOAT, GL_FALSE, 0, textureCoordinates_flipped);
-    glEnableVertexAttribArray(m_GlProgram.textureCoordsLocation);
-
-
-    //glLineWidth(10.0f);
-    //glPointSize(7.0f);
-    //glDrawArrays(GL_POINTS, 0, 1);
     glDrawArrays(GL_TRIANGLE_FAN, 0, 4);
 
 
     glBindTexture(GL_TEXTURE_2D, 0);
     glDisable(GL_BLEND);
-    //printMatrix(m);
-    //printMatrix(m_ProjectionMatrix);
-    //exit(0);
+}
 
 
+void draw_simple_button_c(int id)
+{
+
+    TSimpleButton b = Simple_Buttons[id];
+
+    glBindTexture(GL_TEXTURE_2D, b.m_TextureID);
+
+    glEnable(GL_BLEND);
+    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+
+    glUseProgram(m_GlProgram_button.ID);
+    float m[16];
+    float n[16];
+    loadIdentity(m);
+    loadIdentity(n);
+    float k = 720.0f / 1280.0f;
+    matrixTranslate(m, b.m_Pos.x, b.m_Pos.y, 1.0f);
+    matrixScale(m,  2 * b.m_Size.x / 1280.0f / k, 2 * b.m_Size.y / 720.0f , 1.0f);
+
+    glUniformMatrix4fv(m_GlProgram_button.projectionLocation, 1, GL_FALSE, m_ProjectionMatrix);
+    //glUniformMatrix4fv(m_GlProgram_button.viewLocation, 1, GL_FALSE, m);
+    glUniformMatrix4fv(m_GlProgram_button.modelLocation, 1, GL_FALSE,  m);
+
+    if(b.m_IsHovered)
+        glUniform1f(m_GlProgram_button.colorLightnessLocation, 0.5);
+    else
+        glUniform1f(m_GlProgram_button.colorLightnessLocation, 1.0);
+
+    glVertexAttribPointer(m_GlProgram_button.vertexLocation, 3, GL_FLOAT, GL_FALSE, 0 , squareVertices);
+    glEnableVertexAttribArray(m_GlProgram_button.vertexLocation);
+
+    glVertexAttribPointer(m_GlProgram_button.textureCoordsLocation, 2, GL_FLOAT, GL_FALSE, 0, textureCoordinates_flipped);
+    glEnableVertexAttribArray(m_GlProgram_button.textureCoordsLocation);
 
 
+    glDrawArrays(GL_TRIANGLE_FAN, 0, 4);
 
+    glPointSize(100.0f);
+    glDrawArrays(GL_POINTS, 0, 4);
+
+    glBindTexture(GL_TEXTURE_2D, 0);
+    glDisable(GL_BLEND);
 
 }
 

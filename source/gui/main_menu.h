@@ -9,6 +9,7 @@ void DrawMainMenu();
 
 void ToMainMenu();
 
+void MouseMoveMainMenu(int x, int y);
 
 
 #endif // MAIN_MENU_H_INCLUDED

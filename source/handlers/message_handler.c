@@ -35,7 +35,6 @@ void h_log_msg_arg(char* msg, char* arg)
     char a[80];
     sprintf(a, msg, arg);
     fprintf(stdout, "Log [%d]: %s", i , a);
-
 }
 
 void h_debug_msg(char* msg)

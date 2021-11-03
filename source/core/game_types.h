@@ -65,11 +65,14 @@ enum Textures {BUTTON_PLAYGAME, BUTTON_SETTINGS, BUTTON_QUIT, TEXTURES_COUNT};
 
 typedef void (*TDrawState)(void);
 typedef void (*TButtonFunc)(void);
+typedef void (*TMouseMoveEventFunc)(int, int);
 
 typedef struct
 {
     int m_StateIndex;
+    int m_HoveredButton;
     TDrawState m_StateDraw;
+    TMouseMoveEventFunc f_MouseMoveEvent;
 
 } TState;
 
@@ -120,7 +123,6 @@ typedef struct
 
 } TOpenGLProgram_text;
 
-
 typedef struct
 {
     GLuint ID;
@@ -133,6 +135,19 @@ typedef struct
     GLuint colorLocation;
 } TOpenGLProgram_color;
 
+typedef struct
+{
+    GLuint ID;
+
+    GLuint projectionLocation;
+    GLuint modelLocation;
+
+    GLuint vertexLocation;
+    GLuint textureCoordsLocation;
+    GLuint textureLocation;
+    GLuint colorLightnessLocation;
+
+} TOpenGLProgram_button;
 
 typedef struct
 {

@@ -14,6 +14,7 @@ TGameState GameState;
 TOpenGLProgram_base m_GlProgram;
 TOpenGLProgram_text m_GlProgram_text;
 TOpenGLProgram_color m_GlProgram_color;
+TOpenGLProgram_button m_GlProgram_button;
 
 
 GLuint m_Textures[10];
@@ -21,6 +22,8 @@ const Uint8* m_Keyboard;
 float m_ProjectionMatrix[16];
 float m_ModelMatrix[16];
 float m_TestMatrix[16];
+
+
 
 
 unsigned int VAO, VBO;

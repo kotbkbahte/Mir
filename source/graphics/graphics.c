@@ -7,6 +7,8 @@ extern const Uint8* m_Keyboard;
     extern TOpenGLProgram_base m_GlProgram;
     extern TOpenGLProgram_text m_GlProgram_text;
     extern TOpenGLProgram_color m_GlProgram_color;
+    extern TOpenGLProgram_button m_GlProgram_button;
+
 extern GLuint m_Textures[10];
 extern float m_ProjectionMatrix[16];
 extern float m_ModelMatrix[16];
@@ -54,9 +56,9 @@ void InitSDL2()
     Core->m_WindowSize.height = 720;
 
     // Set SDL Attributes
-    //SDL_GL_SetAttribute(SDL_GL_MULTISAMPLEBUFFERS, 1);
-    //SDL_GL_SetAttribute(SDL_GL_MULTISAMPLESAMPLES, 2);
-    //SDL_GL_SetAttribute( SDL_GL_STENCIL_SIZE, 1 );
+    SDL_GL_SetAttribute(SDL_GL_MULTISAMPLEBUFFERS, 1);
+    SDL_GL_SetAttribute(SDL_GL_MULTISAMPLESAMPLES, 2);
+    SDL_GL_SetAttribute(SDL_GL_STENCIL_SIZE, 1 );
 
     Core->m_Window = SDL_CreateWindow("Mir",
                                       SDL_WINDOWPOS_CENTERED,
@@ -86,6 +88,8 @@ void InitOpenGL()
     GameState.m_BgColor.r = (float)rand() / (float)RAND_MAX;
     GameState.m_BgColor.g = (float)rand() / (float)RAND_MAX;
     GameState.m_BgColor.b = (float)rand() / (float)RAND_MAX;
+    printf("%f %f %f", GameState.m_BgColor.r, GameState.m_BgColor.g, GameState.m_BgColor.b);
+
 
     if(LoadProgram(&m_GlProgram.ID, "source/shaders/main_frag.glsl", "source/shaders/main_vert.glsl" )  < 0)
     {
@@ -98,10 +102,17 @@ void InitOpenGL()
         h_log_msg("Failed load program: source/shaders/text_frag.glsl");
     } InitProgram_text(&m_GlProgram_text);
 
-   if(LoadProgram(&m_GlProgram_color.ID, "source/shaders/sample_frag.glsl", "source/shaders/sample_vert.glsl" )  < 0)
+    if(LoadProgram(&m_GlProgram_color.ID, "source/shaders/sample_frag.glsl", "source/shaders/sample_vert.glsl" )  < 0)
     {
         h_log_msg("Failed load program: source/shaders/sample_frag.glsl");
     } InitProgram_color(&m_GlProgram_color);
+
+    if(LoadProgram(&m_GlProgram_button.ID, "source/shaders/button_frag.glsl", "source/shaders/button_vert.glsl" )  < 0)
+    {
+        h_log_msg("Failed load program: source/shaders/button_frag.glsl");
+    } InitProgram_button(&m_GlProgram_button);
+
+
 
     InitBuffers();
 
@@ -151,7 +162,9 @@ void CloseFreeType2()
 void RenderFrame()
 {
     glClearColor(GameState.m_BgColor.r, GameState.m_BgColor.g, GameState.m_BgColor.b, 1.0f );
-    glClear(GL_COLOR_BUFFER_BIT);
+    glClear(GL_COLOR_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
+
+    //glStencilFunc()
 
     //glEnable(GL_MULTISAMPLE);
     //glEnable(GL_STENCIL_TEST);
@@ -568,6 +581,22 @@ void InitProgram_color(TOpenGLProgram_color* program)
 
     program->colorLocation = glGetUniformLocation(program->ID, "color");
     if(program->projectionLocation < 0 || program->vertexLocation < 0 || program->modelLocation < 0 || program->viewLocation < 0 || program->colorLocation < 0)
+    {
+        h_log_msg("Error initialization GL program main.");
+    }
+}
+
+void InitProgram_button(TOpenGLProgram_button* program)
+{
+    program->projectionLocation = glGetUniformLocation(program->ID, "projection");
+    program->modelLocation = glGetUniformLocation(program->ID, "model");
+    program->vertexLocation = glGetAttribLocation(program->ID, "vertexPosition");
+
+    program->textureCoordsLocation = glGetAttribLocation(program->ID, "textureCoordinates");
+    program->textureLocation = glGetUniformLocation(program->ID, "texture");
+    program->colorLightnessLocation = glGetUniformLocation(program->ID, "colorLightness");
+
+    if(program->projectionLocation < 0 || program->modelLocation < 0 || program->vertexLocation < 0 || program->textureCoordsLocation < 0 || program->textureLocation < 0 || program->colorLightnessLocation < 0)
     {
         h_log_msg("Error initialization GL program main.");
     }

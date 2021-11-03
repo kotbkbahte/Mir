@@ -1,8 +1,17 @@
-#include "gui_handler.h"
+#include "gui.h"
+
+const TMouseMoveEventFunc MouseEventFuncs[] = {MouseMoveMainMenu, MouseMoveStartMenu};
 
 int ids[10];
 
 int id_queue = 0;
+
+void DrawGuiColor()
+{
+
+}
+
+
 
 int gui_get_next_id()
 {

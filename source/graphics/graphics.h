@@ -33,6 +33,7 @@ int LoadProgram(GLuint* ID, char* frag, char* vert);
 void InitProgram(TOpenGLProgram_base* program);
 void InitProgram_text(TOpenGLProgram_text* program);
 void InitProgram_color(TOpenGLProgram_color* program);
+void InitProgram_button(TOpenGLProgram_button* program);
 
 // Prepare all stuff
 

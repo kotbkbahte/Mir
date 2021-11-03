@@ -2,7 +2,7 @@
 #define SIMPLE_BUTTON_H_INCLUDED
 
 #include "../core/game_types.h"
-#include "../handlers/gui_handler.h"
+#include "../gui/gui.h"
 
 #include "main_menu.h"
 #include "start_menu.h"

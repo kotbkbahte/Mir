@@ -37,7 +37,7 @@ void HandleEvents()
                 break;
             case SDL_MOUSEMOTION:
                 {
-                    // pass
+                    ms_Move(event);
                 }
                 break;
 

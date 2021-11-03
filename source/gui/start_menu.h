@@ -6,5 +6,5 @@
 
 void DrawStartMenu();
 void ToStartMenu();
-
+void MouseMoveStartMenu(int x, int y);
 #endif // START_MENU_H_INCLUDED
