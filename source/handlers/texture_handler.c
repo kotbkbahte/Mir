@@ -16,6 +16,10 @@ void LoadTextures()
     LoadTexture("assets/Settings.png", &m_Textures[BUTTON_SETTINGS]);
     LoadTexture("assets/Quit.png", &m_Textures[BUTTON_QUIT]);
 
+    LoadTexture("assets/Back.png", &m_Textures[BUTTON_BACK]);
+    LoadTexture("assets/warrior1.png", &m_Textures[BUTTON_WAR1]);
+    LoadTexture("assets/warrior2.png", &m_Textures[BUTTON_WAR2]);
+    LoadTexture("assets/warrior3.png", &m_Textures[BUTTON_WAR3]);
 }
 
 //int LoadTexture(const char* file_name, TScene* scene, int texture_type)

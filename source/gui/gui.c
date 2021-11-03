@@ -1,6 +1,10 @@
 #include "gui.h"
 
 const TMouseMoveEventFunc MouseEventFuncs[] = {MouseMoveMainMenu, MouseMoveStartMenu};
+const TButtonFunc ButtonFuncs[] = {ToMainMenu, ToStartMenu, goBack};// ToSettingsMenu, ToQuit};//, DrawTextMenu, DrawGame, DrawGameMenu, DrawResearchTree};
+
+const TDrawButtonFunc ButtonDrawFuncs[] = {draw_simple_button_t, draw_simple_button_t_stroke};
+
 
 int ids[10];
 
@@ -11,11 +15,15 @@ void DrawGuiColor()
 
 }
 
+void goBack()
+{
+
+}
 
 
 int gui_get_next_id()
 {
-    static id = 0;
+    static int id = 0;
 
     if(id_queue == 0)
     {

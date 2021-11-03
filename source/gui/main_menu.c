@@ -19,7 +19,8 @@ void DrawMainMenu()
     for(i = 0; i < 3 ; i++)
     {
         glStencilFunc(GL_ALWAYS, i + 1, 1);
-        draw_simple_button_t(i);
+        //draw_simple_button_t(i);
+        Simple_Buttons[i].m_Draw(i);
     }
 
 

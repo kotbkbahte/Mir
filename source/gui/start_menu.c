@@ -1,15 +1,27 @@
 #include "start_menu.h"
 
 extern TState State;
+extern TSimpleButton* Simple_Buttons;
+
+
 void DrawStartMenu()
 {
-    RenderText("Draw Start Menu!", 0.0f, 0.0f, 1.0f);
+    glEnable(GL_STENCIL_TEST);
+    glStencilOp(GL_KEEP, GL_KEEP, GL_REPLACE);
+
+
+    // Draw Stuff
+    int i;
+    for(i = 3; i < 7 ; i++)
+    {
+        glStencilFunc(GL_ALWAYS, i + 1, 1);
+        //draw_simple_button_t(i);
+        Simple_Buttons[i].m_Draw(i);
+    }
 }
 
 void MouseMoveStartMenu(int x, int y)
 {
-    printf("%d %d\n", x, y);
-
     GLuint index;
     int vp[4];
     glGetIntegerv(GL_VIEWPORT, vp);
@@ -19,6 +31,11 @@ void MouseMoveStartMenu(int x, int y)
     index-=1;
 
     printf("%d\n", index);
+
+    if(State.m_HoveredButton != -1)
+        Simple_Buttons[State.m_HoveredButton].m_IsHovered = False;
+    State.m_HoveredButton = index;
+    Simple_Buttons[State.m_HoveredButton].m_IsHovered = True;
 }
 
 
