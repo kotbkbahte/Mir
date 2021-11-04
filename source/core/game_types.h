@@ -61,13 +61,20 @@ typedef struct
 } TGameState;
 
 enum States {MAIN_MENU, START_MENU, SETTINGS_MENU, QUIT, TEST_MENU, GAME, GAME_MENU, RESEARCH_TREE, STATES_COUNT};
-enum Textures {BUTTON_PLAYGAME, BUTTON_SETTINGS, BUTTON_QUIT, BUTTON_BACK, BUTTON_WAR1, BUTTON_WAR2, BUTTON_WAR3,TEXTURES_COUNT};
-enum ButtonsDrawFunc {BUTTON_DRAW_DEFAULT, BUTTON_DRAW_STROKE};
+enum Textures {BUTTON_PLAYGAME, BUTTON_SETTINGS, BUTTON_QUIT,
+               BUTTON_BACK, BUTTON_WAR1, BUTTON_WAR2,
+               BUTTON_WAR3, BUTTON_CHANGE_BG_DARK, BUTTON_CHANGE_BG,
+               BUTTON_PRINT_LOG_DARK, BUTTON_PRINT_LOG,
+               BUTTON_TEST_1_DARK, BUTTON_TEST_1,
+               TEXTURES_COUNT};
+enum ButtonsDrawFunc {BUTTON_DRAW_DEFAULT, BUTTON_DRAW_STROKE, BUTTON_DRAW_ANOTHER_TEXTURED};
+enum ButtonEventFunc {TO_MAIN_MENU, TO_START_MENU, TO_SETTINGS_MENU, GO_BACK_MENU, TO_QUIT, PASS};
 
 
 typedef void (*TDrawState)(void);
-typedef void (*TButtonFunc)(void);
+typedef void (*TButtonEventFunc)(void);
 typedef void (*TMouseMoveEventFunc)(int, int);
+typedef void (*TMouseClickEventFunc)(int, int);
 typedef void (*TDrawButtonFunc)(int);
 typedef void (*TToState)(void);
 
@@ -77,7 +84,7 @@ typedef struct
     int m_HoveredButton;
     TDrawState m_StateDraw;
     TMouseMoveEventFunc f_MouseMoveEvent;
-
+    TMouseClickEventFunc f_MouseClickEvent;
 } TState;
 
 
@@ -171,11 +178,16 @@ typedef struct
     TPoint2_f m_Pos;
     TPoint3_f m_Color;
     unsigned int m_ID;
+
     unsigned int m_TextureID;
+
+
     int m_IsHovered;
     char m_Text[20];
 
     TDrawButtonFunc m_Draw;
+    TButtonEventFunc m_Event;
+
 } TSimpleButton;
 
 

@@ -4,6 +4,6 @@
 #include "../core/game_types.h"
 
 void ms_Move(SDL_Event event);
-void ms_Click();
+void ms_Click(SDL_Event event);
 
 #endif // MOUSE_HANDLER_H_INCLUDED

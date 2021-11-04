@@ -59,7 +59,7 @@ void kb_KeyPressed(SDL_Keycode code)
         ToSettingsMenu();
         break;
     case SDLK_b:
-        goBackMenu();
+        GoBackMenu();
         break;
 
     default:

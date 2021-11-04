@@ -10,7 +10,10 @@ void ms_Move(SDL_Event event)
     State.f_MouseMoveEvent(x, y);
 }
 
-void ms_Click()
+void ms_Click(SDL_Event event)
 {
+    int x = event.motion.x;
+    int y = event.motion.y;
 
+    State.f_MouseClickEvent(x, y);
 }

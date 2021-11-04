@@ -20,6 +20,13 @@ void LoadTextures()
     LoadTexture("assets/warrior1.png", &m_Textures[BUTTON_WAR1]);
     LoadTexture("assets/warrior2.png", &m_Textures[BUTTON_WAR2]);
     LoadTexture("assets/warrior3.png", &m_Textures[BUTTON_WAR3]);
+
+    LoadTexture("assets/Change_bg_dark.png",  &m_Textures[BUTTON_CHANGE_BG_DARK]);
+    LoadTexture("assets/Change_bg.png",       &m_Textures[BUTTON_CHANGE_BG]);
+    LoadTexture("assets/Test_1_dark.png",     &m_Textures[BUTTON_TEST_1_DARK]);
+    LoadTexture("assets/Test_1.png",          &m_Textures[BUTTON_TEST_1] );
+    LoadTexture("assets/Print_Log_dark.png",  &m_Textures[BUTTON_PRINT_LOG_DARK]);
+    LoadTexture("assets/Print_Log.png",       &m_Textures[BUTTON_PRINT_LOG]);
 }
 
 //int LoadTexture(const char* file_name, TScene* scene, int texture_type)

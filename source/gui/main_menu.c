@@ -3,11 +3,22 @@
 extern TState State;
 extern TSimpleButton* Simple_Buttons;
 
-int _Buttons[] = {};
-int _ButtonsCount;
+static int* _Buttons;
+static int _ButtonsCount;
+
 void SetupMainMenu()
 {
+    _ButtonsCount = 3;
+    _Buttons = malloc( sizeof(int) * _ButtonsCount );
 
+    _Buttons[0] = BUTTON_PLAYGAME;
+    _Buttons[1] = BUTTON_SETTINGS;
+    _Buttons[2] = BUTTON_QUIT;
+}
+
+void CloseMainMenu()
+{
+    free(_Buttons);
 }
 
 void DrawMainMenu()
@@ -17,12 +28,12 @@ void DrawMainMenu()
 
 
     // Draw Stuff
-    int i;
-    for(i = 0; i < 3 ; i++)
+    int i, id;
+    for(i = 0; i < _ButtonsCount ; i++)
     {
+        id = _Buttons[i];
         glStencilFunc(GL_ALWAYS, i + 1, 1);
-        //draw_simple_button_t(i);
-        Simple_Buttons[i].m_Draw(i);
+        Simple_Buttons[ id ].m_Draw( id );
     }
 
     glDisable(GL_STENCIL_TEST);
@@ -45,7 +56,15 @@ void MouseMoveMainMenu(int x, int y)
         Simple_Buttons[State.m_HoveredButton].m_IsHovered = False;
     State.m_HoveredButton = index;
     Simple_Buttons[State.m_HoveredButton].m_IsHovered = True;
+}
 
+void MouseClickMainMenu(int x, int y)
+{
+    if(State.m_HoveredButton != -1)
+    {
+        printf("%s\n", Simple_Buttons[State.m_HoveredButton].m_Text);
+        Simple_Buttons[State.m_HoveredButton].m_Event();
+    }
 }
 
 void ToMainMenu()
@@ -53,4 +72,5 @@ void ToMainMenu()
     State.m_StateIndex = MAIN_MENU;
     State.m_StateDraw     = DrawMainMenu;
     State.f_MouseMoveEvent = MouseMoveMainMenu;
+    State.f_MouseClickEvent = MouseClickMainMenu;
 }

@@ -45,4 +45,15 @@ void ToStartMenu()
     State.m_StateIndex     = START_MENU;
     State.m_StateDraw      = DrawStartMenu;
     State.f_MouseMoveEvent = MouseMoveStartMenu;
+    State.f_MouseClickEvent = MouseClickStartMenu;
 }
+
+void MouseClickStartMenu(int x, int y)
+{
+    if(State.m_HoveredButton != -1)
+    {
+        printf("%s\n", Simple_Buttons[State.m_HoveredButton].m_Text);
+        Simple_Buttons[State.m_HoveredButton].m_Event();
+    }
+}
+

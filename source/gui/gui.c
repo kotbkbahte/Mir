@@ -3,8 +3,10 @@
 extern TState State;
 
 const TMouseMoveEventFunc MouseEventFuncs[] = {MouseMoveMainMenu, MouseMoveStartMenu};
-const TButtonFunc ButtonFuncs[] = {ToMainMenu, ToStartMenu, ToSettingsMenu, goBackMenu};// , ToQuit};//, DrawTextMenu, DrawGame, DrawGameMenu, DrawResearchTree};
-const TDrawButtonFunc ButtonDrawFuncs[] = {draw_simple_button_t, draw_simple_button_t_stroke};
+
+
+const TButtonEventFunc ButtonEventFuncs[] = {ToMainMenu, ToStartMenu, ToSettingsMenu, GoBackMenu, ToQuit, PassButtonEvent };// , ToQuit};//, DrawTextMenu, DrawGame, DrawGameMenu, DrawResearchTree};
+const TDrawButtonFunc ButtonDrawFuncs[] = {draw_simple_button_t, draw_simple_button_t_stroke, draw_simple_button_t1};
 
 
 // States {MAIN_MENU, START_MENU, SETTINGS_MENU, QUIT, TEST_MENU, GAME, GAME_MENU, RESEARCH_TREE, STATES_COUNT};
@@ -16,12 +18,23 @@ int ids[10];
 
 int id_queue = 0;
 
+void SetupGUI()
+{
+    SetupMainMenu();
+    SetupSettingsMenu();
+}
+
+void CloseGUI()
+{
+    CloseMainMenu();
+}
+
 void DrawGuiColor()
 {
 
 }
 
-void goBackMenu()
+void GoBackMenu()
 {
     SetState(BackStates[State.m_StateIndex]);
 }

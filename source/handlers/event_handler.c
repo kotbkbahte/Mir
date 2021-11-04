@@ -32,7 +32,7 @@ void HandleEvents()
 
             case SDL_MOUSEBUTTONDOWN:
                 {
-                    // pass
+                    ms_Click(event);
                 }
                 break;
             case SDL_MOUSEMOTION:

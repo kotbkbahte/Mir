@@ -40,7 +40,7 @@ void InitGraphics()
 
     create_simple_buttons();
 
-
+    SetupGUI();
 
 //      InitScene();
 }
@@ -88,7 +88,7 @@ void InitOpenGL()
     GameState.m_BgColor.r = (float)rand() / (float)RAND_MAX;
     GameState.m_BgColor.g = (float)rand() / (float)RAND_MAX;
     GameState.m_BgColor.b = (float)rand() / (float)RAND_MAX;
-    printf("%f %f %f", GameState.m_BgColor.r, GameState.m_BgColor.g, GameState.m_BgColor.b);
+    printf("%f %f %f\n", GameState.m_BgColor.r, GameState.m_BgColor.g, GameState.m_BgColor.b);
 
 
     if(LoadProgram(&m_GlProgram.ID, "source/shaders/main_frag.glsl", "source/shaders/main_vert.glsl" )  < 0)
