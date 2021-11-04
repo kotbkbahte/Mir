@@ -596,7 +596,10 @@ void InitProgram_button(TOpenGLProgram_button* program)
     program->textureLocation = glGetUniformLocation(program->ID, "texture");
     program->colorLightnessLocation = glGetUniformLocation(program->ID, "colorLightness");
 
-    if(program->projectionLocation < 0 || program->modelLocation < 0 || program->vertexLocation < 0 || program->textureCoordsLocation < 0 || program->textureLocation < 0 || program->colorLightnessLocation < 0)
+    program->isHoveredLocation = glGetUniformLocation(program->ID, "isHovered");
+    program->strokeColorLocation = glGetUniformLocation(program->ID, "strokeColor");
+
+    if(program->strokeColorLocation < 0 || program->isHoveredLocation < 0 || program->projectionLocation < 0 || program->modelLocation < 0 || program->vertexLocation < 0 || program->textureCoordsLocation < 0 || program->textureLocation < 0 || program->colorLightnessLocation < 0)
     {
         h_log_msg("Error initialization GL program main.");
     }

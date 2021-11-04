@@ -2,7 +2,7 @@
 
 extern TState State;
 extern const TDrawState DrawStates[];
-
+extern TToState ToState[];
 void InitGame()
 {
     SetState(MAIN_MENU);
@@ -10,6 +10,7 @@ void InitGame()
 
 void SetState(int i)
 {
-    State.m_StateIndex = i;
-    State.m_StateDraw  = DrawStates[i];
+    if(i < 0)
+        return;
+    ToState[i]();
 }

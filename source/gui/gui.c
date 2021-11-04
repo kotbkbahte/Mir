@@ -1,10 +1,16 @@
 #include "gui.h"
 
-const TMouseMoveEventFunc MouseEventFuncs[] = {MouseMoveMainMenu, MouseMoveStartMenu};
-const TButtonFunc ButtonFuncs[] = {ToMainMenu, ToStartMenu, goBack};// ToSettingsMenu, ToQuit};//, DrawTextMenu, DrawGame, DrawGameMenu, DrawResearchTree};
+extern TState State;
 
+const TMouseMoveEventFunc MouseEventFuncs[] = {MouseMoveMainMenu, MouseMoveStartMenu};
+const TButtonFunc ButtonFuncs[] = {ToMainMenu, ToStartMenu, ToSettingsMenu, goBackMenu};// , ToQuit};//, DrawTextMenu, DrawGame, DrawGameMenu, DrawResearchTree};
 const TDrawButtonFunc ButtonDrawFuncs[] = {draw_simple_button_t, draw_simple_button_t_stroke};
 
+
+// States {MAIN_MENU, START_MENU, SETTINGS_MENU, QUIT, TEST_MENU, GAME, GAME_MENU, RESEARCH_TREE, STATES_COUNT};
+
+const int BackStates[] = {-1, MAIN_MENU, MAIN_MENU, -1, MAIN_MENU};
+const TToState ToState[] = {ToMainMenu, ToStartMenu, ToSettingsMenu};
 
 int ids[10];
 
@@ -15,9 +21,9 @@ void DrawGuiColor()
 
 }
 
-void goBack()
+void goBackMenu()
 {
-
+    SetState(BackStates[State.m_StateIndex]);
 }
 
 

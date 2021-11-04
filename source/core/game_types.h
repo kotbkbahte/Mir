@@ -69,7 +69,7 @@ typedef void (*TDrawState)(void);
 typedef void (*TButtonFunc)(void);
 typedef void (*TMouseMoveEventFunc)(int, int);
 typedef void (*TDrawButtonFunc)(int);
-
+typedef void (*TToState)(void);
 
 typedef struct
 {
@@ -125,6 +125,8 @@ typedef struct
     GLuint textColorLocation;
     GLuint outlineColorLocation;
 
+
+
 } TOpenGLProgram_text;
 
 typedef struct
@@ -150,7 +152,8 @@ typedef struct
     GLuint textureCoordsLocation;
     GLuint textureLocation;
     GLuint colorLightnessLocation;
-
+    GLuint isHoveredLocation;
+    GLuint strokeColorLocation;
 } TOpenGLProgram_button;
 
 typedef struct

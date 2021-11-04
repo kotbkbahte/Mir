@@ -3,13 +3,15 @@
 extern TState State;
 extern TSimpleButton* Simple_Buttons;
 
+int _Buttons[] = {};
+int _ButtonsCount;
+void SetupMainMenu()
+{
+
+}
+
 void DrawMainMenu()
 {
-    //draw_simple_button(0);
-
-    //draw_simple_button_t(1);
-    //draw_simple_button_t(2);
-
     glEnable(GL_STENCIL_TEST);
     glStencilOp(GL_KEEP, GL_KEEP, GL_REPLACE);
 
@@ -23,16 +25,7 @@ void DrawMainMenu()
         Simple_Buttons[i].m_Draw(i);
     }
 
-
-
-    //draw_simple_button_t(1);
-    //draw_simple_button_t(2);
-
-    //RenderText_w("A", 0.0f, 0.0f, 0.0f);
-
-    //RenderText("Main Menu!", 0.0f, 0.0f, 1.0f);
-
-
+    glDisable(GL_STENCIL_TEST);
 }
 
 void MouseMoveMainMenu(int x, int y)

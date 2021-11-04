@@ -1,6 +1,10 @@
 #include "keyboard_handler.h"
 
 
+#include "../gui/main_menu.h"
+#include "../gui/start_menu.h"
+#include "../gui/settings_menu.h"
+
 extern TGameState GameState;
 extern const Uint8* m_Keyboard;
 extern int Running;
@@ -52,9 +56,11 @@ void kb_KeyPressed(SDL_Keycode code)
         ToStartMenu();
         break;
     case SDLK_3:
-
+        ToSettingsMenu();
         break;
-
+    case SDLK_b:
+        goBackMenu();
+        break;
 
     default:
         break;

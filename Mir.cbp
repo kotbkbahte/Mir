@@ -69,6 +69,10 @@
 			<Option compilerVar="CC" />
 		</Unit>
 		<Unit filename="source/gui/main_menu.h" />
+		<Unit filename="source/gui/settings_menu.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="source/gui/settings_menu.h" />
 		<Unit filename="source/gui/simple_button.c">
 			<Option compilerVar="CC" />
 		</Unit>
