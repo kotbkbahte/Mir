@@ -15,5 +15,6 @@ int gui_get_next_id();
 
 void gui_remove_id(int id);
 void GoBackMenu();
+void ChangeBgColor();
 
 #endif // GUI_HANDLER_H_INCLUDED

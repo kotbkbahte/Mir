@@ -11,9 +11,9 @@ void SetupMainMenu()
     _ButtonsCount = 3;
     _Buttons = malloc( sizeof(int) * _ButtonsCount );
 
-    _Buttons[0] = BUTTON_PLAYGAME;
-    _Buttons[1] = BUTTON_SETTINGS;
-    _Buttons[2] = BUTTON_QUIT;
+    _Buttons[0] = 0;
+    _Buttons[1] = 1;
+    _Buttons[2] = 3;
 }
 
 void CloseMainMenu()
@@ -26,14 +26,14 @@ void DrawMainMenu()
     glEnable(GL_STENCIL_TEST);
     glStencilOp(GL_KEEP, GL_KEEP, GL_REPLACE);
 
-
     // Draw Stuff
-    int i, id;
+    int i, id, t;
     for(i = 0; i < _ButtonsCount ; i++)
     {
         id = _Buttons[i];
-        glStencilFunc(GL_ALWAYS, i + 1, 1);
-        Simple_Buttons[ id ].m_Draw( id );
+        //t  = Simple_Buttons[ id ].m_TextureID;
+        glStencilFunc(GL_ALWAYS, id + 1, 1);
+        Simple_Buttons[ id ].m_Draw_txy( id, 0.0f, -(i - 1) * 1.2f );
     }
 
     glDisable(GL_STENCIL_TEST);
@@ -41,7 +41,6 @@ void DrawMainMenu()
 
 void MouseMoveMainMenu(int x, int y)
 {
-    //printf("%d %d\n", x, y);
     GLuint index;
     int vp[4];
     glGetIntegerv(GL_VIEWPORT, vp);
@@ -70,7 +69,7 @@ void MouseClickMainMenu(int x, int y)
 void ToMainMenu()
 {
     State.m_StateIndex = MAIN_MENU;
-    State.m_StateDraw     = DrawMainMenu;
+    State.f_StateDraw     = DrawMainMenu;
     State.f_MouseMoveEvent = MouseMoveMainMenu;
     State.f_MouseClickEvent = MouseClickMainMenu;
 }

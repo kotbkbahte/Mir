@@ -1,12 +1,13 @@
 #include "gui.h"
 
 extern TState State;
+extern TGameState GameState;
 
 const TMouseMoveEventFunc MouseEventFuncs[] = {MouseMoveMainMenu, MouseMoveStartMenu};
 
 
 const TButtonEventFunc ButtonEventFuncs[] = {ToMainMenu, ToStartMenu, ToSettingsMenu, GoBackMenu, ToQuit, PassButtonEvent };// , ToQuit};//, DrawTextMenu, DrawGame, DrawGameMenu, DrawResearchTree};
-const TDrawButtonFunc ButtonDrawFuncs[] = {draw_simple_button_t, draw_simple_button_t_stroke, draw_simple_button_t1};
+const TButtonDrawFunc ButtonDrawFuncs[] = {draw_simple_button_t, draw_simple_button_t_stroke, draw_simple_button_t1};
 
 
 // States {MAIN_MENU, START_MENU, SETTINGS_MENU, QUIT, TEST_MENU, GAME, GAME_MENU, RESEARCH_TREE, STATES_COUNT};
@@ -22,6 +23,7 @@ void SetupGUI()
 {
     SetupMainMenu();
     SetupSettingsMenu();
+    SetupStartMenu();
 }
 
 void CloseGUI()
@@ -39,6 +41,12 @@ void GoBackMenu()
     SetState(BackStates[State.m_StateIndex]);
 }
 
+void ChangeBgColor()
+{
+    GameState.m_BgColor.r = (float)rand() / (float)RAND_MAX;
+    GameState.m_BgColor.g = (float)rand() / (float)RAND_MAX;
+    GameState.m_BgColor.b = (float)rand() / (float)RAND_MAX;
+}
 
 int gui_get_next_id()
 {

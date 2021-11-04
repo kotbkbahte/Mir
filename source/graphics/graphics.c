@@ -85,9 +85,7 @@ void InitOpenGL()
         h_error_msg("Failed to load glad.\n", OPENGL_ERROR);
     }
 
-    GameState.m_BgColor.r = (float)rand() / (float)RAND_MAX;
-    GameState.m_BgColor.g = (float)rand() / (float)RAND_MAX;
-    GameState.m_BgColor.b = (float)rand() / (float)RAND_MAX;
+    ChangeBgColor();
     printf("%f %f %f\n", GameState.m_BgColor.r, GameState.m_BgColor.g, GameState.m_BgColor.b);
 
 
@@ -164,17 +162,8 @@ void RenderFrame()
     glClearColor(GameState.m_BgColor.r, GameState.m_BgColor.g, GameState.m_BgColor.b, 1.0f );
     glClear(GL_COLOR_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
 
-    //glStencilFunc()
+    State.f_StateDraw();
 
-    //glEnable(GL_MULTISAMPLE);
-    //glEnable(GL_STENCIL_TEST);
-    //glEnable(GL_DEPTH_TEST);
-
-    //DrawSquare1();
-    //DrawMainMenu();
-
-    //if (!State.m_StateDraw)
-        State.m_StateDraw();
     glFinish();
     SDL_GL_SwapWindow(Core->m_Window);
 }

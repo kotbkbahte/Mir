@@ -4,6 +4,7 @@
 #include "../core/game_types.h"
 #include "../graphics/graphics.h"
 
+void SetupStartMenu();
 void DrawStartMenu();
 void ToStartMenu();
 void MouseMoveStartMenu(int x, int y);

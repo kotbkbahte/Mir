@@ -5,8 +5,7 @@
 #include "../handlers/event_handler.h"
 #include "../handlers/message_handler.h"
 #include "../handlers/texture_handler.h"
-#include "../gui/main_menu.h"
-#include "../gui/start_menu.h"
+#include "../gui/gui.h"
 #include "camera.h"
 
 #include <stdlib.h>

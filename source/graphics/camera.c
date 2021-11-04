@@ -5,10 +5,9 @@ extern TCore *Core;
 
 void InitCamera()
 {
-    float k = (float)Core->m_WindowSize.width / Core->m_WindowSize.height;
     loadIdentity(m_ProjectionMatrix);
-    matrixOrtho(m_ProjectionMatrix, -1, 1, -k, k, -50.0f, 50.0f);
-    UpdateCamProjection(2);
+    //matrixOrtho(m_ProjectionMatrix, -1, 1, -k, k, -50.0f, 50.0f);
+    UpdateCamProjection(1.5);
 }
 void UpdateCamProjection(float scale)
 {

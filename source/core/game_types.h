@@ -73,16 +73,17 @@ enum ButtonEventFunc {TO_MAIN_MENU, TO_START_MENU, TO_SETTINGS_MENU, GO_BACK_MEN
 
 typedef void (*TDrawState)(void);
 typedef void (*TButtonEventFunc)(void);
+typedef void (*TButtonDrawFunc)(int);
+typedef void (*TButtonDraw_txyFunc)(int, float, float);
 typedef void (*TMouseMoveEventFunc)(int, int);
 typedef void (*TMouseClickEventFunc)(int, int);
-typedef void (*TDrawButtonFunc)(int);
 typedef void (*TToState)(void);
 
 typedef struct
 {
     int m_StateIndex;
     int m_HoveredButton;
-    TDrawState m_StateDraw;
+    TDrawState f_StateDraw;
     TMouseMoveEventFunc f_MouseMoveEvent;
     TMouseClickEventFunc f_MouseClickEvent;
 } TState;
@@ -185,7 +186,10 @@ typedef struct
     int m_IsHovered;
     char m_Text[20];
 
-    TDrawButtonFunc m_Draw;
+
+        TButtonDrawFunc m_Draw;
+        TButtonDraw_txyFunc m_Draw_txy;
+
     TButtonEventFunc m_Event;
 
 } TSimpleButton;

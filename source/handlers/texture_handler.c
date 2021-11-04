@@ -12,21 +12,21 @@ extern TCharTexture m_Characters[128];
 
 void LoadTextures()
 {
-    LoadTexture("assets/PlayGame.png", &m_Textures[BUTTON_PLAYGAME]);
-    LoadTexture("assets/Settings.png", &m_Textures[BUTTON_SETTINGS]);
-    LoadTexture("assets/Quit.png", &m_Textures[BUTTON_QUIT]);
+    LoadTexture("assets/buttons/PlayGame.png", &m_Textures[BUTTON_PLAYGAME]);
+    LoadTexture("assets/buttons/Settings.png", &m_Textures[BUTTON_SETTINGS]);
+    LoadTexture("assets/buttons/Quit.png", &m_Textures[BUTTON_QUIT]);
 
-    LoadTexture("assets/Back.png", &m_Textures[BUTTON_BACK]);
+    LoadTexture("assets/buttons/Back.png", &m_Textures[BUTTON_BACK]);
     LoadTexture("assets/warrior1.png", &m_Textures[BUTTON_WAR1]);
     LoadTexture("assets/warrior2.png", &m_Textures[BUTTON_WAR2]);
     LoadTexture("assets/warrior3.png", &m_Textures[BUTTON_WAR3]);
 
     LoadTexture("assets/Change_bg_dark.png",  &m_Textures[BUTTON_CHANGE_BG_DARK]);
-    LoadTexture("assets/Change_bg.png",       &m_Textures[BUTTON_CHANGE_BG]);
+    LoadTexture("assets/buttons/Change_bg.png",       &m_Textures[BUTTON_CHANGE_BG]);
     LoadTexture("assets/Test_1_dark.png",     &m_Textures[BUTTON_TEST_1_DARK]);
-    LoadTexture("assets/Test_1.png",          &m_Textures[BUTTON_TEST_1] );
+    LoadTexture("assets/buttons/Test_1.png",          &m_Textures[BUTTON_TEST_1] );
     LoadTexture("assets/Print_Log_dark.png",  &m_Textures[BUTTON_PRINT_LOG_DARK]);
-    LoadTexture("assets/Print_Log.png",       &m_Textures[BUTTON_PRINT_LOG]);
+    LoadTexture("assets/buttons/Print_Log.png",       &m_Textures[BUTTON_PRINT_LOG]);
 }
 
 //int LoadTexture(const char* file_name, TScene* scene, int texture_type)
