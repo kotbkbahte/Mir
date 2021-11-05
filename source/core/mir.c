@@ -3,6 +3,8 @@
 extern TState State;
 extern const TDrawState DrawStates[];
 extern TToState ToState[];
+
+
 void InitGame()
 {
     SetState(MAIN_MENU);

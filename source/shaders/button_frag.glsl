@@ -46,6 +46,7 @@ void main()
         return;
     }
     
+    
     FragColor = color;
     return;
 }

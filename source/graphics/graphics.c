@@ -56,9 +56,10 @@ void InitSDL2()
     Core->m_WindowSize.height = 720;
 
     // Set SDL Attributes
+
     SDL_GL_SetAttribute(SDL_GL_MULTISAMPLEBUFFERS, 1);
     SDL_GL_SetAttribute(SDL_GL_MULTISAMPLESAMPLES, 2);
-    SDL_GL_SetAttribute(SDL_GL_STENCIL_SIZE, 1 );
+    SDL_GL_SetAttribute(SDL_GL_STENCIL_SIZE, 1);
 
     Core->m_Window = SDL_CreateWindow("Mir",
                                       SDL_WINDOWPOS_CENTERED,
@@ -162,11 +163,13 @@ void RenderFrame()
     glClearColor(GameState.m_BgColor.r, GameState.m_BgColor.g, GameState.m_BgColor.b, 1.0f );
     glClear(GL_COLOR_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
 
+    DrawBackground();
     State.f_StateDraw();
 
     glFinish();
     SDL_GL_SwapWindow(Core->m_Window);
 }
+
 
 const GLfloat textureCoordinates[] =
 {

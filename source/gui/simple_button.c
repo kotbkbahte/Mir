@@ -1,6 +1,5 @@
 #include "simple_button.h"
 
-
     extern int Running;
     extern TOpenGLProgram_color m_GlProgram_color;
     extern float m_ProjectionMatrix[16];
@@ -11,7 +10,6 @@
     extern TOpenGLProgram_button m_GlProgram_button;
     extern const TButtonDrawFunc ButtonDrawFuncs[];
     extern const TButtonEventFunc ButtonEventFuncs[];
-
 
 int Buttons_Count = 0;
 int Draw_Buttons_Count;
@@ -41,30 +39,6 @@ void create_simple_buttons()
 
 }
 
-void create_simple_button(char* button_name, int event_func, int draw_func, unsigned int texture_id, float x, float y)
-{
-
-    Simple_Buttons = realloc(Simple_Buttons, (Buttons_Count + 1) * sizeof(TSimpleButton));
-
-    int w , h;
-    glBindTexture(GL_TEXTURE_2D, texture_id);
-    glGetTexLevelParameteriv(GL_TEXTURE_2D, 0, GL_TEXTURE_WIDTH, &w);
-    glGetTexLevelParameteriv(GL_TEXTURE_2D, 0, GL_TEXTURE_HEIGHT, &h);
-
-    Simple_Buttons[Buttons_Count].m_ID = gui_get_next_id();
-    Simple_Buttons[Buttons_Count].m_Color = (TPoint3_f){ .r = rand(), .g = rand(), .b = rand() };
-    Simple_Buttons[Buttons_Count].m_Pos = (TPoint2_f){.x = x, .y = y};
-    Simple_Buttons[Buttons_Count].m_Size = (TPoint2_f){.x = (float)w, .y = (float)h};
-    Simple_Buttons[Buttons_Count].m_IsHovered = False;
-    Simple_Buttons[Buttons_Count].m_TextureID = texture_id;
-    Simple_Buttons[Buttons_Count].m_Draw      = ButtonDrawFuncs[draw_func];
-    Simple_Buttons[Buttons_Count].m_Event     = ButtonEventFuncs[event_func];
-
-    strcpy( Simple_Buttons[Buttons_Count].m_Text, button_name );
-
-    Buttons_Count += 1;
-}
-
 void create_simple_button_ex(int id, TButtonEventFunc event_func, TButtonDraw_txyFunc draw_func, unsigned int texture_id, char* button_name)
 {
     int w , h;
@@ -72,7 +46,7 @@ void create_simple_button_ex(int id, TButtonEventFunc event_func, TButtonDraw_tx
     glGetTexLevelParameteriv(GL_TEXTURE_2D, 0, GL_TEXTURE_WIDTH, &w);
     glGetTexLevelParameteriv(GL_TEXTURE_2D, 0, GL_TEXTURE_HEIGHT, &h);
 
-    Simple_Buttons[id].m_ID = gui_get_next_id();
+    Simple_Buttons[id].m_ID = id;
     //Simple_Buttons[id].m_Color = (TPoint3_f){ .r = rand(), .g = rand(), .b = rand() };
     Simple_Buttons[id].m_Size = (TPoint2_f){.x = (float)w, .y = (float)h};
     Simple_Buttons[id].m_IsHovered = False;

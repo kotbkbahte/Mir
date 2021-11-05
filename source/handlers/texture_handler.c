@@ -27,6 +27,9 @@ void LoadTextures()
     LoadTexture("assets/buttons/Test_1.png",          &m_Textures[BUTTON_TEST_1] );
     LoadTexture("assets/Print_Log_dark.png",  &m_Textures[BUTTON_PRINT_LOG_DARK]);
     LoadTexture("assets/buttons/Print_Log.png",       &m_Textures[BUTTON_PRINT_LOG]);
+
+    LoadTexture("assets/background.png", &m_Textures[BACKGROUND_IMAGE]);
+
 }
 
 //int LoadTexture(const char* file_name, TScene* scene, int texture_type)

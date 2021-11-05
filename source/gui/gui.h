@@ -11,10 +11,15 @@
 void SetupGUI();
 void CloseGUI();
 
-int gui_get_next_id();
 
-void gui_remove_id(int id);
+void gui_MouseClick(int x, int y);
+void gui_MouseMove(int x, int y);
+
+
 void GoBackMenu();
+
 void ChangeBgColor();
+void SetBgImage(int);
+void DrawBackground();
 
 #endif // GUI_HANDLER_H_INCLUDED

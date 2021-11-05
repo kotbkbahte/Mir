@@ -4,14 +4,14 @@ extern int Running;
 extern TKeyboard m_Keyboard;
 
 #define log_int(a) printf("%s: %f\n", #a, a);
+
 const float a[] = {0.125, 0.25, 0.5, 1,1.25, 1.5, 1.75 , 2, 4, 8, 16, 32, 64, 128, 256, 512, 1024, 2048, 4096, 8192};
 
 void HandleEvents()
 {
     SDL_Event event;
 
-
-    if (SDL_PollEvent(&event))
+    while (SDL_PollEvent(&event))
     {
         switch(event.type)
         {
@@ -26,7 +26,7 @@ void HandleEvents()
                     if ( (scale_i >= 100) || (scale_i <= -3) )
                         scale_i -= event.wheel.y;
                     //printf("%d\n", scale_i );
-                    log_int(a[scale_i + 3]);
+                    //log_int(a[scale_i + 3]);
                     UpdateCamProjection( a[scale_i + 3] );
                 }
                 break;
@@ -74,9 +74,6 @@ void HandleEvents()
 
 
         }
-
-
-
 
 
     }

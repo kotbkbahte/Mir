@@ -8,12 +8,7 @@
 void SetupMainMenu();
 void CloseMainMenu();
 
-
 void DrawMainMenu();
-
 void ToMainMenu();
-
-void MouseMoveMainMenu(int x, int y);
-void MouseClickMainMenu(int x, int y);
 
 #endif // MAIN_MENU_H_INCLUDED

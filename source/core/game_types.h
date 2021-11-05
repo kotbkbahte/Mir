@@ -41,6 +41,7 @@ typedef union
     };
 } TPoint2_i;
 
+
 typedef union
 {
     struct {
@@ -58,6 +59,8 @@ typedef struct
 typedef struct
 {
     TPoint3_f m_BgColor;
+    GLuint m_Background_image;
+    TPoint2_i m_BackgroundSize;
 } TGameState;
 
 enum States {MAIN_MENU, START_MENU, SETTINGS_MENU, QUIT, TEST_MENU, GAME, GAME_MENU, RESEARCH_TREE, STATES_COUNT};
@@ -66,7 +69,10 @@ enum Textures {BUTTON_PLAYGAME, BUTTON_SETTINGS, BUTTON_QUIT,
                BUTTON_WAR3, BUTTON_CHANGE_BG_DARK, BUTTON_CHANGE_BG,
                BUTTON_PRINT_LOG_DARK, BUTTON_PRINT_LOG,
                BUTTON_TEST_1_DARK, BUTTON_TEST_1,
+               BACKGROUND_IMAGE,
                TEXTURES_COUNT};
+
+// Need?
 enum ButtonsDrawFunc {BUTTON_DRAW_DEFAULT, BUTTON_DRAW_STROKE, BUTTON_DRAW_ANOTHER_TEXTURED};
 enum ButtonEventFunc {TO_MAIN_MENU, TO_START_MENU, TO_SETTINGS_MENU, GO_BACK_MENU, TO_QUIT, PASS};
 

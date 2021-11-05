@@ -6,8 +6,6 @@
 
 
 //void create_simple_button(char* button_name, float x, float y, float h, float w);
-void create_simple_button(char* button_name, int event_func, int draw_func, unsigned int texture_id, float x, float y);
-
 void create_simple_button_ex(int id, TButtonEventFunc event_func, TButtonDraw_txyFunc draw_func, unsigned int texture_id, char* button_name);
 
 void create_simple_buttons();

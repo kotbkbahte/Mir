@@ -25,8 +25,8 @@ void h_log_msg(char* msg)
     static int i = 0;
     i++;
     fprintf(stdout, "Log [%d]: %s\n", i , msg);
-
 }
+
 
 void h_log_msg_arg(char* msg, char* arg)
 {
