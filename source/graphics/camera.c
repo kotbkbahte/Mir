@@ -1,11 +1,16 @@
 #include "camera.h"
 
 extern float m_ProjectionMatrix[16];
+extern float m_IdentityMatrix[16];
+extern float m_ViewMatrix[16];
+
 extern TCore *Core;
 
 void InitCamera()
 {
     loadIdentity(m_ProjectionMatrix);
+    loadIdentity(m_IdentityMatrix);
+    loadIdentity(m_ViewMatrix);
     //matrixOrtho(m_ProjectionMatrix, -1, 1, -k, k, -50.0f, 50.0f);
     UpdateCamProjection(1.5);
 }

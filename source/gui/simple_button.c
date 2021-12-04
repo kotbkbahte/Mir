@@ -33,9 +33,9 @@ void create_simple_buttons()
     create_simple_button_ex(5, PassButtonEvent, draw_simple_button_txy, m_Textures[BUTTON_TEST_1],   "Test1");
     create_simple_button_ex(6, PassButtonEvent, draw_simple_button_txy, m_Textures[BUTTON_PRINT_LOG],"PrintLog");
 
-    create_simple_button_ex(7, PassButtonEvent, draw_simple_button_txy,  m_Textures[BUTTON_WAR1], "war1");
-    create_simple_button_ex(8, PassButtonEvent, draw_simple_button_txy,  m_Textures[BUTTON_WAR2], "war2");
-    create_simple_button_ex(9, PassButtonEvent, draw_simple_button_txy,  m_Textures[BUTTON_WAR3], "war3");
+    create_simple_button_ex(7, ToGame1, draw_simple_button_txy,  m_Textures[BUTTON_WAR1], "war1");
+    create_simple_button_ex(8, ToGame2, draw_simple_button_txy,  m_Textures[BUTTON_WAR2], "war2");
+    create_simple_button_ex(9, ToGame3, draw_simple_button_txy,  m_Textures[BUTTON_WAR3], "war3");
 
 }
 

@@ -11,15 +11,19 @@
 TCore *Core;
 TState State;
 TGameState GameState;
+
 TOpenGLProgram_base m_GlProgram;
 TOpenGLProgram_text m_GlProgram_text;
 TOpenGLProgram_color m_GlProgram_color;
 TOpenGLProgram_button m_GlProgram_button;
 
 
-GLuint m_Textures[10];
+GLuint m_Textures[TEXTURES_COUNT];
+GLuint m_GameTextures[TG_COUNT];
 const Uint8* m_Keyboard;
 float m_ProjectionMatrix[16];
+float m_ViewMatrix[16];
+float m_IdentityMatrix[16];
 float m_ModelMatrix[16];
 float m_TestMatrix[16];
 
@@ -49,8 +53,3 @@ void CloseCore()
     free((void*)Core);
 }
 
-void UpdateState()
-{
-
-
-}

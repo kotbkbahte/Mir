@@ -11,7 +11,7 @@ int main(int argc, char *argv[])
     while (Running)
     {
         HandleEvents();
-        UpdateState();
+        UpdateState(1.0f);
         RenderFrame();
     }
 

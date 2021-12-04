@@ -171,7 +171,7 @@ void RenderFrame()
 }
 
 
-const GLfloat textureCoordinates[] =
+static const GLfloat textureCoordinates[] =
 {
     1.0f, 1.0f,
     0, 1.0f,
@@ -182,7 +182,7 @@ const GLfloat textureCoordinates[] =
      1,  1,
      1, -1,
 };
-const GLfloat squareVertices[] = {
+static const GLfloat squareVertices[] = {
     1.0f, 1.0f, 2.0f,
     -1.0f, 1.0f, 2.0f,
     -1.0f, -1.0f, 2.0f,

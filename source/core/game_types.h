@@ -58,9 +58,32 @@ typedef struct
 
 typedef struct
 {
+    int m_SubTileTexture;
+    int m_Unit;
+    int m_Building;
+    int m_Landscape;
+} TSubTile;
+
+typedef struct
+{
+    TSubTile m_SubTile[4];
+} TTile;
+
+typedef struct
+{
+    TTile* m_Tiles;
+    int m_Size;
+    int m_SelectedTile;
+} TMap;
+
+typedef struct
+{
     TPoint3_f m_BgColor;
     GLuint m_Background_image;
     TPoint2_i m_BackgroundSize;
+
+    int m_PlayerID;
+    TMap m_GameMap;
 } TGameState;
 
 enum States {MAIN_MENU, START_MENU, SETTINGS_MENU, QUIT, TEST_MENU, GAME, GAME_MENU, RESEARCH_TREE, STATES_COUNT};
@@ -69,8 +92,17 @@ enum Textures {BUTTON_PLAYGAME, BUTTON_SETTINGS, BUTTON_QUIT,
                BUTTON_WAR3, BUTTON_CHANGE_BG_DARK, BUTTON_CHANGE_BG,
                BUTTON_PRINT_LOG_DARK, BUTTON_PRINT_LOG,
                BUTTON_TEST_1_DARK, BUTTON_TEST_1,
-               BACKGROUND_IMAGE,
+               BACKGROUND_IMAGE, BACKGROUND_IMAGE_SPACE,
                TEXTURES_COUNT};
+
+// Texture game
+#define tg(a) TG_ ## a
+enum GameTextures {tg(OCEAN), tg(BLUE), tg(SEA),
+                   tg(GRASS_DARK), tg(GRASS_LIGHT),
+                   tg(ROCK), tg(TOWER), tg(WARRIOR),
+                   tg(SELECTED),
+                   tg(COUNT)};
+#undef tg
 
 // Need?
 enum ButtonsDrawFunc {BUTTON_DRAW_DEFAULT, BUTTON_DRAW_STROKE, BUTTON_DRAW_ANOTHER_TEXTURED};
@@ -78,7 +110,10 @@ enum ButtonEventFunc {TO_MAIN_MENU, TO_START_MENU, TO_SETTINGS_MENU, GO_BACK_MEN
 
 
 typedef void (*TDrawState)(void);
+
 typedef void (*TButtonEventFunc)(void);
+typedef void (*TButtonEventFunc_str)(char* str);
+
 typedef void (*TButtonDrawFunc)(int);
 typedef void (*TButtonDraw_txyFunc)(int, float, float);
 typedef void (*TMouseMoveEventFunc)(int, int);
@@ -95,20 +130,8 @@ typedef struct
 } TState;
 
 
-typedef struct
-{
-    int a;
-} TMap;
 
-typedef struct
-{
-    int a;
-} TSubTile;
 
-typedef struct
-{
-    int a;
-} TTile;
 
 typedef const Uint8* TKeyboard;
 

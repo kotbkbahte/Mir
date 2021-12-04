@@ -25,6 +25,7 @@ void RenderFrame();
 void RenderText(char* text, float x, float y, float scale);
 void RenderText_w(char* text, float x, float y, float width);
 
+
 void UpdateCamProjection(float scale);
 
 int LoadProgram(GLuint* ID, char* frag, char* vert);

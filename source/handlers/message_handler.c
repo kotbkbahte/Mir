@@ -43,3 +43,8 @@ void h_debug_msg(char* msg)
     i++;
     fprintf(stdout, "Debug [%d]: %s", i , msg);
 }
+
+void h_func_not_implemented(char* msg)
+{
+    fprintf(stdout, "Not function not implemented: %s\n", msg);
+}

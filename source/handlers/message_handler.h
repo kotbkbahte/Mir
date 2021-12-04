@@ -12,5 +12,6 @@ void h_log_msg_arg(char* msg, char* arg);
 
 void h_debug_msg(char* msg);
 
+void h_func_not_implemented(char* msg);
 
 #endif // MESSAGE_HANDLER_H_INCLUDED
