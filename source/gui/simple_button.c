@@ -98,9 +98,6 @@ void draw_simple_button_txy(int id, float x, float y)
 
     glBindTexture(GL_TEXTURE_2D, b.m_TextureID);
 
-    glEnable(GL_BLEND);
-    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-
     glUseProgram(m_GlProgram_button.ID);
     float m[16];
     float n[16];
@@ -108,7 +105,7 @@ void draw_simple_button_txy(int id, float x, float y)
     loadIdentity(n);
     float k = 720.0f / 1280.0f;
     matrixTranslate(m, x, y, 1.0f);
-    matrixScale(m,  2 * b.m_Size.x / 1280.0f / k, 2 * b.m_Size.y / 720.0f , 1.0f);
+    matrixScale(m,  b.m_Size.x / 1280.0f / k, b.m_Size.y / 720.0f , 1.0f);
 
     glUniformMatrix4fv(m_GlProgram_button.projectionLocation, 1, GL_FALSE, m_ProjectionMatrix);
     //glUniformMatrix4fv(m_GlProgram_button.viewLocation, 1, GL_FALSE, m);
@@ -135,16 +132,13 @@ void draw_simple_button_txy(int id, float x, float y)
 
 
     glBindTexture(GL_TEXTURE_2D, 0);
-    glDisable(GL_BLEND);
+
 }
 
 
 void draw_simple_button(int id)
 {
     TSimpleButton b = Simple_Buttons[id];
-
-    glEnable(GL_BLEND);
-    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
 
     glUseProgram(m_GlProgram_color.ID);
@@ -214,7 +208,7 @@ void draw_simple_button_t(int id)
 
 
     glBindTexture(GL_TEXTURE_2D, 0);
-    glDisable(GL_BLEND);
+
 }
 
 void draw_simple_button_t1(int id)
@@ -223,8 +217,6 @@ void draw_simple_button_t1(int id)
 
     glBindTexture(GL_TEXTURE_2D, b.m_TextureID);
 
-    glEnable(GL_BLEND);
-    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
     glUseProgram(m_GlProgram_button.ID);
     float m[16];
@@ -256,7 +248,7 @@ void draw_simple_button_t1(int id)
 
 
     glBindTexture(GL_TEXTURE_2D, 0);
-    glDisable(GL_BLEND);
+
 }
 
 

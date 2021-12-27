@@ -9,7 +9,9 @@ extern TOpenGLProgram_base m_GlProgram;
 extern float m_ProjectionMatrix[16];
 extern float m_ViewMatrix[16];
 extern float m_IdentityMatrix[16];
+extern float m_ModelMatrix[16];
 
+extern int Running;
 
 const TButtonEventFunc ButtonEventFuncs[] = {ToMainMenu, ToStartMenu, ToSettingsMenu, GoBackMenu, ToQuit, PassButtonEvent, ToGame };// , ToQuit};//, DrawTextMenu, DrawGame, DrawGameMenu, DrawResearchTree};
 const TButtonDrawFunc ButtonDrawFuncs[] = {draw_simple_button_t, draw_simple_button_t_stroke, draw_simple_button_t1};
@@ -88,31 +90,32 @@ void DrawBackground()
 {
     glBindTexture(GL_TEXTURE_2D, GameState.m_Background_image);
 
-    glEnable(GL_BLEND);
-    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
     glUseProgram(m_GlProgram.ID);
+
+// TODO (kotbkbahte#1#): Fix matrises, to avoid scaling background
+    float m[16];
+    float n[16];
+    loadIdentity(m);
+    loadIdentity(n);
     float k = 720.0f / 1280.0f;
-    loadIdentity(m_ViewMatrix);
-    matrixScale(m_ViewMatrix,  2 * GameState.m_BackgroundSize.x / 1280.0f / k, 2 * GameState.m_BackgroundSize.y / 720.0f , 1.0f);
+    matrixScale(m,  GameState.m_BackgroundSize.width / 1280.0f / k, GameState.m_BackgroundSize.height / 720.0f , 1.0f);
 
     glUniformMatrix4fv(m_GlProgram.projectionLocation, 1, GL_FALSE, m_ProjectionMatrix);
-
-    // Remove shit down below
-    glUniformMatrix4fv(m_GlProgram.modelLocation, 1, GL_FALSE, m_IdentityMatrix );
-    glUniformMatrix4fv(m_GlProgram.viewLocation, 1, GL_FALSE, m_ViewMatrix );
+    glUniformMatrix4fv(m_GlProgram.modelLocation, 1, GL_FALSE,  m);
+    glUniformMatrix4fv(m_GlProgram.viewLocation, 1, GL_FALSE, n);
 
 
-    glVertexAttribPointer(m_GlProgram_button.vertexLocation, 3, GL_FLOAT, GL_FALSE, 0 , squareVertices);
-    glEnableVertexAttribArray(m_GlProgram_button.vertexLocation);
+    glVertexAttribPointer(m_GlProgram.vertexLocation, 3, GL_FLOAT, GL_FALSE, 0 , squareVertices);
+    glEnableVertexAttribArray(m_GlProgram.vertexLocation);
 
-    glVertexAttribPointer(m_GlProgram_button.textureCoordsLocation, 2, GL_FLOAT, GL_FALSE, 0, textureCoordinates_flipped);
-    glEnableVertexAttribArray(m_GlProgram_button.textureCoordsLocation);
+    glVertexAttribPointer(m_GlProgram.textureCoordsLocation, 2, GL_FLOAT, GL_FALSE, 0, textureCoordinates_flipped);
+    glEnableVertexAttribArray(m_GlProgram.textureCoordsLocation);
 
     glDrawArrays(GL_TRIANGLE_FAN, 0, 4);
 
     glBindTexture(GL_TEXTURE_2D, 0);
-    glDisable(GL_BLEND);
+
 }
 
 
@@ -138,7 +141,7 @@ void gui_MouseClick(int x, int y)
     }
 }
 
-void gui_MouseMove(int x ,int y)
+void gui_MouseMove(int x, int y)
 {
     GLuint index;
     int vp[4];
@@ -152,5 +155,46 @@ void gui_MouseMove(int x ,int y)
         Simple_Buttons[State.m_HoveredButton].m_IsHovered = False;
     State.m_HoveredButton = index;
     Simple_Buttons[State.m_HoveredButton].m_IsHovered = True;
+
+    if (State.m_StateIndex == GAME)
+    {
+        //print_2i(x, y);
+    }
+
+    double ox, oy, oz;
+    ClientToOpenGL(x, y, &ox, &oy,&oz);
+
+    //system("cls");
+
+//    print_d(ox);
+//    print_d(oy);
+    //print_d(oz);
 }
 
+
+
+void gui_KeyboardPress(SDL_Keycode code)
+{
+    switch(code)
+    {
+    case SDLK_ESCAPE:
+        Running = 0;
+        break;
+    case SDLK_1:
+        ToMainMenu();
+        break;
+    case SDLK_2:
+        ToStartMenu();
+        break;
+    case SDLK_3:
+        ToSettingsMenu();
+        break;
+    case SDLK_b:
+        GoBackMenu();
+        break;
+
+    default:
+        break;
+    }
+    return;
+}

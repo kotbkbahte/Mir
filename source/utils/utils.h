@@ -6,4 +6,5 @@
 
 int choice_i_arr(int c, int* arr);
 
+int random_range(int lower, int upper);
 #endif // UTILS_H_INCLUDED

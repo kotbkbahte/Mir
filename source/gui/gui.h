@@ -2,6 +2,7 @@
 #define GUI_HANDLER_H_INCLUDED
 
 #include "../core/mir.h"
+#include "../graphics/graphics.h"
 
 #include "main_menu.h"
 #include "start_menu.h"
@@ -14,7 +15,7 @@ void CloseGUI();
 
 void gui_MouseClick(int x, int y);
 void gui_MouseMove(int x, int y);
-
+void gui_KeyboardPress(SDL_Keycode code);
 
 void GoBackMenu();
 

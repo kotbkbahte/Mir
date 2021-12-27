@@ -3,9 +3,8 @@
 extern int Running;
 extern TKeyboard m_Keyboard;
 
-#define log_int(a) printf("%s: %f\n", #a, a);
 
-const float a[] = {0.125, 0.25, 0.5, 1,1.25, 1.5, 1.75 , 2, 4, 8, 16, 32, 64, 128, 256, 512, 1024, 2048, 4096, 8192};
+const float a[] = {0.015625 , 0.03125, 0.0625, 0.125, 0.25, 0.5, 1,1.25, 1.5, 1.75 , 2, 4, 8, 16, 32, 64, 128, 256, 512, 1024, 2048, 4096, 8192};
 
 void HandleEvents()
 {
@@ -25,14 +24,16 @@ void HandleEvents()
                     scale_i += event.wheel.y;
                     if ( (scale_i >= 100) || (scale_i <= -3) )
                         scale_i -= event.wheel.y;
-                    //printf("%d\n", scale_i );
-                    //log_int(a[scale_i + 3]);
                     UpdateCamProjection( a[scale_i + 3] );
                 }
                 break;
 
             case SDL_MOUSEBUTTONDOWN:
                 {
+//                    int x = event.motion.x;
+//                    int y = event.motion.y;
+
+
                     ms_Click(event);
                 }
                 break;
@@ -47,7 +48,6 @@ void HandleEvents()
                 break;
 
             case SDL_KEYDOWN:
-                //kb_KeyDown(event.key.keysym.sym);
                 kb_KeyPressed(event.key.keysym.sym);
                 break;
 

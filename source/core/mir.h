@@ -27,8 +27,31 @@ void FillTileRandom(TTile* tile);
 void DrawGame();
 void DrawMap();
 
-void DrawTile(TTile* tile, int x, int y);
-void DrawSubTile();
+void DrawMirMap();
+void DrawMirTile(int texture, int i, int j, int layer);
+void DrawMirSelectedTile();
+
+void DrawMirBuildings();
+void DrawMirBuildingOffset(TBuilding* b);
+
+void DrawMirLandscape();
+
+void DrawTile(TTile* tile, float x, float y);
+void DrawSelectedTile(TTile* tile, float x, float y);
+void DrawSquare_xyz_rgb(float x, float y, float z, float r, float g, float b);
+
+
+void DrawSubTile(int i, float x, float y);
+void DrawSubTile_xyz(int i, float x, float y, float z);
+
+void GenerateRandomNoiseMirMap();
+void GenerateRandomBuildings();
+void GenerateRandomLandscape();
+
+void PrintBuildingsMap();
+
+void game_PressKeyboard(SDL_Keycode code);
+
 
 
 void UpdateState(float dt);

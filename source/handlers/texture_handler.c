@@ -6,8 +6,13 @@
 
 extern GLuint m_Textures[TEXTURES_COUNT];
 extern GLuint m_GameTextures[TG_COUNT];
+extern GLuint m_FieldTextures[FT_COUNT];
+extern GLuint m_LandscapeTextures[LT_COUNT];
+extern GLuint m_BuildingTextures[BT_COUNT];
+
 //extern FT_Library ft2_lib;
 extern FT_Face ft2_face;
+
 extern TCharTexture m_Characters[128];
 
 
@@ -39,9 +44,28 @@ void LoadTextures()
     LoadTexture("assets/field/blue3.png",          &m_GameTextures[TG_OCEAN]);
     LoadTexture("assets/field/selected.png",       &m_GameTextures[TG_SELECTED]);
 
-    LoadTexture("assets/field/tower.png",          &m_GameTextures[TG_TOWER]);
     LoadTexture("assets/field/warrior.png",        &m_GameTextures[TG_WARRIOR]);
-    LoadTexture("assets/field/rock.png",           &m_GameTextures[TG_ROCK]);
+
+
+    #define _path(a) "assets/field/" #a ".png"
+    LoadTexture(_path(g1), &m_FieldTextures[FT_GRASS_1]);
+    LoadTexture(_path(g2), &m_FieldTextures[FT_GRASS_2]);
+    LoadTexture(_path(g3), &m_FieldTextures[FT_GRASS_3]);
+
+
+    LoadTexture(_path(selected1), &m_GameTextures[TG_SELECTED_1]);
+
+
+    LoadTexture(_path(farm), &m_BuildingTextures[BT_FARM]);
+    LoadTexture(_path(house), &m_BuildingTextures[BT_HOUSE]);
+    LoadTexture(_path(tower1),&m_BuildingTextures[BT_TOWER]);
+
+
+    LoadTexture(_path(rock), &m_LandscapeTextures[LT_ROCK]);
+    LoadTexture(_path(rock1), &m_LandscapeTextures[LT_ROCK_1]);
+
+    #undef _path
+
 }
 
 //int LoadTexture(const char* file_name, TScene* scene, int texture_type)
@@ -54,6 +78,7 @@ void LoadTexture(const char* file_name, GLuint* texture)
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+
     // load and generate the texture
     int width, height, nrChannels;
 
@@ -155,6 +180,7 @@ void LoadCharactersTextures()
             GL_UNSIGNED_BYTE,
             ft2_face->glyph->bitmap.buffer
         );
+
         // set texture options
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_BORDER);
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_BORDER);

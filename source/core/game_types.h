@@ -8,8 +8,10 @@
     #include <SDL2/SDL.h>
     #include <SDL2/SDL_image.h>
 #elif _WIN32
+    #include <windows.h>
     #include <SDL.h>
     #include "../extern/glad.h"
+
 
 #endif
 
@@ -20,6 +22,25 @@
 
 #define True 1
 #define False 0
+#define HERE printf("Here!\n")
+
+typedef void (*TDrawState)(void);
+
+typedef void (*TButtonEventFunc)(void);
+typedef void (*TButtonEventFunc_str)(char* str);
+
+typedef void (*TButtonDrawFunc)(int);
+typedef void (*TButtonDraw_txyFunc)(int, float, float);
+typedef void (*TMouseMoveEventFunc)(int, int);
+typedef void (*TMouseClickEventFunc)(int, int);
+
+typedef void (*TKeyboardDownEvent)(SDL_Keycode);
+typedef void (*TKeyboardUpEvent)(SDL_Keycode);
+typedef void (*TKeyboardPressEvent)(SDL_Keycode);
+
+
+typedef void (*TToState)(void);
+
 
 typedef union
 {
@@ -41,6 +62,15 @@ typedef union
     };
 } TPoint2_i;
 
+typedef union
+{
+    struct {
+        unsigned int x, y;
+    };
+    struct {
+        unsigned int i, j;
+    };
+} TPoint2_ui;
 
 typedef union
 {
@@ -73,8 +103,58 @@ typedef struct
 {
     TTile* m_Tiles;
     int m_Size;
-    int m_SelectedTile;
+
+    unsigned int m_IsTileSelected;
+    TPoint2_ui m_SelectedTile;
 } TMap;
+
+
+
+typedef struct
+{
+    int m_Texture;
+    int f_EventUpdate;
+
+    TPoint2_i m_Pos;
+    TPoint2_i m_Offset;
+
+
+} TBuilding;
+
+typedef struct
+{
+    int m_Texture;
+
+    TPoint2_i m_Pos;
+
+} TLandscape;
+
+typedef struct
+{
+    int m_ID;
+    int m_Textures;
+    int m_Leader;
+    int f_OnAttack;
+} TUnit;
+
+typedef struct
+{
+    int m_Texture;
+    int m_Unit;
+    int m_Building;
+    int m_Landscape;
+} TMirTile;
+
+
+typedef struct
+{
+    TMirTile* m_Tiles;
+    int m_Size;
+
+    unsigned int m_IsTileSelected;
+    TPoint2_ui m_SelectedTile;
+} TMirMap;
+
 
 typedef struct
 {
@@ -83,8 +163,21 @@ typedef struct
     TPoint2_i m_BackgroundSize;
 
     int m_PlayerID;
+
+
     TMap m_GameMap;
+    TMirMap m_MirMap;
+
+    TBuilding* m_Buildings;
+    int m_BuildingsCount;
+
+    TLandscape* m_Landscape;
+    int m_LandscapeCount;
 } TGameState;
+
+
+typedef void (*TBuildingUpdateFunc)(TGameState*);
+
 
 enum States {MAIN_MENU, START_MENU, SETTINGS_MENU, QUIT, TEST_MENU, GAME, GAME_MENU, RESEARCH_TREE, STATES_COUNT};
 enum Textures {BUTTON_PLAYGAME, BUTTON_SETTINGS, BUTTON_QUIT,
@@ -100,37 +193,48 @@ enum Textures {BUTTON_PLAYGAME, BUTTON_SETTINGS, BUTTON_QUIT,
 enum GameTextures {tg(OCEAN), tg(BLUE), tg(SEA),
                    tg(GRASS_DARK), tg(GRASS_LIGHT),
                    tg(ROCK), tg(TOWER), tg(WARRIOR),
-                   tg(SELECTED),
+                   tg(SELECTED), tg(SELECTED_1),
                    tg(COUNT)};
 #undef tg
+// Fields textures
+#define ft(a) FT_ ## a
+enum FieldTextures {ft(GRASS_1), ft(GRASS_2), ft(GRASS_3),
+                    ft(COUNT)};
+#undef ft
+
+
+#define bt(a) BT_ ## a
+enum BuildingTextures {bt(HOUSE), bt(FARM),
+                       bt(TOWER),
+                       bt(COUNT)};
+
+#undef bt
+
+#define lt(a) LT_ ## a
+enum LandscapeTextures {lt(ROCK), lt(ROCK_1),
+                        lt(COUNT)};
+
+#undef lt
 
 // Need?
 enum ButtonsDrawFunc {BUTTON_DRAW_DEFAULT, BUTTON_DRAW_STROKE, BUTTON_DRAW_ANOTHER_TEXTURED};
 enum ButtonEventFunc {TO_MAIN_MENU, TO_START_MENU, TO_SETTINGS_MENU, GO_BACK_MENU, TO_QUIT, PASS};
 
 
-typedef void (*TDrawState)(void);
-
-typedef void (*TButtonEventFunc)(void);
-typedef void (*TButtonEventFunc_str)(char* str);
-
-typedef void (*TButtonDrawFunc)(int);
-typedef void (*TButtonDraw_txyFunc)(int, float, float);
-typedef void (*TMouseMoveEventFunc)(int, int);
-typedef void (*TMouseClickEventFunc)(int, int);
-typedef void (*TToState)(void);
 
 typedef struct
 {
     int m_StateIndex;
     int m_HoveredButton;
     TDrawState f_StateDraw;
+
+// TODO (kotbkbahte#1#): remove "Func" in type name
     TMouseMoveEventFunc f_MouseMoveEvent;
     TMouseClickEventFunc f_MouseClickEvent;
+
+    TKeyboardPressEvent f_KeyboardPress;
+
 } TState;
-
-
-
 
 
 typedef const Uint8* TKeyboard;

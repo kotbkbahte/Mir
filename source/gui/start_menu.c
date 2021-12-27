@@ -40,10 +40,13 @@ void DrawStartMenu()
 
 void ToStartMenu()
 {
-    State.m_StateIndex     = START_MENU;
-    State.f_StateDraw      = DrawStartMenu;
-    State.f_MouseMoveEvent =  gui_MouseMove;
+    State.m_StateIndex      = START_MENU;
+    State.f_StateDraw       = DrawStartMenu;
+    State.f_MouseMoveEvent  = gui_MouseMove;
     State.f_MouseClickEvent = gui_MouseClick;
+
+    State.f_KeyboardPress   = gui_KeyboardPress;
+
 }
 
 

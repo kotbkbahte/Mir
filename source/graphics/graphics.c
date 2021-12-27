@@ -1,5 +1,6 @@
 #include "graphics.h"
 
+
 extern TCore *Core;
 extern TState State;
 extern TGameState GameState;
@@ -10,8 +11,12 @@ extern const Uint8* m_Keyboard;
     extern TOpenGLProgram_button m_GlProgram_button;
 
 extern GLuint m_Textures[10];
+extern GLuint m_GameTextures[TG_COUNT];
+
 extern float m_ProjectionMatrix[16];
+extern float m_IdentityMatrix[16];
 extern float m_ModelMatrix[16];
+extern float m_ViewMatrix[16];
 extern float m_TestMatrix[16];
     extern float r_x, r_y, r_z;
 
@@ -60,6 +65,7 @@ void InitSDL2()
     SDL_GL_SetAttribute(SDL_GL_MULTISAMPLEBUFFERS, 1);
     SDL_GL_SetAttribute(SDL_GL_MULTISAMPLESAMPLES, 2);
     SDL_GL_SetAttribute(SDL_GL_STENCIL_SIZE, 1);
+//    SDL_GL_SetAttribute(SDL_GL_DEPTH_SIZE, 32);
 
     Core->m_Window = SDL_CreateWindow("Mir",
                                       SDL_WINDOWPOS_CENTERED,
@@ -85,6 +91,12 @@ void InitOpenGL()
     {
         h_error_msg("Failed to load glad.\n", OPENGL_ERROR);
     }
+
+    glEnable(GL_DEPTH_TEST);
+    glEnable(GL_BLEND);
+    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+
+
 
     ChangeBgColor();
     printf("%f %f %f\n", GameState.m_BgColor.r, GameState.m_BgColor.g, GameState.m_BgColor.b);
@@ -161,9 +173,9 @@ void CloseFreeType2()
 void RenderFrame()
 {
     glClearColor(GameState.m_BgColor.r, GameState.m_BgColor.g, GameState.m_BgColor.b, 1.0f );
-    glClear(GL_COLOR_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
+    glClear(GL_COLOR_BUFFER_BIT | GL_STENCIL_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-    DrawBackground();
+//    DrawBackground();
     State.f_StateDraw();
 
     glFinish();
@@ -218,14 +230,15 @@ void DrawSquare1()
 
 void DrawSquare()
 {
-    glBindTexture(GL_TEXTURE_2D, m_Characters[56].m_TextureID);
+    glBindTexture(GL_TEXTURE_2D, m_GameTextures[TG_GRASS_DARK]);
 
     glUseProgram(m_GlProgram.ID);
     float m[16];
     loadIdentity(m);
+    matrixScale(m, 1.24, 1.24, 1.0);
 
     glUniformMatrix4fv(m_GlProgram.projectionLocation, 1, GL_FALSE, m_ProjectionMatrix);
-    glUniformMatrix4fv(m_GlProgram.viewLocation, 1, GL_FALSE, m);
+    glUniformMatrix4fv(m_GlProgram.viewLocation, 1, GL_FALSE, m_IdentityMatrix);
     glUniformMatrix4fv(m_GlProgram.modelLocation, 1, GL_FALSE, m);
 
 
@@ -248,6 +261,12 @@ void DrawSquare()
     //printMatrix(m_ProjectionMatrix);
     //exit(0);
 }
+
+
+
+
+
+
 
 void RenderText(char* text, float x, float y, float scale)
 {
@@ -595,4 +614,32 @@ void InitProgram_button(TOpenGLProgram_button* program)
     {
         h_log_msg("Error initialization GL program main.");
     }
+}
+
+
+void ClientToOpenGL(int x, int y, double *ox, double *oy, double *oz)
+{
+    int vp[4];
+    double pMatrix[16];
+    double mMatrix[16];
+    float z;
+
+    glGetIntegerv(GL_VIEWPORT, vp);
+    y = vp[3] - y - 1;
+
+    loadIdentity(m_ViewMatrix);
+    //matrixTranslate(m_ViewMatrix, -(float)GameState.m_GameMap.m_Size / 2.0f, -(float)GameState.m_GameMap.m_Size / 2.0f, 0.0);
+    //matrixScale(m_ViewMatrix, 0.24f, 0.24f, 1.0f);
+
+    /* // from another project
+    matrixTranslate(Core->m_Graphics.m_viewModelMatrix,
+                    Core->m_Objects[Core->m_State.m_CurrentSelectedObj].m_Transform.x,
+                    Core->m_Objects[Core->m_State.m_CurrentSelectedObj].m_Transform.y, 0);
+    */
+    copyMatrix_fd(m_ViewMatrix, mMatrix);
+    copyMatrix_fd(m_ProjectionMatrix, pMatrix);
+    glReadPixels(x, y, 1, 1, GL_DEPTH_COMPONENT, GL_FLOAT, &z);
+    //print_2i(x, y);
+    //print_d(z);
+    gluUnProject(x, y, z, mMatrix, pMatrix, vp, ox, oy, oz);
 }

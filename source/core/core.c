@@ -20,6 +20,10 @@ TOpenGLProgram_button m_GlProgram_button;
 
 GLuint m_Textures[TEXTURES_COUNT];
 GLuint m_GameTextures[TG_COUNT];
+GLuint m_FieldTextures[FT_COUNT];
+GLuint m_BuildingTextures[BT_COUNT];
+GLuint m_LandscapeTextures[LT_COUNT];
+
 const Uint8* m_Keyboard;
 float m_ProjectionMatrix[16];
 float m_ViewMatrix[16];
@@ -42,6 +46,9 @@ void InitCore()
     Core = malloc(sizeof(TCore));
 
     InitGraphics();
+// TODO (kotbkbahte#1#): InitKeyboard to InitGraphics ...
+//
+
     InitKeyboard();
 }
 

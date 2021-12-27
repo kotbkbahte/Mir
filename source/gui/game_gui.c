@@ -9,7 +9,10 @@ static int _ButtonsCount;
 
 void SetupGameMenu()
 {
-    _ButtonsCount = 1;
+    _ButtonsCount = 0;
+
+    if (_ButtonsCount == 0)
+        return;
     _Buttons = malloc(sizeof(int) * _ButtonsCount);
 
     _Buttons[0] = 4;

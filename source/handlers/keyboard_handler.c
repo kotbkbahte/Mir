@@ -5,9 +5,10 @@
 #include "../gui/start_menu.h"
 #include "../gui/settings_menu.h"
 
+extern TState State;
 extern TGameState GameState;
+
 extern const Uint8* m_Keyboard;
-extern int Running;
 extern float m_TestMatrix[16];
     float r_x, r_y, r_z;
 
@@ -32,37 +33,12 @@ void kb_KeyUp(SDL_Scancode code)
 
 
 }
-
 void kb_KeyDown(SDL_Scancode code)
 {
     m_Keyboard = SDL_GetKeyboardState(NULL);
-
-    GameState.m_BgColor.r = (float)rand() / (float)RAND_MAX;
-    GameState.m_BgColor.g = (float)rand() / (float)RAND_MAX;
-    GameState.m_BgColor.b = (float)rand() / (float)RAND_MAX;
 }
 
 void kb_KeyPressed(SDL_Keycode code)
 {
-    switch(code)
-    {
-    case SDLK_ESCAPE:
-        Running = 0;
-        break;
-    case SDLK_1:
-        ToMainMenu();
-        break;
-    case SDLK_2:
-        ToStartMenu();
-        break;
-    case SDLK_3:
-        ToSettingsMenu();
-        break;
-    case SDLK_b:
-        GoBackMenu();
-        break;
-
-    default:
-        break;
-    }
+    State.f_KeyboardPress(code);
 }
