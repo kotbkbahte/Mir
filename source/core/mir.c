@@ -5,8 +5,12 @@ extern TGameState GameState;
 extern const TDrawState DrawStates[];
 extern TToState ToState[];
 
+extern TAnimations m_MirAnimations;
+extern TMirTile* m_AnimatedTiles;
+
 extern TOpenGLProgram_base m_GlProgram;
 extern TOpenGLProgram_color m_GlProgram_color;
+extern TOGLP_tile_anim m_OGLP_anim;
 
 extern GLuint m_Textures[TEXTURES_COUNT];
 extern GLuint m_GameTextures[TG_COUNT];
@@ -50,6 +54,15 @@ const GLfloat textureCoordinates[] =
     0, 0,
     0, 1.0f,
 };
+
+const GLfloat _textureCoordinates[] =
+{
+    1.0f, 1.0f,
+    1.0f, 0,
+    0, 0,
+    0, 1.0f,
+};
+
 const GLfloat squareVertices[] = {
     1.0f, 1.0f, 2.0f,
     -1.0f, 1.0f, 2.0f,
@@ -103,6 +116,7 @@ void InitGameMap()
     GameState.m_Buildings = malloc(BUILDINGS_COUNT * sizeof(TBuilding));
     GameState.m_BuildingsCount = BUILDINGS_COUNT;
     GenerateRandomBuildings();
+
 
 
 }
@@ -205,10 +219,16 @@ void GenerateRandomNoiseMirMap()
         {
             TMirTile* tile = GameState.m_MirMap.m_Tiles + i + j * GAME_MAP_SIZE;
             int t = random_range(0, FT_COUNT);
-            tile->m_Texture = m_FieldTextures[t];
+            if( (t+1) == FT_COUNT)
+                tile->m_Texture = -23;
+            else
+                tile->m_Texture = m_FieldTextures[t];
+
+
+
             tile->m_Landscape = -1;
             tile->m_Building  = -1;
-            tile->m_Unit      = 0;
+            tile->m_Unit      = -1;
         }
     }
 }
@@ -292,12 +312,16 @@ void DrawGame()
         DrawMirLandscape();
         DrawMirBuildings();
         DrawMirSelectedTile();
+
+
     _end_draw_tiles();
 
 
     DrawGameGUI();
 
 }
+
+
 
 
 void DrawMirMap()
@@ -310,6 +334,14 @@ void DrawMirMap()
     {
         for(int j = 0; j < size; j++)
         {
+            if(GameState.m_MirMap.m_Tiles[i + j * size].m_Texture == -23)
+            {
+//                print_i((i+j*size) % 8);
+                DrawMirTileAnimated(m_MirAnimations.m_TextureAnimations[ (i+j*size) % 8 ].m_AnimatedTexture->m_Texture,
+                                    m_MirAnimations.m_TextureAnimations[ (i+j*size) % 8 ].m_Frame, i, j, 3);
+                continue;
+            }
+
             DrawMirTile(GameState.m_MirMap.m_Tiles[i + j * size].m_Texture, i, j, 3);
         }
     }
@@ -375,6 +407,65 @@ void DrawMirBuildingOffset(TBuilding* b)
 
 
 
+void DrawMirTileAnimated(int texture, int frame, int i, int j, int layer)
+{
+
+
+    float tmp[16];
+#define program m_OGLP_anim
+
+
+//    glUseProgram(program.ID);
+//
+//    loadIdentity(m_ViewMatrix);
+//    float offset = (float)(-GameState.m_MirMap.m_Size / 2);
+//    matrixTranslate(m_ViewMatrix, offset, offset, 0.0);
+//    glUniformMatrix4fv(program.projectionLocation, 1, GL_FALSE, m_ProjectionMatrix);
+//    glUniformMatrix4fv(program.viewLocation, 1, GL_FALSE, m_ViewMatrix);
+
+
+    glBindTexture(GL_TEXTURE_2D, texture);
+
+    loadIdentity(m_ModelMatrix);
+
+    matrixTranslate(m_ModelMatrix, (float)i, (float)j, (float)layer);
+    glUniformMatrix4fv(program.modelLocation, 1, GL_FALSE, m_ModelMatrix);
+
+//    loadIdentity(tmp);
+//    matrixScale(tmp, 1/8.0f, 1.0f, 0.0f);
+
+//    if(kb_GetKeyDown(SDL_SCANCODE_0)) { matrixTranslate(tmp, 1.0, 1.0f, 1.0f); }
+//    else { glVertexAttribPointer( matrixTranslate(tmp, 0.0, 1.0f, 0.0f); }
+    GLfloat _1textureCoordinates[] =
+    {
+        1.0f / 8.0f + ((float)frame) / 8.0f, 1.0f,
+        1.0f / 8.0f + ((float)frame) / 8.0f, 0.0f,
+        0.0f + ((float)frame) / 8.0f, 0.0f,
+        0.0f + ((float)frame) / 8.0f, 1.0f,
+    };
+
+
+//    glUniform1f(program.frameLocation, (float)frame);
+
+//    glUniformMatrix4fv(program.textureCoordScalePosLocation, 1, GL_FALSE, tmp);
+
+    glVertexAttribPointer(program.vertexLocation, 2, GL_FLOAT, GL_FALSE, 0 , square1x1);
+    glEnableVertexAttribArray(program.vertexLocation);
+
+    if(kb_GetKeyDown(SDL_SCANCODE_0)) { glVertexAttribPointer(program.textureCoordsLocation, 2, GL_FLOAT, GL_FALSE, 0, _textureCoordinates); }
+    else { glVertexAttribPointer(program.textureCoordsLocation, 2, GL_FLOAT, GL_FALSE, 0, _1textureCoordinates); }
+
+
+    glEnableVertexAttribArray(program.textureCoordsLocation);
+
+
+    glDrawArrays(GL_TRIANGLE_FAN, 0, 4);
+#undef program
+}
+
+
+
+
 void DrawMirTileSelected(int texture, int i, int j, int layer)
 {
 #define program m_GlProgram
@@ -422,6 +513,9 @@ void DrawMirLandscape()
 
 void DrawMap()
 {
+// TODO (kotbkbahte#1#): Rewrite this slow loop ...
+//
+
     float fsize = (float)GameState.m_GameMap.m_Size;
     float tmp  = fsize / 2;
     float ntmp = -tmp;
@@ -552,9 +646,18 @@ void DrawSubTile_xyz(int i, float x, float y, float z)
 }
 
 
+
 void UpdateState(float dt)
 {
-    //gui_MouseMove();
+    static int i = 0;
+    i++;
+    if(i == 5)
+    {
+        UpdateAnimations(dt);
+        i = 0;
+    }
+
+//    printf("%d\n", m_MirAnimations.m_TextureAnimations[0]->m_Frame);
 
 }
 

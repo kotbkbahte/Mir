@@ -5,12 +5,21 @@
 #include "../core/game_types.h"
 #include "message_handler.h"
 
+#include <stdlib.h>
+#include <stdio.h>
+#include <stddef.h>
+
 #include <ft2build.h>
 #include FT_FREETYPE_H
 
 
 void LoadTextures();
 void LoadTexture(const char* file_name, GLuint* texture);
+
+void LoadAnimatedTexture(int index, TAnimatedTexture* animated_texture);
+void ParseAnimationFile(const char* file_name);
+
+
 void LoadCharactersTextures();
 
 

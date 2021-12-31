@@ -5,6 +5,7 @@
 #include "../gui/gui.h"
 #include "../gui/game_gui.h"
 #include "../utils/utils.h"
+#include "../handlers/animations.h"
 
 void ToGame1();
 void ToGame2();
@@ -29,6 +30,7 @@ void DrawMap();
 
 void DrawMirMap();
 void DrawMirTile(int texture, int i, int j, int layer);
+void DrawMirTileAnimated(int texture, int frame, int i, int j, int layer);
 void DrawMirSelectedTile();
 
 void DrawMirBuildings();
@@ -37,6 +39,7 @@ void DrawMirBuildingOffset(TBuilding* b);
 void DrawMirLandscape();
 
 void DrawTile(TTile* tile, float x, float y);
+
 void DrawSelectedTile(TTile* tile, float x, float y);
 void DrawSquare_xyz_rgb(float x, float y, float z, float r, float g, float b);
 

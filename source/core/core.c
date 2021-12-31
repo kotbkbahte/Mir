@@ -12,12 +12,35 @@ TCore *Core;
 TState State;
 TGameState GameState;
 
+TAnimations m_MirAnimations;
+
+TMirTile* m_AnimatedTiles;
+
+
 TOpenGLProgram_base m_GlProgram;
 TOpenGLProgram_text m_GlProgram_text;
 TOpenGLProgram_color m_GlProgram_color;
 TOpenGLProgram_button m_GlProgram_button;
+TOGLP_tile_anim m_OGLP_anim;
 
+TTextures m_MirTextures =
+{
+    .m_AnimatedTextures = {
 
+        [AT_WATER] = {
+            .m_Path = "assets/animated/water/water.png",
+            .m_Count = 8,
+        },
+
+        [AT_WARRIOR] =
+        {
+            .m_Path = "/pass.png",
+            .m_Count = 8,
+        }
+    },
+
+    .m_AnimatedTexturesCount = AT_COUNT
+};
 GLuint m_Textures[TEXTURES_COUNT];
 GLuint m_GameTextures[TG_COUNT];
 GLuint m_FieldTextures[FT_COUNT];

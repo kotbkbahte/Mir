@@ -9,6 +9,7 @@ extern const Uint8* m_Keyboard;
     extern TOpenGLProgram_text m_GlProgram_text;
     extern TOpenGLProgram_color m_GlProgram_color;
     extern TOpenGLProgram_button m_GlProgram_button;
+    extern TOGLP_tile_anim m_OGLP_anim;
 
 extern GLuint m_Textures[10];
 extern GLuint m_GameTextures[TG_COUNT];
@@ -47,6 +48,9 @@ void InitGraphics()
 
     SetupGUI();
 
+//    printf("AM HERE! 2\n");
+    InitAnimations();
+//    printf("AM HERE! 3\n");
 //      InitScene();
 }
 
@@ -122,6 +126,11 @@ void InitOpenGL()
     {
         h_log_msg("Failed load program: source/shaders/button_frag.glsl");
     } InitProgram_button(&m_GlProgram_button);
+
+    if(LoadProgram(&m_OGLP_anim.ID, "source/shaders/anim_frag.glsl", "source/shaders/anim_vert.glsl" )  < 0)
+    {
+        h_log_msg("Failed load program: source/shaders/anim_frag.glsl");
+    } InitProgram_anim(&m_OGLP_anim);
 
 
 
@@ -615,6 +624,32 @@ void InitProgram_button(TOpenGLProgram_button* program)
         h_log_msg("Error initialization GL program main.");
     }
 }
+
+void InitProgram_anim(TOGLP_tile_anim* program)
+{
+    program->projectionLocation = glGetUniformLocation(program->ID, "projection");
+    program->modelLocation = glGetUniformLocation(program->ID, "model");
+    program->viewLocation = glGetUniformLocation(program->ID, "view");
+
+    program->vertexLocation = glGetAttribLocation(program->ID, "vertexPosition");
+    program->textureCoordsLocation = glGetAttribLocation(program->ID, "textureCoordinates");
+    program->textureLocation = glGetUniformLocation(program->ID, "texture");
+    program->frameLocation = glGetUniformLocation(program->ID, "frame");
+    program->textureCoordScalePosLocation = glGetUniformLocation(program->ID, "textureCoordScalePos");
+
+    if(program->projectionLocation < 0 ||
+       program->modelLocation < 0 ||
+       program->viewLocation < 0 ||
+       program->vertexLocation < 0 ||
+       program->textureCoordsLocation < 0 ||
+       program->textureLocation < 0 ||
+       program->frameLocation < 0 ||
+       program->textureCoordScalePosLocation < 0 )
+    {
+        h_log_msg("Error initialization GL program anim.");
+    }
+}
+
 
 
 void ClientToOpenGL(int x, int y, double *ox, double *oy, double *oz)

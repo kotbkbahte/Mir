@@ -1,21 +1,14 @@
 #include "texture_handler.h"
 
-
 #define STB_IMAGE_IMPLEMENTATION
 #include "../extern/stb_image.h"
 
 
-
-
-extern TTextures m_MirTextures;
 extern GLuint m_Textures[TEXTURES_COUNT];
 extern GLuint m_GameTextures[TG_COUNT];
 extern GLuint m_FieldTextures[FT_COUNT];
 extern GLuint m_LandscapeTextures[LT_COUNT];
 extern GLuint m_BuildingTextures[BT_COUNT];
-
-#include "animations_presets.h"
-
 
 //extern FT_Library ft2_lib;
 extern FT_Face ft2_face;
@@ -25,8 +18,6 @@ extern TCharTexture m_Characters[128];
 
 void LoadTextures()
 {
-    ParseAnimationFile("assets/animated/anim.anim");
-
     LoadTexture("assets/buttons/PlayGame.png", &m_Textures[BUTTON_PLAYGAME]);
     LoadTexture("assets/buttons/Settings.png", &m_Textures[BUTTON_SETTINGS]);
     LoadTexture("assets/buttons/Quit.png",     &m_Textures[BUTTON_QUIT]);
@@ -75,13 +66,11 @@ void LoadTextures()
 
     #undef _path
 
-    LoadAnimatedTexture(AT_WATER, &m_MirTextures.m_AnimatedTextures[AT_WATER]);
-
-
+    ParseAnimationFile("assets/animated/water/texture.anim");
 
 }
 
-
+//int LoadTexture(const char* file_name, TScene* scene, int texture_type)
 void LoadTexture(const char* file_name, GLuint* texture)
 {
     glGenTextures(1, texture);
@@ -89,8 +78,8 @@ void LoadTexture(const char* file_name, GLuint* texture)
     // set the texture wrapping/filtering options (on the currently bound texture object)
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 
     // load and generate the texture
     int width, height, nrChannels;
@@ -99,7 +88,7 @@ void LoadTexture(const char* file_name, GLuint* texture)
     unsigned char *data = stbi_load(file_name, &width, &height, &nrChannels, 0);
     if (nrChannels < 4)
     {
-        h_error_msg("Loaded image have less than 4 color channels.\n", ERROR);
+        h_error_msg("Loaded image have < 4 color channels\n", ERROR);
     }
 
     if (data)
@@ -114,71 +103,38 @@ void LoadTexture(const char* file_name, GLuint* texture)
     stbi_image_free(data);
 }
 
-// TODO (kotbkbahte#1#): Refactor Loading animated texture ...
-//
-void LoadAnimatedTexture(int index, TAnimatedTexture* anim_texture)
+#define _path(a)
+void LoadAnimatedTexture(const char* file_name, TAnimatedTexture* animated_texture)
 {
-    LoadTexture((const char*)anim_texture->m_Path, &anim_texture->m_Texture);
+
 }
+#undef _path
 
 
-const char* ANIMATION_FORMAT_IN  = "{\n\t\"title\": \"%[^\"]\",\n\t\"frames\": %d\n}";
-const char* ANIMATION_FORMAT_OUT = "{\n\t\"title\": \"%s\",\n\t\"frames\": %d\n}";
+const char* ANIMATION_FORMAT_IN  = "{\n\t\"title\": \"%[^\"]\",\n\t\"frames\": %d,\n}" ;
 
-const char* _ANIMATION_FORMAT_OUT = "{\n\t\"title\": \"%s\",\n\t\"frames\": %d\n}";
-
+const char* ANIMATION_FORMAT_OUT = "{\n\t\"title\": \"%s\",\n\t\"frames\": %d,\n}" "\n";
 void ParseAnimationFile(const char* file_name)
 {
-//    FILE* file;
-//    file = fopen(file_name, "r");
-//    if(file == NULL)
-//    {
-//        h_error_msg("Failed load animation file for parse", LOAD_ERROR);
-//    }
-//    fscanf(file, ANIMATION_FORMAT_IN, title, &frames);
-//
-//    fclose(file);
-//
-//    printf("%s, %d\n", title, frames);
 
+    FILE* file;
+    fopen_s(&file, file_name, "r");
+    if(file == NULL)
+    {
+        h_error_msg("Failed load animation file for parse", LOAD_ERROR);
+    }
 
+    char title[20];
+    int frames = 1;
 
+    printf(ANIMATION_FORMAT_OUT , "FF", 4 );
 
+    fscanf_s(file, ANIMATION_FORMAT_IN, title, &frames);
 
+    printf("%s\t %d\n", title, frames);
 
-
-
-
-//// TODO (kotbkbahte#1#): remove #if
-//#if 0
-//    {
-//        FILE* file;
-//        fopen_s(&file, file_name, "w");
-//        if(file == NULL)
-//        {
-//            h_error_msg("Failed load animation file for parse", LOAD_ERROR);
-//        }
-//
-//        fprintf_s(file, ANIMATION_FORMAT_OUT, "water.png", 10);
-//        fclose(file);
-//    }
-//#else
-//    {
-//
-//        FILE* file;
-//        file = fopen(file_name, "r");
-//        if(file == NULL)
-//        {
-//            h_error_msg("Failed load animation file for parse", LOAD_ERROR);
-//        }
-//        fscanf(file, ANIMATION_FORMAT_IN, title, &frames);
-//
-//        fclose(file);
-//
-//        printf("%s, %d\n", title, frames);
-//    }
-//#endif // 0
-
+    printf(ANIMATION_FORMAT_OUT, title, frames);
+    fclose(file);
 }
 
 /*

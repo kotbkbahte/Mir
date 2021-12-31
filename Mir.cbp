@@ -86,6 +86,11 @@
 			<Option compilerVar="CC" />
 		</Unit>
 		<Unit filename="source/gui/start_menu.h" />
+		<Unit filename="source/handlers/animations.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="source/handlers/animations.h" />
+		<Unit filename="source/handlers/animations_presets.h" />
 		<Unit filename="source/handlers/event_handler.c">
 			<Option compilerVar="CC" />
 		</Unit>

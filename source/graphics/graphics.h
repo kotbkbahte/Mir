@@ -39,6 +39,7 @@ void InitProgram(TOpenGLProgram_base* program);
 void InitProgram_text(TOpenGLProgram_text* program);
 void InitProgram_color(TOpenGLProgram_color* program);
 void InitProgram_button(TOpenGLProgram_button* program);
+void InitProgram_anim(TOGLP_tile_anim* program);
 
 
 void DrawSquare();

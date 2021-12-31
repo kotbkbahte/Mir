@@ -199,6 +199,7 @@ enum GameTextures {tg(OCEAN), tg(BLUE), tg(SEA),
 // Fields textures
 #define ft(a) FT_ ## a
 enum FieldTextures {ft(GRASS_1), ft(GRASS_2), ft(GRASS_3),
+
                     ft(COUNT)};
 #undef ft
 
@@ -215,6 +216,11 @@ enum LandscapeTextures {lt(ROCK), lt(ROCK_1),
                         lt(COUNT)};
 
 #undef lt
+
+#define at(a) AT_ ## a
+enum AnimatedTexures {at(WATER), at(WARRIOR),
+                      at(COUNT)};
+#undef at
 
 // Need?
 enum ButtonsDrawFunc {BUTTON_DRAW_DEFAULT, BUTTON_DRAW_STROKE, BUTTON_DRAW_ANOTHER_TEXTURED};
@@ -236,6 +242,62 @@ typedef struct
 
 } TState;
 
+// ANIMATIONS TYPES
+
+#define PATH_LENGTH 30
+typedef struct
+{
+    int id;
+    char m_Path[64];
+    GLuint m_Texture;
+    int m_Count;
+
+} TAnimatedTexture;
+
+
+typedef struct
+{
+
+} TAnimationBase;
+
+typedef struct
+{
+    int m_Frame;
+    TAnimatedTexture* m_AnimatedTexture;
+
+} TTextureAnimation;
+
+typedef void (*TAnimationUpdateFunc)(TTextureAnimation*);
+
+typedef struct
+{
+    TTextureAnimation* m_TextureAnimations;
+    int m_TextureAnimationsCount;
+
+    int* m_ActiveTileTexAnim;
+    int m_ActiveTileTexAnimCount;
+
+
+} TAnimations;
+
+typedef struct
+{
+    TPoint2_i f;
+} TPosAnimation;
+
+
+//
+
+// TEXTURES
+
+typedef struct
+{
+    TAnimatedTexture m_AnimatedTextures[AT_COUNT];
+    int m_AnimatedTexturesCount;
+
+} TTextures;
+
+//
 
 typedef const Uint8* TKeyboard;
 
@@ -296,6 +358,24 @@ typedef struct
     GLuint isHoveredLocation;
     GLuint strokeColorLocation;
 } TOpenGLProgram_button;
+
+typedef struct
+{
+    GLuint ID;
+
+    GLuint projectionLocation;
+    GLuint modelLocation;
+    GLuint viewLocation;
+
+    GLuint vertexLocation;
+    GLuint textureCoordsLocation;
+    GLuint textureLocation;
+    GLuint frameLocation;
+    GLuint textureCoordScalePosLocation;
+//    GLuint colorLightnessLocation;
+//    GLuint isHoveredLocation;
+//    GLuint strokeColorLocation;
+} TOGLP_tile_anim;
 
 typedef struct
 {

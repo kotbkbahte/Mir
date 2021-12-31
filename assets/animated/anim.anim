@@ -1,0 +1,19 @@
+{
+    "count": 1,
+    "textures": 
+    [
+        {
+            "path": "water/",
+            "title": "water",
+            "frames": 8,
+            "delta": 1.0
+        },
+        {
+            "path": "water/",
+            "title": "water",
+            "frames": 8,
+            "delta": 1.0
+        }
+        
+    ]
+}
