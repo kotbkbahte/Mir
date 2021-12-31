@@ -25,6 +25,8 @@ void ToSettingsMenu()
     State.f_StateDraw     = DrawSettingsMenu;
     State.f_MouseMoveEvent =  gui_MouseMove;
     State.f_MouseClickEvent = gui_MouseClick;
+    State.f_KeyboardPress = gui_KeyboardPress;
+
 }
 
 void DrawSettingsMenu()

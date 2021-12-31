@@ -40,5 +40,7 @@ void kb_KeyDown(SDL_Scancode code)
 
 void kb_KeyPressed(SDL_Keycode code)
 {
+    if(State.f_KeyboardPress == NULL)
+        h_error_msg("Key Press Event for this state not initialized\n", ERROR);
     State.f_KeyboardPress(code);
 }

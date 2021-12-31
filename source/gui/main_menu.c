@@ -47,6 +47,6 @@ void ToMainMenu()
     State.f_MouseMoveEvent =  gui_MouseMove;
     State.f_MouseClickEvent = gui_MouseClick;
 
-    State.f_KeyboardPress   = kb_KeyPressed;
+    State.f_KeyboardPress   = gui_KeyboardPress;
 
 }
