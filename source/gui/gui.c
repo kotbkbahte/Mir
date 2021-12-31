@@ -147,15 +147,14 @@ void gui_MouseDown(int x, int y, int button)
 
 void gui_MouseUp(int x, int y, int button)
 {
-    HERE;
     if(button == SDL_BUTTON_LEFT)
     {
         if( (State.m_PressedButton == gui_GetHoveredButtonID(x, y)) && (State.m_PressedButton != -1)  )
         {
             Simple_Buttons[State.m_PressedButton].m_Event();
         }
-        print_i(State.m_PressedButton);
-        printf("%s\n", Simple_Buttons[State.m_PressedButton].m_Text );
+//        print_i(State.m_PressedButton);
+//        printf("%s\n", Simple_Buttons[State.m_PressedButton].m_Text );
         Simple_Buttons[State.m_PressedButton].m_IsPressed = False;
         State.m_PressedButton = -1;
     }
@@ -187,6 +186,19 @@ void gui_MouseMove(int x, int y)
     {
         Simple_Buttons[State.m_HoveredButton].m_IsHovered = False;
     }
+
+    int t = gui_GetHoveredButtonID(x, y);
+    if(t == State.m_PressedButton)
+    {
+        State.m_HoveredButton = t;
+        Simple_Buttons[State.m_HoveredButton].m_IsHovered = True;
+    }
+    else
+    {
+        Simple_Buttons[State.m_HoveredButton].m_IsHovered = False;
+        State.m_HoveredButton = -1;
+    }
+
     if(State.m_PressedButton == -1)
     {
         State.m_HoveredButton = gui_GetHoveredButtonID(x, y);
