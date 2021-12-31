@@ -11,7 +11,7 @@ void InitCamera()
     loadIdentity(m_ProjectionMatrix);
     loadIdentity(m_IdentityMatrix);
     loadIdentity(m_ViewMatrix);
-    UpdateCamProjection(1.0f);
+    UpdateCamProjection(1/2.0f);
 }
 void UpdateCamProjection(float scale)
 {

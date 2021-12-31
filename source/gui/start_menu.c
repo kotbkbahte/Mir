@@ -30,9 +30,9 @@ void DrawStartMenu()
         glStencilFunc(GL_ALWAYS, id + 1, 1);
         Simple_Buttons[ id ].m_Draw_txy( id, (i - 1) * 1.2f, 0.8f  );
     }
-    id = _Buttons[i ];
+    id = _Buttons[i];
     glStencilFunc(GL_ALWAYS, id + 1 , 1);
-    Simple_Buttons[ id ].m_Draw_txy( id, 0.0f, -0.8f );
+    Simple_Buttons[id].m_Draw_txy( id, 0.0f, -0.8f );
 
     glDisable(GL_STENCIL_TEST);
 }
@@ -44,8 +44,8 @@ void ToStartMenu()
     State.f_StateDraw       = DrawStartMenu;
     State.f_MouseMoveEvent  = gui_MouseMove;
     State.f_MouseClickEvent = gui_MouseClick;
-
     State.f_KeyboardPress   = gui_KeyboardPress;
+
 
 }
 

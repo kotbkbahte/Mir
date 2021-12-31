@@ -21,6 +21,7 @@ void SetupSettingsMenu()
 
 void ToSettingsMenu()
 {
+
     State.m_StateIndex = SETTINGS_MENU;
     State.f_StateDraw     = DrawSettingsMenu;
     State.f_MouseMoveEvent =  gui_MouseMove;

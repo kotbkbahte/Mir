@@ -30,18 +30,18 @@ void HandleEvents()
 
             case SDL_MOUSEBUTTONDOWN:
                 {
-//                    int x = event.motion.x;
-//                    int y = event.motion.y;
+                    ms_Down(event);
 
-
+                } break;
+            case SDL_MOUSEBUTTONUP:
+                {
+                    ms_Up(event);
                     ms_Click(event);
-                }
-                break;
+                } break;
             case SDL_MOUSEMOTION:
                 {
                     ms_Move(event);
-                }
-                break;
+                } break;
 
             case SDL_KEYUP:
                 kb_KeyUp(event.key.keysym.sym);

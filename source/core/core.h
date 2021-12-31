@@ -13,6 +13,4 @@ void CloseCore();
 
 
 
-
-
 #endif // CORE_H_INCLUDED

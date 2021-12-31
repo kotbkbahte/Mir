@@ -50,6 +50,7 @@ void create_simple_button_ex(int id, TButtonEventFunc event_func, TButtonDraw_tx
     //Simple_Buttons[id].m_Color = (TPoint3_f){ .r = rand(), .g = rand(), .b = rand() };
     Simple_Buttons[id].m_Size = (TPoint2_f){.x = (float)w, .y = (float)h};
     Simple_Buttons[id].m_IsHovered = False;
+    Simple_Buttons[id].m_IsPressed = False;
     Simple_Buttons[id].m_TextureID = texture_id;
     Simple_Buttons[id].m_Draw_txy  = draw_func;
     Simple_Buttons[id].m_Event     = event_func;
@@ -104,8 +105,14 @@ void draw_simple_button_txy(int id, float x, float y)
     loadIdentity(m);
     loadIdentity(n);
     float k = 720.0f / 1280.0f;
-    matrixTranslate(m, x, y, 1.0f);
+    if(b.m_IsPressed)
+        matrixTranslate(m, x, y + 0.1f, 1.0f);
+    else
+        matrixTranslate(m, x, y, 1.0f);
+
+//    matrixTranslate(m, x, y, 1.0f);
     matrixScale(m,  b.m_Size.x / 1280.0f / k, b.m_Size.y / 720.0f , 1.0f);
+
 
     glUniformMatrix4fv(m_GlProgram_button.projectionLocation, 1, GL_FALSE, m_ProjectionMatrix);
     //glUniformMatrix4fv(m_GlProgram_button.viewLocation, 1, GL_FALSE, m);
@@ -120,6 +127,9 @@ void draw_simple_button_txy(int id, float x, float y)
     {
         glUniform1f(m_GlProgram_button.colorLightnessLocation, 1.0);
     }
+
+
+
 
     glVertexAttribPointer(m_GlProgram_button.vertexLocation, 3, GL_FLOAT, GL_FALSE, 0 , squareVertices);
     glEnableVertexAttribArray(m_GlProgram_button.vertexLocation);
@@ -332,7 +342,12 @@ void draw_simple_button_c(int id)
     loadIdentity(m);
     loadIdentity(n);
     float k = 720.0f / 1280.0f;
-    matrixTranslate(m, b.m_Pos.x, b.m_Pos.y, 1.0f);
+
+    if(b.m_IsPressed)
+        matrixTranslate(m, b.m_Pos.x + 0.1f, b.m_Pos.y , 1.0f);
+    else
+        matrixTranslate(m, b.m_Pos.x, b.m_Pos.y , 1.0f);
+
     matrixScale(m,  2 * b.m_Size.x / 1280.0f / k, 2 * b.m_Size.y / 720.0f , 1.0f);
 
     glUniformMatrix4fv(m_GlProgram_button.projectionLocation, 1, GL_FALSE, m_ProjectionMatrix);
@@ -343,6 +358,8 @@ void draw_simple_button_c(int id)
         glUniform1f(m_GlProgram_button.colorLightnessLocation, 0.5);
     else
         glUniform1f(m_GlProgram_button.colorLightnessLocation, 1.0);
+
+
 
     glVertexAttribPointer(m_GlProgram_button.vertexLocation, 3, GL_FLOAT, GL_FALSE, 0 , squareVertices);
     glEnableVertexAttribArray(m_GlProgram_button.vertexLocation);

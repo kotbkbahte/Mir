@@ -31,8 +31,13 @@ typedef void (*TButtonEventFunc_str)(char* str);
 
 typedef void (*TButtonDrawFunc)(int);
 typedef void (*TButtonDraw_txyFunc)(int, float, float);
+
 typedef void (*TMouseMoveEventFunc)(int, int);
 typedef void (*TMouseClickEventFunc)(int, int);
+typedef void (*TMouseButtonDownEvent)(int, int, int);
+typedef void (*TMouseButtonUpEvent)(int, int, int);
+
+
 
 typedef void (*TKeyboardDownEvent)(SDL_Keycode);
 typedef void (*TKeyboardUpEvent)(SDL_Keycode);
@@ -232,11 +237,15 @@ typedef struct
 {
     int m_StateIndex;
     int m_HoveredButton;
+    int m_PressedButton;
     TDrawState f_StateDraw;
 
 // TODO (kotbkbahte#1#): remove "Func" in type name
     TMouseMoveEventFunc f_MouseMoveEvent;
     TMouseClickEventFunc f_MouseClickEvent;
+    TMouseButtonDownEvent f_MouseDownEvent;
+    TMouseButtonUpEvent f_MouseUpEvent;
+
 
     TKeyboardPressEvent f_KeyboardPress;
 
@@ -397,6 +406,7 @@ typedef struct
 
 
     int m_IsHovered;
+    int m_IsPressed;
     char m_Text[20];
 
 
