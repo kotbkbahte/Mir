@@ -8,7 +8,9 @@ int choice_i_arr(int c, int* arr)
 // x in [lower, upper)
 int random_range(int lower, int upper)
 {
-     return (rand() % (upper - lower)) + lower;
+    if(upper - lower == 0)
+        h_error_msg("random range equals 0\n", DEFAULT_ERROR);
+    return (rand() % (upper - lower)) + lower;
 }
 
 

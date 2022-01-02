@@ -4,6 +4,8 @@
 #include <stdlib.h>
 #include <stdio.h>
 
+#include "../handlers/message_handler.h"
+
 int choice_i_arr(int c, int* arr);
 
 int random_range(int lower, int upper);

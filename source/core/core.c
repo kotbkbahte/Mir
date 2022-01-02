@@ -31,24 +31,27 @@ TField _sea_fields[] =
 
 TField _ocean_fields[] =
 {
-    [0] = {.i = 1, .j = 2}
+    [0] = {.i = 1, .j = 2},
 };
 
-
-
-TGameState GameState =
+TPoint2_c _mountain_landscape[] =
 {
-    .m_Fields = {
-        [TT_PLAINS] = _grass_fields,
-        [TT_SEA]    = _sea_fields,
-        [TT_OCEAN]  = _ocean_fields,
-    },
-    .m_FieldsSize = {
-        [TT_PLAINS] = sizeof(_grass_fields) / sizeof(TField),
-        [TT_SEA]    = sizeof(  _sea_fields) / sizeof(TField),
-        [TT_OCEAN]  = sizeof(_ocean_fields) / sizeof(TField),
-    }
+    [0] = {.i = 2, .j = 0},
+    [1] = {.i = 2, .j = 1},
+    [2] = {.i = 2, .j = 2},
 };
+TPoint2_c _forest_landscape[] =
+{
+    [0] = {.i = 4, .j = 0},
+    [1] = {.i = 4, .j = 1},
+};
+TPoint2_c _wheat_landscape[] =
+{
+    [0] = {.i = 4, .j = 2},
+};
+
+
+TGameState GameState;
 
 TAnimations m_MirAnimations;
 
@@ -76,13 +79,36 @@ TTextures m_MirTextures =
             .m_Count = 8,
         }
     },
+    .m_AnimatedTexturesCount = AT_COUNT,
 
     .m_TextureMap = {
         .m_Path = "assets/texture_map.png",
         .m_TextureMapSize = 8,
     },
 
-    .m_AnimatedTexturesCount = AT_COUNT,
+    .m_Fields = {
+        [TT_PLAINS] = _grass_fields,
+        [TT_SEA]    = _sea_fields,
+        [TT_OCEAN]  = _ocean_fields,
+    },
+    .m_FieldsSize = {
+        [TT_PLAINS] = sizeof(_grass_fields) / sizeof(TField),
+        [TT_SEA]    = sizeof(  _sea_fields) / sizeof(TField),
+        [TT_OCEAN]  = sizeof(_ocean_fields) / sizeof(TField),
+    },
+
+    .m_Landscapes = {
+        [LT_ROCK]   = _mountain_landscape,
+        [LT_FOREST] = _forest_landscape,
+        [LT_WHEAT] = _wheat_landscape,
+    },
+    .m_LandscapesSize = {
+        [LT_ROCK]   = sizeof(_mountain_landscape) / sizeof(TPoint2_c),
+        [LT_FOREST] = sizeof(_forest_landscape) / sizeof(TPoint2_c),
+        [LT_WHEAT] = sizeof(_wheat_landscape) / sizeof(TPoint2_c),
+    },
+
+
 };
 GLuint m_Textures[TEXTURES_COUNT];
 GLuint m_GameTextures[TG_COUNT];

@@ -124,7 +124,7 @@ typedef struct
 
 typedef struct
 {
-    int m_Texture;
+    TPoint2_c;
     int f_EventUpdate;
 
     TPoint2_i m_Pos;
@@ -135,7 +135,7 @@ typedef struct
 
 typedef struct
 {
-    int m_Texture;
+    TPoint2_c m_Texture;
 
     TPoint2_i m_Pos;
 
@@ -192,6 +192,12 @@ enum TileType {tt(PLAINS), tt(SEA), tt(OCEAN),
 
 #undef tt
 
+#define lt(a) LT_ ## a
+enum LandscapeTextures {lt(ROCK), lt(FOREST), lt(WHEAT),
+                        lt(COUNT)};
+
+#undef lt
+
 
 typedef struct
 {
@@ -203,14 +209,11 @@ typedef struct
 
     TMirMap m_MirMap;
 
-    TField* m_Fields[TT_COUNT];
-    int m_FieldsSize[TT_COUNT];
-
     TBuilding* m_Buildings;
     int m_BuildingsCount;
 
-    TLandscape* m_Landscape;
-    int m_LandscapeCount;
+    TLandscape* m_Landscapes;
+    int m_LandscapesCount;
 
     TUnit* m_Units;
     int m_UnitsCount;
@@ -263,11 +266,7 @@ enum BuildingTextures {bt(HOUSE), bt(FARM),
 
 #undef bt
 
-#define lt(a) LT_ ## a
-enum LandscapeTextures {lt(ROCK), lt(ROCK_1),
-                        lt(COUNT)};
 
-#undef lt
 
 #define at(a) AT_ ## a
 enum AnimatedTexures {at(WATER), at(WARRIOR),
@@ -365,7 +364,11 @@ typedef struct
 
 
     TTextureMap m_TextureMap;
+        TField* m_Fields[TT_COUNT];
+        int m_FieldsSize[TT_COUNT];
 
+        TPoint2_c* m_Landscapes[LT_COUNT];
+        int m_LandscapesSize[LT_COUNT];
 
 
 } TTextures;

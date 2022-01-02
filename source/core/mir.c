@@ -85,7 +85,7 @@ void InitGame()
 
 }
 
-#define GAME_MAP_SIZE 10
+#define GAME_MAP_SIZE 32
 #define BUILDINGS_COUNT 10
 #define LANDSCAPE_COUNT 10
 #define TILE_SIZE 17
@@ -106,13 +106,14 @@ void InitGameMap()
     GenerateRandomNoiseMirMap();
     GenerateRandomNoiseMap();
 
-    GameState.m_Landscape = malloc(LANDSCAPE_COUNT * sizeof(TLandscape));
-    GameState.m_LandscapeCount = LANDSCAPE_COUNT;
-    GenerateRandomLandscape();
+    GameState.m_Landscapes = malloc(LANDSCAPE_COUNT * sizeof(TLandscape));
+    GameState.m_LandscapesCount = LANDSCAPE_COUNT;
+    GenerateRandomLandscape_();
+
 
     GameState.m_Buildings = malloc(BUILDINGS_COUNT * sizeof(TBuilding));
     GameState.m_BuildingsCount = BUILDINGS_COUNT;
-    GenerateRandomBuildings();
+//    GenerateRandomBuildings();
 
 
 
@@ -136,7 +137,8 @@ void GenerateRandomNoiseMap()
 
             //
             tile->m_Field.i = t;
-            tile->m_Field.j = random_range(0, GameState.m_FieldsSize[t]);
+            tile->m_Field.j = random_range(0, m_MirTextures.m_FieldsSize[t]);
+
 
 
             tile->m_Landscape = -1;
@@ -147,66 +149,100 @@ void GenerateRandomNoiseMap()
 }
 
 
-void GenerateRandomLandscape()
+//void GenerateRandomLandscape()
+//{
+//    for(int i = 0; i < GameState.m_LandscapeCount; i++ )
+//    {
+//        int x = -1;
+//        int y = -1;
+//
+//        do
+//        {
+//            x = random_range(0, GAME_MAP_SIZE);
+//            y = random_range(0, GAME_MAP_SIZE);
+//        } while(GameState.m_MirMap.m_Tiles[x + y * GAME_MAP_SIZE].m_Landscape != -1);
+//
+//#define land GameState.m_Landscape[i]
+//        int t = random_range(0, LT_COUNT);
+//
+//        GameState.m_MirMap.m_Tiles[x + y * GAME_MAP_SIZE].m_Landscape = i;
+//        land.m_Pos.x = x;
+//        land.m_Pos.y = y;
+//        land.m_Texture = m_LandscapeTextures[t];
+//
+//    }
+//#undef land
+//}
+
+void GenerateRandomLandscape_()
 {
-    for(int i = 0; i < GameState.m_LandscapeCount; i++ )
+#define land GameState.m_Landscapes[i]
+    int size = GameState.m_MirMap.m_Size;
+    for(int i = 0; i < GameState.m_LandscapesCount; i++ )
     {
         int x = -1;
         int y = -1;
+        TTile* tile;
 
         do
         {
-            x = random_range(0, GAME_MAP_SIZE);
-            y = random_range(0, GAME_MAP_SIZE);
-        } while(GameState.m_MirMap.m_Tiles[x + y * GAME_MAP_SIZE].m_Landscape != -1);
+            x    = random_range(0, size);
+            y    = random_range(0, size);
+            tile = GameState.m_MirMap.m_Tiles1 + x + y * size;
+        } while( (tile->m_Landscape == -1) &&  !(tile->m_TileType  == TT_PLAINS) ) ;
 
-#define land GameState.m_Landscape[i]
         int t = random_range(0, LT_COUNT);
+        tile->m_Landscape = t;
 
-        GameState.m_MirMap.m_Tiles[x + y * GAME_MAP_SIZE].m_Landscape = i;
         land.m_Pos.x = x;
         land.m_Pos.y = y;
-        land.m_Texture = m_LandscapeTextures[t];
+        land.m_Texture.i = t;
+        land.m_Texture.j = random_range(0, m_MirTextures.m_LandscapesSize[t]);
+
+        print_i(t);
 
     }
 #undef land
+
+
+
 }
 
-void GenerateRandomBuildings()
-{
-    for(int i = 0; i < GameState.m_BuildingsCount; i++ )
-    {
-        int x = -1;
-        int y = -1;
-        TMirTile* tile = NULL;
-        do
-        {
-            x = random_range(0, GAME_MAP_SIZE);
-            y = random_range(0, GAME_MAP_SIZE);
-            tile = GameState.m_MirMap.m_Tiles + x + y * GAME_MAP_SIZE;
-        } while( (tile->m_Building  != -1) &&
-                 (tile->m_Landscape == -1));
-
-#define b GameState.m_Buildings[i]
-        int t = random_range(0, BT_COUNT);
-
-        tile->m_Building = i;
-        b.m_Pos.x = x;
-        b.m_Pos.y = y;
-        b.m_Offset.x = 0;
-        b.m_Offset.y = 0;
-        b.m_Texture = m_BuildingTextures[t];
-
-        switch (t)
-        {
-        case BT_TOWER:
-            {
-                b.m_Offset.x = random_range(0, 5);
-            } break;
-        }
-    }
-#undef b
-}
+//void GenerateRandomBuildings()
+//{
+//    for(int i = 0; i < GameState.m_BuildingsCount; i++ )
+//    {
+//        int x = -1;
+//        int y = -1;
+//        TMirTile* tile = NULL;
+//        do
+//        {
+//            x = random_range(0, GAME_MAP_SIZE);
+//            y = random_range(0, GAME_MAP_SIZE);
+//            tile = GameState.m_MirMap.m_Tiles + x + y * GAME_MAP_SIZE;
+//        } while( (tile->m_Building  != -1) &&
+//                 (tile->m_Landscape == -1));
+//
+//#define b GameState.m_Buildings[i]
+//        int t = random_range(0, BT_COUNT);
+//
+//        tile->m_Building = i;
+//        b.m_Pos.x = x;
+//        b.m_Pos.y = y;
+//        b.m_Offset.x = 0;
+//        b.m_Offset.y = 0;
+//        b.m_Texture = m_BuildingTextures[t];
+//
+//        switch (t)
+//        {
+//        case BT_TOWER:
+//            {
+//                b.m_Offset.x = random_range(0, 5);
+//            } break;
+//        }
+//    }
+//#undef b
+//}
 
 void GenerateRandomNoiseMirMap()
 {
@@ -295,6 +331,7 @@ void DrawGame()
 
     start_draw_tiles();
         DrawMirMap_();
+        DrawMirLandscape_();
     end_draw_tiles();
 
 
@@ -327,12 +364,12 @@ void DrawMirMap_()
     {
         for(int j = 0; j < size; j++)
         {
-            DrawMirTile_(GameState.m_MirMap.m_Tiles1[i + j * size].m_Field, i, j, 3);
+            TPoint2_c texture = GameState.m_MirMap.m_Tiles1[i + j * size].m_Field;
+            DrawMirTile_(m_MirTextures.m_Fields[(int)texture.i][(int)texture.j], i, j, 3);
         }
     }
-
-
 }
+
 void DrawMirTile_(TPoint2_c texture, int i, int j, int layer)
 {
 #define program m_OGLP_anim
@@ -341,7 +378,7 @@ void DrawMirTile_(TPoint2_c texture, int i, int j, int layer)
     matrixTranslate(m_ModelMatrix, (float)i, (float)j, (float)layer);
     glUniformMatrix4fv(program.modelLocation, 1, GL_FALSE, m_ModelMatrix);
 
-    TPoint2_c t = GameState.m_Fields[texture.i][texture.j];
+    TPoint2_c t = texture;
     int x = t.y;
     int y = t.x;
 
@@ -352,20 +389,11 @@ void DrawMirTile_(TPoint2_c texture, int i, int j, int layer)
         ((float)x) / 8.0f,   ((float)y) / 8.0f,
         ((float)x) / 8.0f,   (1.0f + y) / 8.0f,
     };
-//    printf("%f \t %f\n%f \t %f\n%f \t %f\n%f \t %f\n", _1textureCoordinates[0], _1textureCoordinates[1],
-//                                                       _1textureCoordinates[2], _1textureCoordinates[3],
-//                                                       _1textureCoordinates[4], _1textureCoordinates[5],
-//                                                       _1textureCoordinates[6], _1textureCoordinates[7]);
-
-
-
 
     glVertexAttribPointer(program.textureCoordsLocation, 2, GL_FLOAT, GL_FALSE, 0, _1textureCoordinates);
     glEnableVertexAttribArray(program.textureCoordsLocation);
 
-
     glDrawArrays(GL_TRIANGLE_FAN, 0, 4);
-
 
 #undef program
 }
@@ -428,39 +456,37 @@ void DrawMirTile(int texture, int i, int j, int layer)
     glDrawArrays(GL_TRIANGLE_FAN, 0, 4);
 #undef program
 }
-
-void DrawMirBuildingOffset(TBuilding* b)
-{
-#define program m_GlProgram
-    glBindTexture(GL_TEXTURE_2D, b->m_Texture);
-
-    loadIdentity(m_ModelMatrix);
-
-    matrixTranslate(m_ModelMatrix,
-                    (float)(b->m_Pos.x) + (float)(b->m_Offset.x) / TILE_SIZE,
-                    (float)(b->m_Pos.y) + (float)(b->m_Offset.y) / TILE_SIZE,
-                    4.0);
-
-    glUniformMatrix4fv(program.modelLocation, 1, GL_FALSE, m_ModelMatrix);
-
-
-    glVertexAttribPointer(program.vertexLocation, 2, GL_FLOAT, GL_FALSE, 0 , square1x1);
-    glEnableVertexAttribArray(program.vertexLocation);
-
-    glVertexAttribPointer(program.textureCoordsLocation, 2, GL_FLOAT, GL_FALSE, 0, textureCoordinates);
-    glEnableVertexAttribArray(program.textureCoordsLocation);
-
-
-    glDrawArrays(GL_TRIANGLE_FAN, 0, 4);
-#undef program
-}
+//
+//void DrawMirBuildingOffset(TBuilding* b)
+//{
+//#define program m_GlProgram
+//    glBindTexture(GL_TEXTURE_2D, b->m_Texture);
+//
+//    loadIdentity(m_ModelMatrix);
+//
+//    matrixTranslate(m_ModelMatrix,
+//                    (float)(b->m_Pos.x) + (float)(b->m_Offset.x) / TILE_SIZE,
+//                    (float)(b->m_Pos.y) + (float)(b->m_Offset.y) / TILE_SIZE,
+//                    4.0);
+//
+//    glUniformMatrix4fv(program.modelLocation, 1, GL_FALSE, m_ModelMatrix);
+//
+//
+//    glVertexAttribPointer(program.vertexLocation, 2, GL_FLOAT, GL_FALSE, 0 , square1x1);
+//    glEnableVertexAttribArray(program.vertexLocation);
+//
+//    glVertexAttribPointer(program.textureCoordsLocation, 2, GL_FLOAT, GL_FALSE, 0, textureCoordinates);
+//    glEnableVertexAttribArray(program.textureCoordsLocation);
+//
+//
+//    glDrawArrays(GL_TRIANGLE_FAN, 0, 4);
+//#undef program
+//}
 
 
 
 void DrawMirTileAnimated(int texture, int frame, int i, int j, int layer)
 {
-
-
     float tmp[16];
 #define program m_OGLP_anim
 
@@ -540,25 +566,35 @@ void DrawMirTileSelected(int texture, int i, int j, int layer)
 #undef program
 }
 
-void DrawMirBuildings()
+//void DrawMirBuildings()
+//{
+//    for(int i = 0; i < GameState.m_BuildingsCount; i++)
+//    {
+//        TBuilding* b = GameState.m_Buildings + i;
+//        DrawMirBuildingOffset(b);
+//    }
+//}
+
+//void DrawMirLandscape()
+//{
+//    for(int i = 0; i < GameState.m_LandscapeCount; i++)
+//    {
+//        TLandscape* land = GameState.m_Landscape + i;
+//        DrawMirTile(land->m_Texture, land->m_Pos.x, land->m_Pos.y, 4);
+//
+//    }
+//}
+
+
+void DrawMirLandscape_()
 {
-    for(int i = 0; i < GameState.m_BuildingsCount; i++)
+    for(int i = 0; i < GameState.m_LandscapesCount; i++)
     {
-        TBuilding* b = GameState.m_Buildings + i;
-        DrawMirBuildingOffset(b);
+        TLandscape* land = GameState.m_Landscapes + i;
+        TPoint2_c texture = land->m_Texture;
+        DrawMirTile_(m_MirTextures.m_Landscapes[(int)texture.i][(int)texture.j], land->m_Pos.x, land->m_Pos.y, 4);
     }
 }
-
-void DrawMirLandscape()
-{
-    for(int i = 0; i < GameState.m_LandscapeCount; i++)
-    {
-        TLandscape* land = GameState.m_Landscape + i;
-        DrawMirTile(land->m_Texture, land->m_Pos.x, land->m_Pos.y, 4);
-
-    }
-}
-
 
 void DrawSquare_xyz_rgb(float x, float y, float z, float r, float g, float b)
 {
@@ -668,6 +704,10 @@ void game_PressKeyboard(SDL_Keycode code)
     case SDLK_SPACE:
         GameState.m_MirMap.m_IsTileSelected = !GameState.m_MirMap.m_IsTileSelected;
         break;
+    case SDLK_r:
+        GenerateRandomLandscape_();
+        break;
+
     default:
         break;
     }

@@ -70,7 +70,7 @@ void LoadTextures()
 
 
     LoadTexture(_path(rock), &m_LandscapeTextures[LT_ROCK]);
-    LoadTexture(_path(rock1), &m_LandscapeTextures[LT_ROCK_1]);
+//    LoadTexture(_path(rock1), &m_LandscapeTextures[LT_ROCK_1]);
 
     LoadTextureMap(&m_MirTextures.m_TextureMap);
 

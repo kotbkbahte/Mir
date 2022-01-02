@@ -38,8 +38,11 @@ void DrawMirUnit();
 
 void DrawMirBuildings();
 void DrawMirBuildingOffset(TBuilding* b);
+void DrawMirBuildings_();
+
 
 void DrawMirLandscape();
+void DrawMirLandscape_();
 
 void DrawTile(TTile* tile, float x, float y);
 
@@ -55,6 +58,7 @@ void GenerateRandomNoiseMap();
 void GenerateRandomNoiseMirMap();
 void GenerateRandomBuildings();
 void GenerateRandomLandscape();
+void GenerateRandomLandscape_();
 
 
 void PrintBuildingsMap();
