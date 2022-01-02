@@ -89,8 +89,6 @@ void SetBgImage(int texture_id)
 void DrawBackground()
 {
     glBindTexture(GL_TEXTURE_2D, GameState.m_Background_image);
-
-
     glUseProgram(m_GlProgram.ID);
 
 // TODO (kotbkbahte#1#): Fix matrises, to avoid scaling background

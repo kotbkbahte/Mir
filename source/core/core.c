@@ -10,7 +10,45 @@
 
 TCore *Core;
 TState State;
-TGameState GameState;
+
+TField _grass_fields[] =
+{
+    [0] = {.i = 0, .j = 0},
+    [1] = {.i = 0, .j = 1},
+    [2] = {.i = 0, .j = 2},
+    [3] = {.i = 0, .j = 3},
+    [4] = {.i = 0, .j = 4},
+    [5] = {.i = 0, .j = 5},
+    [6] = {.i = 0, .j = 6},
+    [7] = {.i = 0, .j = 7},
+};
+
+TField _sea_fields[] =
+{
+    [0] = {.i = 1, .j = 0},
+    [1] = {.i = 1, .j = 1},
+};
+
+TField _ocean_fields[] =
+{
+    [0] = {.i = 1, .j = 2}
+};
+
+
+
+TGameState GameState =
+{
+    .m_Fields = {
+        [TT_PLAINS] = _grass_fields,
+        [TT_SEA]    = _sea_fields,
+        [TT_OCEAN]  = _ocean_fields,
+    },
+    .m_FieldsSize = {
+        [TT_PLAINS] = sizeof(_grass_fields) / sizeof(TField),
+        [TT_SEA]    = sizeof(  _sea_fields) / sizeof(TField),
+        [TT_OCEAN]  = sizeof(_ocean_fields) / sizeof(TField),
+    }
+};
 
 TAnimations m_MirAnimations;
 
@@ -39,7 +77,12 @@ TTextures m_MirTextures =
         }
     },
 
-    .m_AnimatedTexturesCount = AT_COUNT
+    .m_TextureMap = {
+        .m_Path = "assets/texture_map.png",
+        .m_TextureMapSize = 8,
+    },
+
+    .m_AnimatedTexturesCount = AT_COUNT,
 };
 GLuint m_Textures[TEXTURES_COUNT];
 GLuint m_GameTextures[TG_COUNT];

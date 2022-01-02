@@ -16,8 +16,9 @@
 void LoadTextures();
 void LoadTexture(const char* file_name, GLuint* texture);
 
-void LoadAnimatedTexture(int index, TAnimatedTexture* animated_texture);
-void ParseAnimationFile(const char* file_name);
+void LoadAnimatedTexture(TAnimatedTexture* animated_texture);
+void LoadTextureMap(TTextureMap* texture_map);
+
 
 
 void LoadCharactersTextures();

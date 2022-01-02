@@ -18,9 +18,7 @@ void InitScene();
 void SetState(int i);
 
 void ToGame();
-void GenerateRandomMap();
 void InitGameMap();
-void FillTileRandom(TTile* tile);
 
 
 
@@ -29,9 +27,14 @@ void DrawGame();
 void DrawMap();
 
 void DrawMirMap();
+void DrawMirMap_();
+
 void DrawMirTile(int texture, int i, int j, int layer);
+void DrawMirTile_(TPoint2_c texture, int i, int j, int layer);
+
 void DrawMirTileAnimated(int texture, int frame, int i, int j, int layer);
 void DrawMirSelectedTile();
+void DrawMirUnit();
 
 void DrawMirBuildings();
 void DrawMirBuildingOffset(TBuilding* b);
@@ -47,11 +50,15 @@ void DrawSquare_xyz_rgb(float x, float y, float z, float r, float g, float b);
 void DrawSubTile(int i, float x, float y);
 void DrawSubTile_xyz(int i, float x, float y, float z);
 
+void GenerateRandomNoiseMap();
+
 void GenerateRandomNoiseMirMap();
 void GenerateRandomBuildings();
 void GenerateRandomLandscape();
 
+
 void PrintBuildingsMap();
+void PrintLandscapeMap();
 
 void game_PressKeyboard(SDL_Keycode code);
 

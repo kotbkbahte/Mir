@@ -70,6 +70,16 @@ typedef union
 typedef union
 {
     struct {
+        char x, y;
+    };
+    struct {
+        char i, j;
+    };
+} TPoint2_c;
+
+typedef union
+{
+    struct {
         unsigned int x, y;
     };
     struct {
@@ -91,27 +101,24 @@ typedef struct
     TPoint2_i m_WindowSize;
 } TCore;
 
-typedef struct
-{
-    int m_SubTileTexture;
-    int m_Unit;
-    int m_Building;
-    int m_Landscape;
-} TSubTile;
+//typedef struct
+//{
+//    int m_SubTileTexture;
+//    int m_Unit;
+//    int m_Building;
+//    int m_Landscape;
+//} TSubTile;
 
-typedef struct
-{
-    TSubTile m_SubTile[4];
-} TTile;
 
-typedef struct
-{
-    TTile* m_Tiles;
-    int m_Size;
 
-    unsigned int m_IsTileSelected;
-    TPoint2_ui m_SelectedTile;
-} TMap;
+//typedef struct
+//{
+//    TTile* m_Tiles;
+//    int m_Size;
+//
+//    unsigned int m_IsTileSelected;
+//    TPoint2_ui m_SelectedTile;
+//} TMap;
 
 
 
@@ -142,13 +149,29 @@ typedef struct
     int f_OnAttack;
 } TUnit;
 
+typedef TPoint2_c TField;
+
+
+
 typedef struct
 {
     int m_Texture;
     int m_Unit;
     int m_Building;
     int m_Landscape;
+
 } TMirTile;
+
+typedef struct
+{
+    int32_t m_TileType;
+
+    TPoint2_c m_Field;
+    int m_Landscape;
+    int m_Building;
+    int m_Unit;
+} TTile;
+
 
 
 typedef struct
@@ -156,9 +179,18 @@ typedef struct
     TMirTile* m_Tiles;
     int m_Size;
 
+    TTile* m_Tiles1;
+
+
     unsigned int m_IsTileSelected;
     TPoint2_ui m_SelectedTile;
 } TMirMap;
+
+#define tt(a) TT_ ## a
+enum TileType {tt(PLAINS), tt(SEA), tt(OCEAN),
+               tt(COUNT)};
+
+#undef tt
 
 
 typedef struct
@@ -169,15 +201,20 @@ typedef struct
 
     int m_PlayerID;
 
-
-    TMap m_GameMap;
     TMirMap m_MirMap;
+
+    TField* m_Fields[TT_COUNT];
+    int m_FieldsSize[TT_COUNT];
 
     TBuilding* m_Buildings;
     int m_BuildingsCount;
 
     TLandscape* m_Landscape;
     int m_LandscapeCount;
+
+    TUnit* m_Units;
+    int m_UnitsCount;
+
 } TGameState;
 
 
@@ -192,6 +229,16 @@ enum Textures {BUTTON_PLAYGAME, BUTTON_SETTINGS, BUTTON_QUIT,
                BUTTON_TEST_1_DARK, BUTTON_TEST_1,
                BACKGROUND_IMAGE, BACKGROUND_IMAGE_SPACE,
                TEXTURES_COUNT};
+
+
+
+
+
+
+// Grass = 8
+// Sea = 2
+// Ocean = 1
+
 
 // Texture game
 #define tg(a) TG_ ## a
@@ -224,8 +271,12 @@ enum LandscapeTextures {lt(ROCK), lt(ROCK_1),
 
 #define at(a) AT_ ## a
 enum AnimatedTexures {at(WATER), at(WARRIOR),
+                      at(SELECTED),
                       at(COUNT)};
 #undef at
+
+
+
 
 // Need?
 enum ButtonsDrawFunc {BUTTON_DRAW_DEFAULT, BUTTON_DRAW_STROKE, BUTTON_DRAW_ANOTHER_TEXTURED};
@@ -297,12 +348,25 @@ typedef struct
 
 //
 
+
 // TEXTURES
+
+typedef struct
+{
+    char m_Path[64];
+    GLuint m_Texture;
+    int m_TextureMapSize;
+} TTextureMap;
 
 typedef struct
 {
     TAnimatedTexture m_AnimatedTextures[AT_COUNT];
     int m_AnimatedTexturesCount;
+
+
+    TTextureMap m_TextureMap;
+
+
 
 } TTextures;
 

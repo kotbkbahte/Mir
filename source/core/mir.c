@@ -7,6 +7,7 @@ extern TToState ToState[];
 
 extern TAnimations m_MirAnimations;
 extern TMirTile* m_AnimatedTiles;
+extern TTextures m_MirTextures;
 
 extern TOpenGLProgram_base m_GlProgram;
 extern TOpenGLProgram_color m_GlProgram_color;
@@ -90,24 +91,20 @@ void InitGame()
 #define TILE_SIZE 17
 void InitGameMap()
 {
-    GameState.m_GameMap.m_Size  = GAME_MAP_SIZE;
-    GameState.m_GameMap.m_Tiles = malloc(GAME_MAP_SIZE * GAME_MAP_SIZE * sizeof(TTile));
-
-    GameState.m_GameMap.m_IsTileSelected = True;
-    GameState.m_GameMap.m_SelectedTile.i = 0;
-    GameState.m_GameMap.m_SelectedTile.j = 0;
-
-    GenerateRandomMap();
     //
 
     GameState.m_MirMap.m_Size = GAME_MAP_SIZE;
-    GameState.m_MirMap.m_Tiles = malloc(GAME_MAP_SIZE * GAME_MAP_SIZE * sizeof(TTile));
+
+    GameState.m_MirMap.m_Tiles  = malloc(GAME_MAP_SIZE * GAME_MAP_SIZE * sizeof(TMirTile));
+    GameState.m_MirMap.m_Tiles1 = malloc(GAME_MAP_SIZE * GAME_MAP_SIZE * sizeof(TTile));
+
 
     GameState.m_MirMap.m_IsTileSelected = True;
     GameState.m_MirMap.m_SelectedTile.i = 0;
     GameState.m_MirMap.m_SelectedTile.j = 0;
-    GenerateRandomNoiseMirMap();
 
+    GenerateRandomNoiseMirMap();
+    GenerateRandomNoiseMap();
 
     GameState.m_Landscape = malloc(LANDSCAPE_COUNT * sizeof(TLandscape));
     GameState.m_LandscapeCount = LANDSCAPE_COUNT;
@@ -121,33 +118,34 @@ void InitGameMap()
 
 }
 
-void PrintBuildingsMap()
+void InitFields()
 {
-    printf("## BUILDINGS ##\n");
-    for(int i = 0; i < GAME_MAP_SIZE; i++)
-    {
-        for(int j = 0; j < GAME_MAP_SIZE; j++)
-        {
-            printf("%d", (GameState.m_MirMap.m_Tiles[i + j * GAME_MAP_SIZE].m_Building >= 0) ? 1 : 0 );
-        }
-        printf("\n");
-    }
-    printf("## ##\n");
+
 }
 
-void PrintLandscapeMap()
+void GenerateRandomNoiseMap()
 {
-    printf("## LANDSCAPE ##\n");
-    for(int i = 0; i < GAME_MAP_SIZE; i++)
+    int size = GameState.m_MirMap.m_Size;
+    for(int i = 0; i < size; i++)
     {
-        for(int j = 0; j < GAME_MAP_SIZE; j++)
+        for(int j = 0; j < size; j++)
         {
-            printf("%d", (GameState.m_MirMap.m_Tiles[i + j * GAME_MAP_SIZE].m_Landscape >= 0) ? 1 : 0 );
+            TTile* tile = GameState.m_MirMap.m_Tiles1 + i + j * GAME_MAP_SIZE;
+            int t = random_range(0, TT_COUNT);
+                tile->m_TileType = t;
+
+            //
+            tile->m_Field.i = t;
+            tile->m_Field.j = random_range(0, GameState.m_FieldsSize[t]);
+
+
+            tile->m_Landscape = -1;
+            tile->m_Building  = -1;
+            tile->m_Unit      = -1;
         }
-        printf("\n");
     }
-    printf("## ##\n");
 }
+
 
 void GenerateRandomLandscape()
 {
@@ -233,27 +231,6 @@ void GenerateRandomNoiseMirMap()
     }
 }
 
-void GenerateRandomMap()
-{
-    int size = GameState.m_GameMap.m_Size;
-    for(int i = 0; i < size; i++)
-    {
-        for(int j = 0; j < size; j++)
-        {
-            FillTileRandom(GameState.m_GameMap.m_Tiles + i + j * size);
-
-        }
-    }
-}
-
-void FillTileRandom(TTile* tile)
-{
-    int arr[3] = {TG_GRASS_DARK, TG_GRASS_LIGHT, TG_BLUE};
-    tile->m_SubTile[0].m_SubTileTexture = m_GameTextures[choice_i_arr(3, arr)];
-    tile->m_SubTile[1].m_SubTileTexture = m_GameTextures[choice_i_arr(3, arr)];
-    tile->m_SubTile[2].m_SubTileTexture = m_GameTextures[choice_i_arr(3, arr)];
-    tile->m_SubTile[3].m_SubTileTexture = m_GameTextures[choice_i_arr(3, arr)];
-}
 
 
 void ToGame()
@@ -272,13 +249,23 @@ void ToGame()
 
 static void start_draw_tiles()
 {
-    glUseProgram(m_GlProgram.ID);
+#define program m_OGLP_anim
+
+    glUseProgram(program.ID);
 
     loadIdentity(m_ViewMatrix);
-    matrixTranslate(m_ViewMatrix, 1.0f, 1.0f, 0.0);
+    float offset = (float)(-GameState.m_MirMap.m_Size / 2);
+    matrixTranslate(m_ViewMatrix, offset, offset, 0.0);
     matrixScale(m_ViewMatrix, 0.1f, 0.1f, 1.0f);
-    glUniformMatrix4fv(m_GlProgram.projectionLocation, 1, GL_FALSE, m_ProjectionMatrix);
-    glUniformMatrix4fv(m_GlProgram.viewLocation, 1, GL_FALSE, m_ViewMatrix);
+    glUniformMatrix4fv(program.projectionLocation, 1, GL_FALSE, m_ProjectionMatrix);
+    glUniformMatrix4fv(program.viewLocation, 1, GL_FALSE, m_ViewMatrix);
+
+    glBindTexture(GL_TEXTURE_2D, m_MirTextures.m_TextureMap.m_Texture);
+
+    glVertexAttribPointer(program.vertexLocation, 2, GL_FLOAT, GL_FALSE, 0 , square1x1);
+    glEnableVertexAttribArray(program.vertexLocation);
+
+#undef program
 }
 
 static void end_draw_tiles()
@@ -305,20 +292,82 @@ static void _end_draw_tiles()
 
 void DrawGame()
 {
-    //DrawMap();
 
-    _start_draw_tiles();
-        DrawMirMap();
-        DrawMirLandscape();
-        DrawMirBuildings();
-        DrawMirSelectedTile();
+    start_draw_tiles();
+        DrawMirMap_();
+    end_draw_tiles();
 
 
-    _end_draw_tiles();
 
+//    _start_draw_tiles();
+//        DrawMirMap();
+//        DrawMirLandscape();
+//        DrawMirBuildings();
+//        DrawMirUnit();
+//    _end_draw_tiles();
+
+
+//        DrawMirSelectedTile();
 
     DrawGameGUI();
 
+}
+
+void DrawMirUnit()
+{
+    return;
+}
+
+
+
+void DrawMirMap_()
+{
+    int size = GameState.m_MirMap.m_Size;
+    for(int i = 0; i < size; i++)
+    {
+        for(int j = 0; j < size; j++)
+        {
+            DrawMirTile_(GameState.m_MirMap.m_Tiles1[i + j * size].m_Field, i, j, 3);
+        }
+    }
+
+
+}
+void DrawMirTile_(TPoint2_c texture, int i, int j, int layer)
+{
+#define program m_OGLP_anim
+    loadIdentity(m_ModelMatrix);
+
+    matrixTranslate(m_ModelMatrix, (float)i, (float)j, (float)layer);
+    glUniformMatrix4fv(program.modelLocation, 1, GL_FALSE, m_ModelMatrix);
+
+    TPoint2_c t = GameState.m_Fields[texture.i][texture.j];
+    int x = t.y;
+    int y = t.x;
+
+    GLfloat _1textureCoordinates[] =
+    {
+        (1.0f + x) / 8.0f,   (1.0f + y) / 8.0f,
+        (1.0f + x) / 8.0f,   ((float)y) / 8.0f,
+        ((float)x) / 8.0f,   ((float)y) / 8.0f,
+        ((float)x) / 8.0f,   (1.0f + y) / 8.0f,
+    };
+//    printf("%f \t %f\n%f \t %f\n%f \t %f\n%f \t %f\n", _1textureCoordinates[0], _1textureCoordinates[1],
+//                                                       _1textureCoordinates[2], _1textureCoordinates[3],
+//                                                       _1textureCoordinates[4], _1textureCoordinates[5],
+//                                                       _1textureCoordinates[6], _1textureCoordinates[7]);
+
+
+
+
+    glVertexAttribPointer(program.textureCoordsLocation, 2, GL_FLOAT, GL_FALSE, 0, _1textureCoordinates);
+    glEnableVertexAttribArray(program.textureCoordsLocation);
+
+
+    glDrawArrays(GL_TRIANGLE_FAN, 0, 4);
+
+
+#undef program
 }
 
 
@@ -336,7 +385,6 @@ void DrawMirMap()
         {
             if(GameState.m_MirMap.m_Tiles[i + j * size].m_Texture == -23)
             {
-//                print_i((i+j*size) % 8);
                 DrawMirTileAnimated(m_MirAnimations.m_TextureAnimations[ (i+j*size) % 8 ].m_AnimatedTexture->m_Texture,
                                     m_MirAnimations.m_TextureAnimations[ (i+j*size) % 8 ].m_Frame, i, j, 3);
                 continue;
@@ -350,6 +398,8 @@ void DrawMirMap()
 
 void DrawMirSelectedTile()
 {
+    if(!GameState.m_MirMap.m_IsTileSelected)
+        return;
     int x = GameState.m_MirMap.m_SelectedTile.i;
     int y = GameState.m_MirMap.m_SelectedTile.j;
 
@@ -510,68 +560,6 @@ void DrawMirLandscape()
 }
 
 
-
-void DrawMap()
-{
-// TODO (kotbkbahte#1#): Rewrite this slow loop ...
-//
-
-    float fsize = (float)GameState.m_GameMap.m_Size;
-    float tmp  = fsize / 2;
-    float ntmp = -tmp;
-    int size = GameState.m_GameMap.m_Size;
-
-    start_draw_tiles();
-
-
-        int i = 0, j = 0;
-        for(float fi = ntmp; fi < tmp; fi += 1.0f)
-        {
-            j=0;
-            for(float fj = ntmp; fj < tmp; fj += 1.0f)
-            {
-                DrawTile(GameState.m_GameMap.m_Tiles + i + j * size, fi * 4 , fj * 4);
-                j++;
-            }
-            i++;
-        }
-
-
-
-
-    float a = ntmp + 1.0f * (float)GameState.m_GameMap.m_SelectedTile.i;
-    float b = ntmp + 1.0f * (float)GameState.m_GameMap.m_SelectedTile.j;
-//    print_f(a);
-//    print_f(b);
-    DrawSelectedTile(GameState.m_GameMap.m_Tiles + GameState.m_GameMap.m_SelectedTile.i + GameState.m_GameMap.m_SelectedTile.j * size,
-                     a * 4.0f,
-                     b * 4.0f);
-
-
-    end_draw_tiles();
-}
-
-
-
-void DrawTile(TTile* tile, float x, float y)
-{
-
-    DrawSubTile(tile->m_SubTile[0].m_SubTileTexture, x,       y);
-    DrawSubTile(tile->m_SubTile[1].m_SubTileTexture, x + 2.0, y);
-    DrawSubTile(tile->m_SubTile[2].m_SubTileTexture, x + 2.0, y + 2.0);
-    DrawSubTile(tile->m_SubTile[3].m_SubTileTexture, x,       y + 2.0);
-}
-
-void DrawSelectedTile(TTile* tile, float x, float y)
-{
-    DrawSubTile_xyz(tile->m_SubTile[0].m_SubTileTexture, x,       y, 5.0f);
-    DrawSubTile_xyz(tile->m_SubTile[1].m_SubTileTexture, x + 2.0, y, 5.0f);
-    DrawSubTile_xyz(tile->m_SubTile[2].m_SubTileTexture, x + 2.0, y + 2.0, 5.0f);
-    DrawSubTile_xyz(tile->m_SubTile[3].m_SubTileTexture, x,       y + 2.0, 5.0f);
-    DrawSquare_xyz_rgb(x, y, 4.0f, 0.5f, 0.1f, 0.5f);
-}
-
-
 void DrawSquare_xyz_rgb(float x, float y, float z, float r, float g, float b)
 {
 #define program
@@ -677,24 +665,62 @@ void game_PressKeyboard(SDL_Keycode code)
         PrintBuildingsMap();
         PrintLandscapeMap();
         break;
+    case SDLK_SPACE:
+        GameState.m_MirMap.m_IsTileSelected = !GameState.m_MirMap.m_IsTileSelected;
+        break;
     default:
         break;
     }
 
+
+
     int i = (code == SDLK_d) - (code == SDLK_a);
     int j = (code == SDLK_w) - (code == SDLK_s);
 
-    GameState.m_GameMap.m_SelectedTile.i =
-        ( (GameState.m_GameMap.m_SelectedTile.i + i) < GameState.m_GameMap.m_Size )
-        ?  GameState.m_GameMap.m_SelectedTile.i + i : GameState.m_GameMap.m_SelectedTile.i;
-    GameState.m_GameMap.m_SelectedTile.j =
-        ( (GameState.m_GameMap.m_SelectedTile.j + j) < GameState.m_GameMap.m_Size )
-        ?  GameState.m_GameMap.m_SelectedTile.j + j : GameState.m_GameMap.m_SelectedTile.j;
 
-    GameState.m_MirMap.m_SelectedTile.i = GameState.m_GameMap.m_SelectedTile.i;
-    GameState.m_MirMap.m_SelectedTile.j = GameState.m_GameMap.m_SelectedTile.j;
+    int t = GameState.m_MirMap.m_SelectedTile.i + i;
+    GameState.m_MirMap.m_SelectedTile.i =
+        ( (t) < GameState.m_MirMap.m_Size )
+        ?  t : GameState.m_MirMap.m_SelectedTile.i;
+    t = GameState.m_MirMap.m_SelectedTile.j + j;
+    GameState.m_MirMap.m_SelectedTile.j =
+        ( (t) < GameState.m_MirMap.m_Size )
+        ?  t : GameState.m_MirMap.m_SelectedTile.j;
 
 
 
+}
+
+
+
+
+
+
+void PrintBuildingsMap()
+{
+    printf("## BUILDINGS ##\n");
+    for(int i = 0; i < GAME_MAP_SIZE; i++)
+    {
+        for(int j = 0; j < GAME_MAP_SIZE; j++)
+        {
+            printf("%d", (GameState.m_MirMap.m_Tiles[i + j * GAME_MAP_SIZE].m_Building >= 0) ? 1 : 0 );
+        }
+        printf("\n");
+    }
+    printf("## ##\n");
+}
+
+void PrintLandscapeMap()
+{
+    printf("## LANDSCAPE ##\n");
+    for(int i = 0; i < GAME_MAP_SIZE; i++)
+    {
+        for(int j = 0; j < GAME_MAP_SIZE; j++)
+        {
+            printf("%d", (GameState.m_MirMap.m_Tiles[i + j * GAME_MAP_SIZE].m_Landscape >= 0) ? 1 : 0 );
+        }
+        printf("\n");
+    }
+    printf("## ##\n");
 }
 

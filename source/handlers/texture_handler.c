@@ -25,7 +25,6 @@ extern TCharTexture m_Characters[128];
 
 void LoadTextures()
 {
-    ParseAnimationFile("assets/animated/anim.anim");
 
     LoadTexture("assets/buttons/PlayGame.png", &m_Textures[BUTTON_PLAYGAME]);
     LoadTexture("assets/buttons/Settings.png", &m_Textures[BUTTON_SETTINGS]);
@@ -73,9 +72,13 @@ void LoadTextures()
     LoadTexture(_path(rock), &m_LandscapeTextures[LT_ROCK]);
     LoadTexture(_path(rock1), &m_LandscapeTextures[LT_ROCK_1]);
 
+    LoadTextureMap(&m_MirTextures.m_TextureMap);
+
+
     #undef _path
 
-    LoadAnimatedTexture(AT_WATER, &m_MirTextures.m_AnimatedTextures[AT_WATER]);
+
+    LoadAnimatedTexture(&m_MirTextures.m_AnimatedTextures[AT_WATER]);
 
 
 
@@ -116,70 +119,16 @@ void LoadTexture(const char* file_name, GLuint* texture)
 
 // TODO (kotbkbahte#1#): Refactor Loading animated texture ...
 //
-void LoadAnimatedTexture(int index, TAnimatedTexture* anim_texture)
+void LoadAnimatedTexture(TAnimatedTexture* anim_texture)
 {
     LoadTexture((const char*)anim_texture->m_Path, &anim_texture->m_Texture);
 }
 
-
-const char* ANIMATION_FORMAT_IN  = "{\n\t\"title\": \"%[^\"]\",\n\t\"frames\": %d\n}";
-const char* ANIMATION_FORMAT_OUT = "{\n\t\"title\": \"%s\",\n\t\"frames\": %d\n}";
-
-const char* _ANIMATION_FORMAT_OUT = "{\n\t\"title\": \"%s\",\n\t\"frames\": %d\n}";
-
-void ParseAnimationFile(const char* file_name)
+void LoadTextureMap(TTextureMap* texture_map)
 {
-//    FILE* file;
-//    file = fopen(file_name, "r");
-//    if(file == NULL)
-//    {
-//        h_error_msg("Failed load animation file for parse", LOAD_ERROR);
-//    }
-//    fscanf(file, ANIMATION_FORMAT_IN, title, &frames);
-//
-//    fclose(file);
-//
-//    printf("%s, %d\n", title, frames);
-
-
-
-
-
-
-
-
-
-//// TODO (kotbkbahte#1#): remove #if
-//#if 0
-//    {
-//        FILE* file;
-//        fopen_s(&file, file_name, "w");
-//        if(file == NULL)
-//        {
-//            h_error_msg("Failed load animation file for parse", LOAD_ERROR);
-//        }
-//
-//        fprintf_s(file, ANIMATION_FORMAT_OUT, "water.png", 10);
-//        fclose(file);
-//    }
-//#else
-//    {
-//
-//        FILE* file;
-//        file = fopen(file_name, "r");
-//        if(file == NULL)
-//        {
-//            h_error_msg("Failed load animation file for parse", LOAD_ERROR);
-//        }
-//        fscanf(file, ANIMATION_FORMAT_IN, title, &frames);
-//
-//        fclose(file);
-//
-//        printf("%s, %d\n", title, frames);
-//    }
-//#endif // 0
-
+    LoadTexture((const char*)texture_map->m_Path, &texture_map->m_Texture);
 }
+
 
 /*
 void LoadCharactersStrokesTextures()
