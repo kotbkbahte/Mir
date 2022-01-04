@@ -796,16 +796,16 @@ void SetState(int i)
 
 void game_MouseMove(int x, int y)
 {
-    loadIdentity(m_ViewMatrix);
     if(GameState.m_IsCameraCaptured)
     {
+        loadIdentity(m_ViewMatrix);
         double ox, oy, oz;
         ClientToOpenGL(x, y, &ox, &oy,&oz);
         GameState.m_CameraPos.x = ox - GameState.m_CameraCapturedPos.x;
         GameState.m_CameraPos.y = oy - GameState.m_CameraCapturedPos.y;
+        matrixTranslate(m_ViewMatrix, GameState.m_CameraPos.x, GameState.m_CameraPos.y, 0.0f);
 
     }
-    matrixTranslate(m_ViewMatrix, GameState.m_CameraPos.x, GameState.m_CameraPos.y, 0.0f);
 }
 
 

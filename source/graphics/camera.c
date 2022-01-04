@@ -20,5 +20,4 @@ void UpdateCamProjection(float scale)
 {
     float k = 1280.0f / 720.0f;
     matrixOrtho(m_ProjectionMatrix, -1 * scale, 1 * scale, -k * scale, k * scale, -25.0f, 25.0f);
-//    print_f(k * scale);
 }

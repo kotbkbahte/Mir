@@ -48,10 +48,7 @@ void InitGraphics()
 
     SetupGUI();
 
-//    printf("AM HERE! 2\n");
     InitAnimations();
-//    printf("AM HERE! 3\n");
-//      InitScene();
 }
 
 void InitSDL2()
