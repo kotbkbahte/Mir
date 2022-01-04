@@ -27,8 +27,8 @@ extern float m_TestMatrix[16];
 
 // What is the best way? Both sucks
 #if 1
-    #define def void
-    #define _ToGame(i) ToGame ## i()       \
+#define def void
+#define _ToGame(i) ToGame ## i()       \
     {                                      \
         ToGame();                          \
         GameState.m_PlayerID = i;          \
@@ -40,12 +40,30 @@ def _ToGame(3)
 
 #else
 
-void ToGame1() { ToGame(); GameState.m_PlayerID = 1; }
-void ToGame2() { ToGame(); GameState.m_PlayerID = 2; }
-void ToGame3() { ToGame(); GameState.m_PlayerID = 3; }
+void ToGame1()
+{
+    ToGame();
+    GameState.m_PlayerID = 1;
+}
+void ToGame2()
+{
+    ToGame();
+    GameState.m_PlayerID = 2;
+}
+void ToGame3()
+{
+    ToGame();
+    GameState.m_PlayerID = 3;
+}
 
 #endif
 
+char* _tile_types[] =
+{
+    [TT_PLAINS] = "Plains",
+    [TT_SEA]    = "Sea",
+    [TT_OCEAN]  = "Ocean",
+};
 
 
 const GLfloat textureCoordinates[] =
@@ -64,14 +82,16 @@ const GLfloat _textureCoordinates[] =
     0, 1.0f,
 };
 
-const GLfloat squareVertices[] = {
+const GLfloat squareVertices[] =
+{
     1.0f, 1.0f, 2.0f,
     -1.0f, 1.0f, 2.0f,
     -1.0f, -1.0f, 2.0f,
     1.0f, -1.0f, 2.0f,
 };
 
-const GLfloat square1x1[] = {
+const GLfloat square1x1[] =
+{
     0.0f, 0.0f,
     0.0f, 1.0f,
     1.0f, 1.0f,
@@ -87,7 +107,7 @@ void InitGame()
 
 #define GAME_MAP_SIZE 32
 #define BUILDINGS_COUNT 10
-#define LANDSCAPE_COUNT 10
+#define LANDSCAPE_COUNT 100
 #define TILE_SIZE 17
 void InitGameMap()
 {
@@ -103,8 +123,8 @@ void InitGameMap()
     GameState.m_MirMap.m_SelectedTile.i = 0;
     GameState.m_MirMap.m_SelectedTile.j = 0;
 
-    GenerateRandomNoiseMirMap();
-    GenerateRandomNoiseMap();
+//    GenerateRandomNoiseMirMap();
+    GeneratePerlinNoiseMap();
 
     GameState.m_Landscapes = malloc(LANDSCAPE_COUNT * sizeof(TLandscape));
     GameState.m_LandscapesCount = LANDSCAPE_COUNT;
@@ -133,12 +153,11 @@ void GenerateRandomNoiseMap()
         {
             TTile* tile = GameState.m_MirMap.m_Tiles1 + i + j * GAME_MAP_SIZE;
             int t = random_range(0, TT_COUNT);
-                tile->m_TileType = t;
+            tile->m_TileType = t;
 
-            //
+
             tile->m_Field.i = t;
             tile->m_Field.j = random_range(0, m_MirTextures.m_FieldsSize[t]);
-
 
 
             tile->m_Landscape = -1;
@@ -147,6 +166,77 @@ void GenerateRandomNoiseMap()
         }
     }
 }
+
+void GeneratePerlinNoiseMap()
+{
+    int seed = time(NULL);
+    int size = GameState.m_MirMap.m_Size;
+    for(int i = 0; i < size; i++)
+    {
+        for(int j = 0; j < size; j++)
+        {
+            TTile* tile      = GameState.m_MirMap.m_Tiles1 + i + j * GAME_MAP_SIZE;
+            tile->m_TileType = perlin2d(i, j, 0.3, 2, seed);
+//            print_i(tile->m_TileType);
+
+            tile->m_Field.i = tile->m_TileType;
+            tile->m_Field.j = random_range(0, m_MirTextures.m_FieldsSize[tile->m_TileType]);
+
+
+            tile->m_Landscape = -1;
+            tile->m_Building  = -1;
+            tile->m_Unit      = -1;
+        }
+    }
+
+    char test_map[size][size];
+    int t;
+    TTile* map = GameState.m_MirMap.m_Tiles1;
+
+
+    for(int i = 1; i < size - 1; i++)
+    {
+        for(int j = 1; j < size - 1; j++)
+        {
+            TTile* tile = map + i + j * size;
+            t = tile->m_TileType;
+            test_map[i][j] = 0;
+            if(t == TT_SEA)
+            {
+                int d = ( (tile + 1)->m_TileType        == TT_PLAINS ) ||
+                        ( (tile - 1)->m_TileType        == TT_PLAINS ) ||
+                        ( (tile + 1 * size)->m_TileType == TT_PLAINS ) ||
+                        ( (tile - 1 * size)->m_TileType == TT_PLAINS );
+                if(d)
+                {
+                    continue;
+                }
+                else
+                {
+                    test_map[i][j] = 1;
+                }
+
+            }
+        }
+    }
+
+    for(int i = 1; i < size - 1; i++)
+    {
+        for(int j = 1; j < size - 1; j++)
+        {
+            if(test_map[i][j] == 1)
+            {
+                TTile* tile = GameState.m_MirMap.m_Tiles1 + i + j * GAME_MAP_SIZE;
+                tile->m_TileType = TT_OCEAN;
+                tile->m_Field.i = tile->m_TileType;
+                tile->m_Field.j = random_range(0, m_MirTextures.m_FieldsSize[tile->m_TileType]);
+
+            }
+        }
+    }
+
+}
+
 
 
 //void GenerateRandomLandscape()
@@ -189,17 +279,17 @@ void GenerateRandomLandscape_()
             x    = random_range(0, size);
             y    = random_range(0, size);
             tile = GameState.m_MirMap.m_Tiles1 + x + y * size;
-        } while( (tile->m_Landscape == -1) &&  !(tile->m_TileType  == TT_PLAINS) ) ;
+        }
+        while( (tile->m_Landscape == -1) &&  !(tile->m_TileType  == TT_PLAINS) ) ;
 
-        int t = random_range(0, LT_COUNT);
+        int t = perlin2d(i, 0, 0.2, 5, size);
+
         tile->m_Landscape = t;
 
         land.m_Pos.x = x;
         land.m_Pos.y = y;
         land.m_Texture.i = t;
         land.m_Texture.j = random_range(0, m_MirTextures.m_LandscapesSize[t]);
-
-        print_i(t);
 
     }
 #undef land
@@ -244,38 +334,40 @@ void GenerateRandomLandscape_()
 //#undef b
 //}
 
-void GenerateRandomNoiseMirMap()
-{
-    int size = GameState.m_MirMap.m_Size;
-    for(int i = 0; i < size; i++)
-    {
-        for(int j = 0; j < size; j++)
-        {
-            TMirTile* tile = GameState.m_MirMap.m_Tiles + i + j * GAME_MAP_SIZE;
-            int t = random_range(0, FT_COUNT);
-            if( (t+1) == FT_COUNT)
-                tile->m_Texture = -23;
-            else
-                tile->m_Texture = m_FieldTextures[t];
-
-
-
-            tile->m_Landscape = -1;
-            tile->m_Building  = -1;
-            tile->m_Unit      = -1;
-        }
-    }
-}
+//void GenerateRandomNoiseMirMap()
+//{
+//    int size = GameState.m_MirMap.m_Size;
+//    for(int i = 0; i < size; i++)
+//    {
+//        for(int j = 0; j < size; j++)
+//        {
+//            TMirTile* tile = GameState.m_MirMap.m_Tiles1 + i + j * GAME_MAP_SIZE;
+//            int t = random_range(0, FT_COUNT);
+//            if( (t+1) == FT_COUNT)
+//                tile->m_Texture = -23;
+//            else
+//                tile->m_Texture = m_FieldTextures[t];
+//
+//
+//
+//            tile->m_Landscape = -1;
+//            tile->m_Building  = -1;
+//            tile->m_Unit      = -1;
+//        }
+//    }
+//}
 
 
 
 void ToGame()
 {
     State.m_StateIndex = GAME;
+    State.f_StateDraw       = DrawGame;
+
+    State.f_MouseDownEvent  = game_MouseDown;
+    State.f_MouseUpEvent    = game_MouseUp;
     State.f_MouseClickEvent = gui_MouseClick;
     State.f_MouseMoveEvent  = gui_MouseMove;
-
-    State.f_StateDraw       = DrawGame; //DrawGame;
 
     State.f_KeyboardPress   = game_PressKeyboard;
 
@@ -298,8 +390,9 @@ static void start_draw_tiles()
 
     glBindTexture(GL_TEXTURE_2D, m_MirTextures.m_TextureMap.m_Texture);
 
-    glVertexAttribPointer(program.vertexLocation, 2, GL_FLOAT, GL_FALSE, 0 , square1x1);
+    glVertexAttribPointer(program.vertexLocation, 2, GL_FLOAT, GL_FALSE, 0, square1x1);
     glEnableVertexAttribArray(program.vertexLocation);
+
 
 #undef program
 }
@@ -330,8 +423,8 @@ void DrawGame()
 {
 
     start_draw_tiles();
-        DrawMirMap_();
-        DrawMirLandscape_();
+    DrawMirMap_();
+    DrawMirLandscape_();
     end_draw_tiles();
 
 
@@ -344,7 +437,7 @@ void DrawGame()
 //    _end_draw_tiles();
 
 
-//        DrawMirSelectedTile();
+    DrawMirSelectedTile();
 
     DrawGameGUI();
 
@@ -370,11 +463,21 @@ void DrawMirMap_()
     }
 }
 
+void DrawMirLandscape_()
+{
+    for(int i = 0; i < GameState.m_LandscapesCount; i++)
+    {
+        TLandscape* land = GameState.m_Landscapes + i;
+        TPoint2_c texture = land->m_Texture;
+        DrawMirTile_(m_MirTextures.m_Landscapes[(int)texture.i][(int)texture.j], land->m_Pos.x, land->m_Pos.y, 4);
+    }
+}
+
 void DrawMirTile_(TPoint2_c texture, int i, int j, int layer)
 {
 #define program m_OGLP_anim
-    loadIdentity(m_ModelMatrix);
 
+    loadIdentity(m_ModelMatrix);
     matrixTranslate(m_ModelMatrix, (float)i, (float)j, (float)layer);
     glUniformMatrix4fv(program.modelLocation, 1, GL_FALSE, m_ModelMatrix);
 
@@ -446,7 +549,7 @@ void DrawMirTile(int texture, int i, int j, int layer)
     glUniformMatrix4fv(program.modelLocation, 1, GL_FALSE, m_ModelMatrix);
 
 
-    glVertexAttribPointer(program.vertexLocation, 2, GL_FLOAT, GL_FALSE, 0 , square1x1);
+    glVertexAttribPointer(program.vertexLocation, 2, GL_FLOAT, GL_FALSE, 0, square1x1);
     glEnableVertexAttribArray(program.vertexLocation);
 
     glVertexAttribPointer(program.textureCoordsLocation, 2, GL_FLOAT, GL_FALSE, 0, textureCoordinates);
@@ -525,11 +628,17 @@ void DrawMirTileAnimated(int texture, int frame, int i, int j, int layer)
 
 //    glUniformMatrix4fv(program.textureCoordScalePosLocation, 1, GL_FALSE, tmp);
 
-    glVertexAttribPointer(program.vertexLocation, 2, GL_FLOAT, GL_FALSE, 0 , square1x1);
+    glVertexAttribPointer(program.vertexLocation, 2, GL_FLOAT, GL_FALSE, 0, square1x1);
     glEnableVertexAttribArray(program.vertexLocation);
 
-    if(kb_GetKeyDown(SDL_SCANCODE_0)) { glVertexAttribPointer(program.textureCoordsLocation, 2, GL_FLOAT, GL_FALSE, 0, _textureCoordinates); }
-    else { glVertexAttribPointer(program.textureCoordsLocation, 2, GL_FLOAT, GL_FALSE, 0, _1textureCoordinates); }
+    if(kb_GetKeyDown(SDL_SCANCODE_0))
+    {
+        glVertexAttribPointer(program.textureCoordsLocation, 2, GL_FLOAT, GL_FALSE, 0, _textureCoordinates);
+    }
+    else
+    {
+        glVertexAttribPointer(program.textureCoordsLocation, 2, GL_FLOAT, GL_FALSE, 0, _1textureCoordinates);
+    }
 
 
     glEnableVertexAttribArray(program.textureCoordsLocation);
@@ -552,7 +661,7 @@ void DrawMirTileSelected(int texture, int i, int j, int layer)
     matrixTranslate(m_ModelMatrix, (float)i, (float)j, 3.0);
     glUniformMatrix4fv(program.modelLocation, 1, GL_FALSE, m_ModelMatrix);
 
-    glVertexAttribPointer(program.vertexLocation, 2, GL_FLOAT, GL_FALSE, 0 , square1x1);
+    glVertexAttribPointer(program.vertexLocation, 2, GL_FLOAT, GL_FALSE, 0, square1x1);
     glEnableVertexAttribArray(program.vertexLocation);
 
     glVertexAttribPointer(program.textureCoordsLocation, 2, GL_FLOAT, GL_FALSE, 0, textureCoordinates);
@@ -586,15 +695,7 @@ void DrawMirTileSelected(int texture, int i, int j, int layer)
 //}
 
 
-void DrawMirLandscape_()
-{
-    for(int i = 0; i < GameState.m_LandscapesCount; i++)
-    {
-        TLandscape* land = GameState.m_Landscapes + i;
-        TPoint2_c texture = land->m_Texture;
-        DrawMirTile_(m_MirTextures.m_Landscapes[(int)texture.i][(int)texture.j], land->m_Pos.x, land->m_Pos.y, 4);
-    }
-}
+
 
 void DrawSquare_xyz_rgb(float x, float y, float z, float r, float g, float b)
 {
@@ -617,7 +718,7 @@ void DrawSquare_xyz_rgb(float x, float y, float z, float r, float g, float b)
     glUniformMatrix4fv(m_GlProgram.modelLocation, 1, GL_FALSE, m_ModelMatrix);
 
 
-    glVertexAttribPointer(m_GlProgram.vertexLocation, 3, GL_FLOAT, GL_FALSE, 0 , squareVertices);
+    glVertexAttribPointer(m_GlProgram.vertexLocation, 3, GL_FLOAT, GL_FALSE, 0, squareVertices);
     glEnableVertexAttribArray(m_GlProgram.vertexLocation);
 
     glVertexAttribPointer(m_GlProgram.textureCoordsLocation, 2, GL_FLOAT, GL_FALSE, 0, textureCoordinates);
@@ -639,7 +740,7 @@ void DrawSubTile(int i, float x, float y)
     glUniformMatrix4fv(m_GlProgram.modelLocation, 1, GL_FALSE, m_ModelMatrix);
 
 
-    glVertexAttribPointer(m_GlProgram.vertexLocation, 3, GL_FLOAT, GL_FALSE, 0 , squareVertices);
+    glVertexAttribPointer(m_GlProgram.vertexLocation, 3, GL_FLOAT, GL_FALSE, 0, squareVertices);
     glEnableVertexAttribArray(m_GlProgram.vertexLocation);
 
     glVertexAttribPointer(m_GlProgram.textureCoordsLocation, 2, GL_FLOAT, GL_FALSE, 0, textureCoordinates);
@@ -659,7 +760,7 @@ void DrawSubTile_xyz(int i, float x, float y, float z)
     glUniformMatrix4fv(m_GlProgram.modelLocation, 1, GL_FALSE, m_ModelMatrix);
 
 
-    glVertexAttribPointer(m_GlProgram.vertexLocation, 3, GL_FLOAT, GL_FALSE, 0 , squareVertices);
+    glVertexAttribPointer(m_GlProgram.vertexLocation, 3, GL_FLOAT, GL_FALSE, 0, squareVertices);
     glEnableVertexAttribArray(m_GlProgram.vertexLocation);
 
     glVertexAttribPointer(m_GlProgram.textureCoordsLocation, 2, GL_FLOAT, GL_FALSE, 0, textureCoordinates);
@@ -693,6 +794,29 @@ void SetState(int i)
     ToState[i]();
 }
 
+void game_MouseDown(int x, int y, int button)
+{
+//    GLuint index;
+//    int vp[4];
+//    glGetIntegerv(GL_VIEWPORT, vp);
+//    glReadPixels(x, vp[3] - y - 1, 1, 1, GL_STENCIL_INDEX, GL_UNSIGNED_INT, &index);
+
+//    if (State.m_StateIndex == GAME)
+//    {
+//        print_2i(x, y);
+//    }
+
+    double ox, oy, oz;
+    ClientToOpenGL(x, y, &ox, &oy,&oz);
+    print_3d(ox, oy, oz);
+}
+
+void game_MouseUp(int x, int y, int button)
+{
+    return;
+}
+
+
 void game_PressKeyboard(SDL_Keycode code)
 {
     switch(code)
@@ -707,18 +831,27 @@ void game_PressKeyboard(SDL_Keycode code)
     case SDLK_r:
         GenerateRandomLandscape_();
         break;
+    case SDLK_m:
+        GeneratePerlinNoiseMap();
+        break;
+    case SDLK_i:
+    {
+        int x = GameState.m_MirMap.m_SelectedTile.i;
+        int y = GameState.m_MirMap.m_SelectedTile.j;
+        printf("%s\n",  _tile_types[GameState.m_MirMap.m_Tiles1[x + y * GameState.m_MirMap.m_Size].m_TileType] );
+    }
+    break;
 
     default:
         break;
     }
 
 
-
     int i = (code == SDLK_d) - (code == SDLK_a);
     int j = (code == SDLK_w) - (code == SDLK_s);
 
 
-    int t = GameState.m_MirMap.m_SelectedTile.i + i;
+    unsigned int t = GameState.m_MirMap.m_SelectedTile.i + i;
     GameState.m_MirMap.m_SelectedTile.i =
         ( (t) < GameState.m_MirMap.m_Size )
         ?  t : GameState.m_MirMap.m_SelectedTile.i;
@@ -727,13 +860,7 @@ void game_PressKeyboard(SDL_Keycode code)
         ( (t) < GameState.m_MirMap.m_Size )
         ?  t : GameState.m_MirMap.m_SelectedTile.j;
 
-
-
 }
-
-
-
-
 
 
 void PrintBuildingsMap()

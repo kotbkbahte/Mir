@@ -82,7 +82,7 @@ TTextures m_MirTextures =
     .m_AnimatedTexturesCount = AT_COUNT,
 
     .m_TextureMap = {
-        .m_Path = "assets/texture_map.png",
+        .m_Path = "assets/texture_map_.png",
         .m_TextureMapSize = 8,
     },
 

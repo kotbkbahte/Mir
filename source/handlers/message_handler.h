@@ -10,6 +10,8 @@
 #define print_2i(a, b) printf("# INT:   %s = %d\n", #a, a);\
                        printf("# INT:   %s = %d\n", #b, b)
 
+#define print_3d(a, b, c) printf("# DOUBLES:\n%s = %f\n%s = %f\n%s = %f\n", #a, a, #b, b, #c, c)
+
 //#define print_char(i, msg) printf("%s \t # %s = %d\n", msg, #i, i)
 enum Errors {INIT_ERROR, DEFAULT_ERROR, QUIT_ERROR, SDL_ERROR, OPENGL_ERROR, LOAD_ERROR};
 

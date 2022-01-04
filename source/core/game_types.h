@@ -130,13 +130,11 @@ typedef struct
     TPoint2_i m_Pos;
     TPoint2_i m_Offset;
 
-
 } TBuilding;
 
 typedef struct
 {
     TPoint2_c m_Texture;
-
     TPoint2_i m_Pos;
 
 } TLandscape;

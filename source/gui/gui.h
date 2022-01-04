@@ -18,7 +18,7 @@ void gui_MouseUp(int x, int y, int button);
 void gui_MouseClick(int x, int y);
 void gui_MouseMove(int x, int y);
 void gui_KeyboardPress(SDL_Keycode code);
-int gui_GetHoveredButtonID(int x, int y);
+int  gui_GetHoveredButtonID(int x, int y);
 
 
 

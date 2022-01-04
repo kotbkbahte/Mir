@@ -115,6 +115,10 @@
 			<Option compilerVar="CC" />
 		</Unit>
 		<Unit filename="source/math/matrix.h" />
+		<Unit filename="source/math/perlin_noise.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="source/math/perlin_noise.h" />
 		<Unit filename="source/math/vector.c">
 			<Option compilerVar="CC" />
 		</Unit>

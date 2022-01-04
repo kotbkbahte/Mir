@@ -24,7 +24,7 @@ void print_int32(char* var, int a)
         for (j = 8; j >= 0; j--)
         {
             char bit = (byte >> j) & 1;
-            printf("%hhd", bit);
+            printf("%d", bit);
         }
         printf(" ");
     }
