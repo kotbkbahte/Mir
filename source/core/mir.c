@@ -366,8 +366,8 @@ void ToGame()
 
     State.f_MouseDownEvent  = game_MouseDown;
     State.f_MouseUpEvent    = game_MouseUp;
+    State.f_MouseMoveEvent  = game_MouseMove;
     State.f_MouseClickEvent = gui_MouseClick;
-    State.f_MouseMoveEvent  = gui_MouseMove;
 
     State.f_KeyboardPress   = game_PressKeyboard;
 
@@ -381,10 +381,10 @@ static void start_draw_tiles()
 
     glUseProgram(program.ID);
 
-    loadIdentity(m_ViewMatrix);
+//    loadIdentity(m_ViewMatrix);
     float offset = (float)(-GameState.m_MirMap.m_Size / 2);
-    matrixTranslate(m_ViewMatrix, offset, offset, 0.0);
-    matrixScale(m_ViewMatrix, 0.1f, 0.1f, 1.0f);
+//    matrixTranslate(m_ViewMatrix, offset, offset, 0.0);
+//    matrixScale(m_ViewMatrix, 0.1f, 0.1f, 1.0f);
     glUniformMatrix4fv(program.projectionLocation, 1, GL_FALSE, m_ProjectionMatrix);
     glUniformMatrix4fv(program.viewLocation, 1, GL_FALSE, m_ViewMatrix);
 
@@ -423,8 +423,8 @@ void DrawGame()
 {
 
     start_draw_tiles();
-    DrawMirMap_();
-    DrawMirLandscape_();
+        DrawMirMap_();
+        DrawMirLandscape_();
     end_draw_tiles();
 
 
@@ -794,6 +794,22 @@ void SetState(int i)
     ToState[i]();
 }
 
+void game_MouseMove(int x, int y)
+{
+
+    if(GameState.m_IsCameraCaptured)
+    {
+        double ox, oy, oz;
+        ClientToOpenGL(x, y, &ox, &oy,&oz);
+        float x = ox - GameState.m_CameraCapturedPos.x;
+        float y = oy - GameState.m_CameraCapturedPos.y;
+
+        matrixTranslate(m_ViewMatrix, x, y, 0.0f);
+    }
+}
+
+
+
 void game_MouseDown(int x, int y, int button)
 {
 //    GLuint index;
@@ -808,12 +824,24 @@ void game_MouseDown(int x, int y, int button)
 
     double ox, oy, oz;
     ClientToOpenGL(x, y, &ox, &oy,&oz);
-    print_3d(ox, oy, oz);
+//    print_3d(ox, oy, oz);
+
+    if(button == SDL_BUTTON_RIGHT)
+    {
+        GameState.m_IsCameraCaptured = True;
+        GameState.m_CameraCapturedPos = (TPoint2_f){.x = ox, .y = oy};
+
+    }
+
+
 }
 
 void game_MouseUp(int x, int y, int button)
 {
-    return;
+    if(button == SDL_BUTTON_RIGHT)
+    {
+        GameState.m_IsCameraCaptured = False;
+    }
 }
 
 

@@ -203,6 +203,10 @@ typedef struct
     GLuint m_Background_image;
     TPoint2_i m_BackgroundSize;
 
+    int m_IsCameraCaptured;
+    TPoint2_f m_CameraCapturedPos;
+
+
     int m_PlayerID;
 
     TMirMap m_MirMap;

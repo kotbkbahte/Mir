@@ -70,7 +70,7 @@ void PrintBuildingsMap();
 void PrintLandscapeMap();
 
 void game_PressKeyboard(SDL_Keycode code);
-void game_MouseMove(int x, int y, int button);
+void game_MouseMove(int x, int y);
 void game_MouseDown(int x, int y, int button);
 void game_MouseUp(int x, int y, int button);
 

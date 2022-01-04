@@ -27,7 +27,7 @@ void DrawMainMenu()
     glStencilOp(GL_KEEP, GL_KEEP, GL_REPLACE);
 
     // Draw Stuff
-    int i, id, t;
+    int i, id;
     for(i = 0; i < _ButtonsCount ; i++)
     {
         id = _Buttons[i];
