@@ -372,6 +372,10 @@ void ToGame()
     State.f_KeyboardPress   = game_PressKeyboard;
 
     InitGameMap();
+
+    float offset = (float)(-GameState.m_MirMap.m_Size / 2);
+    matrixTranslate(m_ViewMatrix, offset, offset, 0.0);
+
 }
 
 
