@@ -2,5 +2,5 @@
 Strategy Game
 #
 
-![alt text](https://ibb.co/Vw6Zpgn)
-![alt text](https://ibb.co/M52mj46)
+![alt text](https://i.ibb.co/FHpMq5Z/image.png)
+![alt text](https://i.ibb.co/7NYqT54/image.png)
