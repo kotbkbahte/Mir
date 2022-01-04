@@ -382,7 +382,7 @@ static void start_draw_tiles()
     glUseProgram(program.ID);
 
 //    loadIdentity(m_ViewMatrix);
-    float offset = (float)(-GameState.m_MirMap.m_Size / 2);
+//    float offset = (float)(-GameState.m_MirMap.m_Size / 2);
 //    matrixTranslate(m_ViewMatrix, offset, offset, 0.0);
 //    matrixScale(m_ViewMatrix, 0.1f, 0.1f, 1.0f);
     glUniformMatrix4fv(program.projectionLocation, 1, GL_FALSE, m_ProjectionMatrix);
@@ -439,7 +439,7 @@ void DrawGame()
 
     DrawMirSelectedTile();
 
-    DrawGameGUI();
+//    DrawGameGUI();
 
 }
 
@@ -702,7 +702,7 @@ void DrawSquare_xyz_rgb(float x, float y, float z, float r, float g, float b)
 #define program
     glUseProgram(m_GlProgram.ID);
 
-    loadIdentity(m_ViewMatrix);
+//    loadIdentity(m_ViewMatrix);
 //    matrixTranslate(m_ViewMatrix, 0.5f, 0.5f, 0.0);
     matrixScale(m_ViewMatrix, 0.1f, 0.1f, 1.0f);
     glUniformMatrix4fv(m_GlProgram.projectionLocation, 1, GL_FALSE, m_ProjectionMatrix);
@@ -796,16 +796,16 @@ void SetState(int i)
 
 void game_MouseMove(int x, int y)
 {
-
+    loadIdentity(m_ViewMatrix);
     if(GameState.m_IsCameraCaptured)
     {
         double ox, oy, oz;
         ClientToOpenGL(x, y, &ox, &oy,&oz);
-        float x = ox - GameState.m_CameraCapturedPos.x;
-        float y = oy - GameState.m_CameraCapturedPos.y;
+        GameState.m_CameraPos.x = ox - GameState.m_CameraCapturedPos.x;
+        GameState.m_CameraPos.y = oy - GameState.m_CameraCapturedPos.y;
 
-        matrixTranslate(m_ViewMatrix, x, y, 0.0f);
     }
+    matrixTranslate(m_ViewMatrix, GameState.m_CameraPos.x, GameState.m_CameraPos.y, 0.0f);
 }
 
 
@@ -822,15 +822,14 @@ void game_MouseDown(int x, int y, int button)
 //        print_2i(x, y);
 //    }
 
-    double ox, oy, oz;
-    ClientToOpenGL(x, y, &ox, &oy,&oz);
-//    print_3d(ox, oy, oz);
+    //    print_3d(ox, oy, oz);
 
     if(button == SDL_BUTTON_RIGHT)
     {
+        double ox, oy, oz;
+        ClientToOpenGL(x, y, &ox, &oy,&oz);
         GameState.m_IsCameraCaptured = True;
         GameState.m_CameraCapturedPos = (TPoint2_f){.x = ox, .y = oy};
-
     }
 
 

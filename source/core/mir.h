@@ -53,7 +53,6 @@ void DrawTile(TTile* tile, float x, float y);
 void DrawSelectedTile(TTile* tile, float x, float y);
 void DrawSquare_xyz_rgb(float x, float y, float z, float r, float g, float b);
 
-
 void DrawSubTile(int i, float x, float y);
 void DrawSubTile_xyz(int i, float x, float y, float z);
 

@@ -4,10 +4,13 @@ extern float m_ProjectionMatrix[16];
 extern float m_IdentityMatrix[16];
 extern float m_ViewMatrix[16];
 
-extern TCore *Core;
+extern TGameState GameState;
 
 void InitCamera()
 {
+    GameState.m_CameraPos.x = 1.0f;
+    GameState.m_CameraPos.y = 1.0f;
+
     loadIdentity(m_ProjectionMatrix);
     loadIdentity(m_IdentityMatrix);
     loadIdentity(m_ViewMatrix);

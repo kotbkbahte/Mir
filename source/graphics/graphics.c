@@ -662,7 +662,7 @@ void ClientToOpenGL(int x, int y, double *ox, double *oy, double *oz)
     glGetIntegerv(GL_VIEWPORT, vp);
     y = vp[3] - y - 1;
 
-    loadIdentity(m_ViewMatrix);
+    //loadIdentity(m_ViewMatrix);
     //matrixTranslate(m_ViewMatrix, -(float)GameState.m_GameMap.m_Size / 2.0f, -(float)GameState.m_GameMap.m_Size / 2.0f, 0.0);
     //matrixScale(m_ViewMatrix, 0.24f, 0.24f, 1.0f);
 

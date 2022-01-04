@@ -111,6 +111,10 @@
 			<Option compilerVar="CC" />
 		</Unit>
 		<Unit filename="source/handlers/texture_handler.h" />
+		<Unit filename="source/math/additive_white_gaussian_noise.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="source/math/additive_white_gaussian_noise.h" />
 		<Unit filename="source/math/matrix.c">
 			<Option compilerVar="CC" />
 		</Unit>

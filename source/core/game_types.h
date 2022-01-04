@@ -205,7 +205,7 @@ typedef struct
 
     int m_IsCameraCaptured;
     TPoint2_f m_CameraCapturedPos;
-
+    TPoint2_f m_CameraPos;
 
     int m_PlayerID;
 
