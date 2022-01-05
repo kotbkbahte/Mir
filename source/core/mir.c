@@ -237,6 +237,28 @@ void GeneratePerlinNoiseMap()
 
 }
 
+int GetTileByCoord(double ox, double oy, int* x, int* y)
+{
+    int tx = floor(ox);
+    int ty = floor(oy);
+
+    int m = (tx < 0) || (tx > GameState.m_MirMap.m_Size);
+    if(m)
+    {
+        return False;
+    }
+
+    m = (ty < 0) || (ty > GameState.m_MirMap.m_Size);
+    if(m)
+    {
+        return False;
+    }
+
+    *x = tx;
+    *y = ty;
+
+    return True;
+}
 
 
 //void GenerateRandomLandscape()
@@ -816,18 +838,6 @@ void game_MouseMove(int x, int y)
 
 void game_MouseDown(int x, int y, int button)
 {
-//    GLuint index;
-//    int vp[4];
-//    glGetIntegerv(GL_VIEWPORT, vp);
-//    glReadPixels(x, vp[3] - y - 1, 1, 1, GL_STENCIL_INDEX, GL_UNSIGNED_INT, &index);
-
-//    if (State.m_StateIndex == GAME)
-//    {
-//        print_2i(x, y);
-//    }
-
-    //    print_3d(ox, oy, oz);
-
     if(button == SDL_BUTTON_RIGHT)
     {
         double ox, oy, oz;
@@ -835,7 +845,21 @@ void game_MouseDown(int x, int y, int button)
         GameState.m_IsCameraCaptured = True;
         GameState.m_CameraCapturedPos = (TPoint2_f){.x = ox, .y = oy};
     }
+    else if(button == SDL_BUTTON_LEFT)
+    {
+        double ox, oy, oz;
+        ClientToOpenGL(x, y, &ox, &oy,&oz);
 
+        int x, y;
+        if(GetTileByCoord(ox, oy, &x, &y));
+        {
+            GameState.m_MirMap.m_IsTileSelected = True;
+            GameState.m_MirMap.m_SelectedTile = (TPoint2_ui){.i = x, .j = y};
+        }
+
+
+        print_3d(ox, oy, oz);
+    }
 
 }
 

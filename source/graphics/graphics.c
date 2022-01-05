@@ -659,19 +659,9 @@ void ClientToOpenGL(int x, int y, double *ox, double *oy, double *oz)
     glGetIntegerv(GL_VIEWPORT, vp);
     y = vp[3] - y - 1;
 
-    //loadIdentity(m_ViewMatrix);
-    //matrixTranslate(m_ViewMatrix, -(float)GameState.m_GameMap.m_Size / 2.0f, -(float)GameState.m_GameMap.m_Size / 2.0f, 0.0);
-    //matrixScale(m_ViewMatrix, 0.24f, 0.24f, 1.0f);
-
-    /* // from another project
-    matrixTranslate(Core->m_Graphics.m_viewModelMatrix,
-                    Core->m_Objects[Core->m_State.m_CurrentSelectedObj].m_Transform.x,
-                    Core->m_Objects[Core->m_State.m_CurrentSelectedObj].m_Transform.y, 0);
-    */
     copyMatrix_fd(m_ViewMatrix, mMatrix);
     copyMatrix_fd(m_ProjectionMatrix, pMatrix);
     glReadPixels(x, y, 1, 1, GL_DEPTH_COMPONENT, GL_FLOAT, &z);
-    //print_2i(x, y);
-    //print_d(z);
+
     gluUnProject(x, y, z, mMatrix, pMatrix, vp, ox, oy, oz);
 }

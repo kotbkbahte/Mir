@@ -74,5 +74,8 @@ void game_MouseDown(int x, int y, int button);
 void game_MouseUp(int x, int y, int button);
 
 
+int GetTileByCoord(double ox, double oy, int* x, int* y);
+
+
 void UpdateState(float dt);
 #endif // MIR_H_INCLUDED
