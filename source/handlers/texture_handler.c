@@ -61,7 +61,7 @@ void LoadTextures()
     LoadTexture(_path(g3), &m_FieldTextures[FT_GRASS_3]);
 
 
-    LoadTexture(_path(selected1), &m_GameTextures[TG_SELECTED_1]);
+    LoadTexture(_path(selected3), &m_GameTextures[TG_SELECTED_1]);
 
 
     LoadTexture(_path(farm), &m_BuildingTextures[BT_FARM]);
